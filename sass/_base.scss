@@ -1,0 +1,147 @@
+@import url("https://fonts.googleapis.com/css2?family=MuseoModerno&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+
+@import "./node_modules/include-media/dist/include-media";
+
+$breakpoints: (phone: 320px, tablet: 720px, desktop: 910px);
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+%content-wrap {
+  padding: 2vh 1vh;
+  margin: 0 20%;
+  
+  @include media("<desktop") {
+    margin: 0 2%;
+  }
+}
+
+article {
+  @extend %content-wrap;
+
+  color: #222;
+  font-family: "Open Sans", sans-serif;
+
+  height: min-content;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: rgb(26, 79, 148);
+    font-family: "Montserrat", sans-serif;
+    margin-bottom: 1.5vh;
+  }
+
+  h1 {
+    color: rgb(14, 54, 105);
+    font-size: 2.5rem;
+
+    border-bottom: solid 0.3vh #4c7bc2;
+  }
+
+  h2 {
+    color: rgb(19, 63, 121);
+    font-size: 2rem;
+  }
+
+  h3 {
+    font-size: 1.8rem;
+  }
+
+  h4 {
+    font-size: 1.75rem;
+  }
+
+  h5 {
+    font-size: 1.5rem;
+  }
+
+  h6 {
+    font-size: 1.25rem;
+  }
+
+  p {
+    font-family: "Open Sans", sans-serif;
+
+    font-size: 1rem;
+    margin-bottom: 1vh;
+  }
+
+  a {
+    color: rgb(26, 79, 148);
+
+    text-underline-offset: 0.3vh;
+
+    text-decoration: underline;
+
+    &:visited {
+      color: rgb(26, 79, 148);
+    }
+
+    &:hover {
+      color: rgb(62, 110, 172);
+    }
+
+    &:active {
+      color: rgb(62, 141, 172);
+    }
+  }
+}
+
+.hor-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  align-content: space-around;
+
+  padding: 1vh 5vh;
+
+  * {
+    padding: 1vh;
+  }
+}
+
+.button {
+  padding: 0.1rem 1.5rem;
+
+  background-color: rgb(26, 79, 148);
+  border-radius: 0.25rem;
+
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 1.2rem;
+
+  &:visited {
+    color: #fff;
+ 
+    background-color: rgb(26, 79, 148);
+  }
+
+  &:hover {
+    color: #fff;
+
+    background-color: rgb(62, 110, 172);
+  }
+
+  &:active {
+    color: #fff;
+
+    background-color: rgb(62, 141, 172);
+  }
+}

@@ -1,0 +1,134 @@
+@import "./node_modules/include-media/dist/include-media";
+
+$breakpoints: (phone: 320px, tablet: 720px, desktop: 910px);
+
+#navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  height: 3rem;
+  width: 100%;
+
+  background-image: linear-gradient(30deg, #3ad4da 0%, #29baf3 100%);
+
+  h1 {
+    position: relative;
+    order: 1;
+
+    height: min-content;
+    bottom: -0.5rem;
+    left: 1rem;
+
+    font-family: "MuseoModerno", cursive;
+    font-size: 2.25rem;
+    color: #051920;
+  }
+
+  .hamburger {
+    background-color: #00000022;
+    order: 2;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+
+    height: 100%;
+    width: 3rem;
+    padding: 0.4rem;
+    cursor: pointer;
+
+    visibility: collapse;
+
+    @include media("<=tablet") {
+      visibility: visible;
+    }
+
+    .line {
+      background-color: #ffffff;
+
+      transition: all ease-in-out 250ms;
+
+      height: 0.2rem;
+      width: 75%;
+    }
+
+    &.open {
+      .line {
+        &:nth-child(1) {
+          transform: translateY(0.6rem) rotate(-45deg);
+        }
+
+        &:nth-child(2) {
+          transform: scale(0);
+          opacity: 0;
+        }
+
+        &:nth-child(3) {
+          transform: translateY(-0.6rem) rotate(45deg);
+        }
+      }
+    }
+  }
+
+  .links {
+    order: 3;
+
+    height: 100%;
+    z-index: 1;
+
+    display: flex;
+    justify-content: space-evenly;
+
+    @include media("<=tablet") {
+      visibility: collapse;
+
+      position: absolute;
+      width: 100%;
+      height: min-content;
+      left: 0;
+      top: 3rem;
+      flex-direction: column;
+
+      transition: all ease-in-out 350ms;
+      clip-path: circle(0 at 50% -10%);
+
+      background: linear-gradient(30deg, #3ad4da 0%, #29baf3 100%);
+
+      a {
+        border-top: solid 1px #fff5;
+      }
+
+      &.shown {
+        visibility: visible;
+
+        clip-path: circle(768px at 50% -10%);
+      }
+    }
+
+    a {
+      flex-grow: 1;
+      order: 1;
+      padding: 0.75rem 0.5rem;
+
+      
+      @include media(">=desktop") {
+        padding: 0.75rem 2rem;
+      }
+
+      font-family: "Montserrat", sans-serif;
+      color: #051920;
+      text-align: center;
+      font-size: 1.5rem;
+      text-decoration: none;
+
+      background-color: #ffffff33;
+
+      &:hover {
+        background-color: #051920;
+        color: #29baf3;
+      }
+    }
+  }
+}
