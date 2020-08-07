@@ -4,16 +4,17 @@
       <h1>About Me</h1>
 
       <p>
-        Hi! My name is Tin, but I also go by Caellian online.
-        I'm a programming language enthusiast and spend most of my free time
-        working on projects I find interesting at the time.
+        Hi! My name is Tin, but I also go by Caellian online. I'm a programming
+        language enthusiast and spend most of my free time working on projects I
+        find interesting at the time.
       </p>
 
       <p>
         I'm a student at University in Rijeka. I'm studying Information
         Technologies. I learned most of what I now know about programming by
         testing out different language environments in my free time and
-        searching which ones provide features I'd like provided in the current one.
+        searching which ones provide features I'd like provided in the current
+        one.
       </p>
     </article>
 
@@ -34,10 +35,10 @@
 
       <p>
         Languages I have enough experience to feel comfortable working in are
-        C++, JVM languages (Kotlin, Java, Groovy, Scala), JavaScript,
-        TypeScript and Python. I have some experience in a lot of other
-        programming languages but I'm not fully familiar with their standard
-        libraries and they would take me a week or two to get into.
+        C++, JVM languages (Kotlin, Java, Groovy, Scala), JavaScript, TypeScript
+        and Python. I have some experience in a lot of other programming
+        languages but I'm not fully familiar with their standard libraries and
+        they would take me a week or two to get into.
       </p>
 
       <div class="hor-list">
@@ -45,7 +46,8 @@
         <a
           class="button"
           href="https://s3.eu-central-1.amazonaws.com/caellian.net/CV/cv-en.pdf"
-        >Download CV</a>
+          >Download CV</a
+        >
       </div>
 
       <h2>Freelancing</h2>
@@ -78,10 +80,10 @@
       </p>
 
       <p>
-        High School was the period when I started learning C and C++, programming
-        for Arduino boards. Outside of programming I also learned how logic
-        gates work, circuit boards and electricity work as well as becomming
-        a radio amateur (although I don't enjoy it as much nowadays).
+        High School was the period when I started learning C and C++,
+        programming for Arduino boards. Outside of programming I also learned
+        how logic gates work, circuit boards and electricity work as well as
+        becomming a radio amateur (although I don't enjoy it as much nowadays).
         I also competed in programming contests using C and later C++.
       </p>
 
@@ -92,9 +94,9 @@
         This is when I'd say I actually really learned C++ because I started
         seriously looking at STL and differences between standard versions as
         well as exploring C++20 and
-        <a
-          href="https://en.cppreference.com/w/cpp/language/constraints"
-        >concepts</a>.
+        <a href="https://en.cppreference.com/w/cpp/language/constraints"
+          >concepts</a
+        >.
       </p>
     </article>
 
@@ -123,12 +125,12 @@
       </p>
 
       <p>
-        If you want to read more about my personal projects, feel free to
-        to check out the
+        If you want to read more about my personal projects, feel free to to
+        check out the
         <router-link to="/projects">projects page</router-link> or my
         <a href="https://github.com/Caellian">GitHub profile</a>.
       </p>
-      
+
       <h2>Freedom of Software</h2>
 
       <p>
@@ -138,10 +140,10 @@
 
       <p>
         Main proponing argument is that it disallows comercial use of software.
-        It does not. Qt is a prime example of that. Even something like
-        Aseprite prooves this argument faulty. Not many people know how to
-        compile programs on their own and these days people usually pay for
-        services, not software itself.
+        It does not. Qt is a prime example of that. Even something like Aseprite
+        prooves this argument faulty. Not many people know how to compile
+        programs on their own and these days people usually pay for services,
+        not software itself.
       </p>
 
       <p>I love contributing to open source projects where I can.</p>

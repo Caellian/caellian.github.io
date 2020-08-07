@@ -21,11 +21,11 @@ import { Component, Vue } from "vue-property-decorator";
 @Component
 export default class Navigation extends Vue {
   created() {
-    window.addEventListener('scroll', this.onScroll);
+    window.addEventListener("scroll", this.onScroll);
   }
 
   destroyed() {
-    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener("scroll", this.onScroll);
   }
 
   onScroll() {
@@ -34,20 +34,20 @@ export default class Navigation extends Vue {
 
   setNavOpen(state?: boolean) {
     if (state == null) {
-      (this.$refs.navigation as HTMLElement).classList.toggle('fixed');
-      (this.$refs.hamburger as HTMLElement).classList.toggle('open');
-      (this.$refs.navLinks as HTMLElement).classList.toggle('shown');
+      (this.$refs.navigation as HTMLElement).classList.toggle("fixed");
+      (this.$refs.hamburger as HTMLElement).classList.toggle("open");
+      (this.$refs.navLinks as HTMLElement).classList.toggle("shown");
     } else if (state) {
-      (this.$refs.navigation as HTMLElement).classList.add('fixed');
-      (this.$refs.hamburger as HTMLElement).classList.add('open');
-      (this.$refs.navLinks as HTMLElement).classList.add('shown');
+      (this.$refs.navigation as HTMLElement).classList.add("fixed");
+      (this.$refs.hamburger as HTMLElement).classList.add("open");
+      (this.$refs.navLinks as HTMLElement).classList.add("shown");
     } else {
-      (this.$refs.navigation as HTMLElement).classList.remove('fixed');
-      (this.$refs.hamburger as HTMLElement).classList.remove('open');
-      (this.$refs.navLinks as HTMLElement).classList.remove('shown');
+      (this.$refs.navigation as HTMLElement).classList.remove("fixed");
+      (this.$refs.hamburger as HTMLElement).classList.remove("open");
+      (this.$refs.navLinks as HTMLElement).classList.remove("shown");
     }
   }
-};
+}
 </script>
 
 <style scoped lang="scss">

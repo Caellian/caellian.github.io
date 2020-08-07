@@ -62,7 +62,7 @@
       "url": "https://github.com/Caellian/ArgLib",
       "description": [
         "Argument parsing/handling library with primary focus on simplicity of configuration.",
-        "I wrote it for some of my simpler apps that would've been overbloated by some of the more stable and bigger arguemnt parsers."
+        "I wrote it for some of my simpler apps that would've been overbloated by some of the more stable and bigger argument parsers."
       ]
     },
     {
@@ -169,7 +169,7 @@
       "lang": "Java",
       "url": "https://github.com/Caellian/Enigma",
       "description": [
-        "Enigma is a tool for deobfusctaion of Java bytecode.",
+        "Enigma is a tool for deobfuscation of Java bytecode.",
         "I added some gui components and menus that made my work a lot easier later."
       ]
     }

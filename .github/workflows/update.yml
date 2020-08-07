@@ -1,0 +1,45 @@
+name: update-served
+
+on:
+  push:
+    branches: [ sources ]
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources branch
+        uses: actions/checkout@v2
+      - name: Checkout master branch
+        uses: actions/checkout@v2
+        with:
+          ref: 'master'
+          path: 'dist'
+          submodules: true
+      - name: Setup Node.js
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '12'
+      - name: Install dependencies
+        run: |
+          npm install
+      - name: Move .git during build
+        run: |
+          ls -lah dist
+          mv dist/.git dist-git
+          ls -lah
+      - name: Build sources head
+        run: npm run-script build
+      - name: Return .git after build
+        run: |
+          ls -lah
+          mv dist-git dist/.git
+          ls -lah dist
+      - name: Commit updated master branch
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          repository: dist
+          commit_message: Updated served page
+          branch: ${{ github.head_ref }}
+          commit_options: '--no-verify --signoff'
+          commit_user_name: Automated build

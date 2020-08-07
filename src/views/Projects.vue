@@ -14,7 +14,11 @@
     <article>
       <h1>Previous projects</h1>
 
-      <p>Some of these receive fixes from time to time but they are generally no longer being developed because I don't have a need for them anymore, they don't interest me anymore or they don't require further work.</p>
+      <p>
+        Some of these receive fixes from time to time but they are generally no
+        longer being developed because I don't have a need for them anymore,
+        they don't interest me anymore or they don't require further work.
+      </p>
 
       <div class="project-list">
         <Project v-for="p in previous" :key="p.name" :info="p"></Project>

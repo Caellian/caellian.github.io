@@ -5,10 +5,10 @@
       <span class="lang">{{ info.lang }}</span>
     </div>
     <div class="description">
-      <p v-for="d in info.description" :key="d">{{d}}</p>
+      <p v-for="d in info.description" :key="d">{{ d }}</p>
     </div>
     <div v-if="info.tags" class="tags">
-      <p v-for="t in info.tags" :key="t">{{t}}</p>
+      <p v-for="t in info.tags" :key="t">{{ t }}</p>
     </div>
     <a v-if="info.url" :href="info.url" class="repo">
       {{ repoLabel(info.url) }}
@@ -30,7 +30,7 @@ export default class Project extends Vue {
   get cssVars() {
     const from = Math.floor(Math.random() * 360);
     const to = from + Math.floor(Math.random() * 30) + 30;
-    
+
     const deg = Math.floor(Math.random() * 360);
 
     return {
@@ -68,7 +68,7 @@ $breakpoints: (
   padding: 0.25rem;
   margin: 0;
   border-radius: 0.2rem;
-  
+
   color: #fff;
   font-size: 1rem;
   font-weight: bold;
@@ -133,7 +133,7 @@ $breakpoints: (
 
       border: solid #fff 2px;
       border-radius: 1rem;
-      
+
       &:hover {
         background: #0002;
       }
@@ -157,14 +157,14 @@ $breakpoints: (
       padding: 0.25rem;
       margin: 0.1rem;
       border-radius: 0.2rem;
-      
+
       color: #fff;
       background: #0002;
       font-size: 0.65rem;
       text-decoration: none;
     }
   }
-  
+
   .repo {
     @extend %repotext;
 

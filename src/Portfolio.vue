@@ -1,6 +1,6 @@
 <template>
   <div id="portfolio">
-    <Navigation pages='{{}}'/>
+    <Navigation pages="{{}}" />
     <div id="content-view">
       <router-view></router-view>
     </div>
@@ -28,7 +28,7 @@ export default class Portfolio extends Vue {
 @import "./sass/base";
 
 #portfolio {
-  min-height:100%;
+  min-height: 100%;
   position: relative;
 }
 

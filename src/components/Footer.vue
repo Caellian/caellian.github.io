@@ -9,16 +9,24 @@
     </div>
     <div class="social">
       <p>Share on:</p>
-      <a href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fcaellian.net">
+      <a
+        href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fcaellian.net"
+      >
         <font-awesome-icon :icon="['fab', 'facebook']" />
       </a>
-      <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fcaellian.net&text=Check%20out%20Caellian%27s%20web%20portfolio%21&hashtags=caellian,programming">
+      <a
+        href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fcaellian.net&text=Check%20out%20Caellian%27s%20web%20portfolio%21&hashtags=caellian,programming"
+      >
         <font-awesome-icon :icon="['fab', 'twitter']" />
       </a>
-      <a href="whatsapp://send?text=Check out Caellian's web portfolio at: https://caellian.net">
+      <a
+        href="whatsapp://send?text=Check out Caellian's web portfolio at: https://caellian.net"
+      >
         <font-awesome-icon :icon="['fab', 'whatsapp']" />
       </a>
-      <a href="https://t.me/share/url?url=https%3A%2F%2Fcaellian.net&text=Check%20out%20Caellian%27s%20web%20portfolio%21">
+      <a
+        href="https://t.me/share/url?url=https%3A%2F%2Fcaellian.net&text=Check%20out%20Caellian%27s%20web%20portfolio%21"
+      >
         <font-awesome-icon :icon="['fab', 'telegram-plane']" />
       </a>
     </div>
@@ -30,14 +38,14 @@ import { Component, Vue } from "vue-property-decorator";
 
 @Component
 export default class Footer extends Vue {
-  sharedOpen = true
+  sharedOpen = true;
 
   created() {
-    window.addEventListener('scroll', this.onScroll);
+    window.addEventListener("scroll", this.onScroll);
   }
 
   destroyed() {
-    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener("scroll", this.onScroll);
   }
 
   onScroll() {
@@ -46,11 +54,11 @@ export default class Footer extends Vue {
 
   setShareOpen(state?: boolean) {
     if (state == null) {
-      (this.$refs.footer as HTMLElement).classList.toggle('show-share');
+      (this.$refs.footer as HTMLElement).classList.toggle("show-share");
     } else if (state) {
-      (this.$refs.footer as HTMLElement).classList.add('show-share');
+      (this.$refs.footer as HTMLElement).classList.add("show-share");
     } else {
-      (this.$refs.footer as HTMLElement).classList.remove('show-share');
+      (this.$refs.footer as HTMLElement).classList.remove("show-share");
     }
   }
 }
