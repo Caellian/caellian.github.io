@@ -42,7 +42,6 @@
       </p>
 
       <div class="hor-list">
-        <!-- TODO: Translate the CV to English -->
         <a
           class="button"
           href="https://s3.eu-central-1.amazonaws.com/caellian.net/CV/cv-en.pdf"
@@ -73,9 +72,9 @@
       </p>
 
       <p>
-        Around the end of middle school I started playing Minecraft and got into
-        writing mods in Java which lead me to picking up on programming
-        conventions, maven project structure, test driven development,
+        Around the end of middle school, I started playing Minecraft and got
+        into writing mods in Java which lead me to pick up on programming
+        conventions, maven project structure, test-driven development,
         functional programming and writing APIs for other developers to consume.
       </p>
 
@@ -88,12 +87,12 @@
       </p>
 
       <p>
-        Betweed my first and second year of study at University of Rijeka, I
-        fell in love with C++ and realised how powerfull it's templating system
+        Between my first and second year of study at the University of Rijeka, I
+        fell in love with C++ and realised how powerful it's templating system
         is. I also started with metaprogramming which made me like it even more.
-        This is when I'd say I actually really learned C++ because I started
-        seriously looking at STL and differences between standard versions as
-        well as exploring C++20 and
+        This is when I'd say I really learned C++ because I started seriously
+        looking at STL and differences between standard versions as well as
+        exploring C++20 and
         <a href="https://en.cppreference.com/w/cpp/language/constraints"
           >concepts</a
         >.
@@ -104,9 +103,9 @@
       <h1>Personal Projects</h1>
 
       <p>
-        My personal projects change very often as my interests shift. I don't
-        force myself to finish most of them as they are the way I like learning
-        new things.
+        My projects change very often as my interests shift. I don't force
+        myself to finish most of them as they are my preference for learning new
+        concepts and understanding libraries.
       </p>
 
       <p>
@@ -139,11 +138,11 @@
       </p>
 
       <p>
-        Main proponing argument is that it disallows comercial use of software.
-        It does not. Qt is a prime example of that. Even something like Aseprite
-        prooves this argument faulty. Not many people know how to compile
-        programs on their own and these days people usually pay for services,
-        not software itself.
+        Some would argue that it disallows commercial use of software. It does
+        not. Qt is a prime example of that. Even something like Aseprite prooves
+        this argument faulty. Not many people know how to compile programs on
+        their own and these days people usually pay for services, not software
+        itself.
       </p>
 
       <p>I love contributing to open source projects where I can.</p>
@@ -153,7 +152,7 @@
 
 <script lang="ts">
 export default {
-  name: "about"
+  name: "about",
 };
 </script>
 
