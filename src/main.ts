@@ -1,15 +1,9 @@
 import Vue from "vue";
 import router from "./router";
 import Portfolio from "./Portfolio.vue";
-//import VueI18n from 'vue-i18n'
-
-//Vue.use(VueI18n);
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { 
-  faEnvelope,
-  faShareAlt
- } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faShareAlt } from "@fortawesome/free-solid-svg-icons";
 import {
   faTwitter,
   faWhatsapp,
@@ -33,8 +27,8 @@ library.add(
   faTelegramPlane,
   faReddit,
   faLinkedin,
-  faInstagramSquare,
-  );
+  faInstagramSquare
+);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 Vue.config.productionTip = false;

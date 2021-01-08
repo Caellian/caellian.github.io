@@ -10,7 +10,7 @@
       </p>
 
       <div class="icon-collection">
-        <a href="mailto:tin.svagelj@live.com"
+        <a href="#" v-on:click="emailLink"
           ><font-awesome-icon :icon="['fas', 'envelope']"
         /></a>
         <a href="https://telegram.me/caellian"
@@ -33,25 +33,40 @@
         /></a>
       </div>
     </article>
-
-    <article>
-      <h2>Tox</h2>
-
-      <p>
-        If you wish to use a truly private (P2P, end-to-end encrypted chat), you
-        can use <a href="https://tox.chat/">Tox</a> to contact me:
-      </p>
-
-      <p class="tox-id">
-        5C4D9BE02946B6791082FCC433159C0EF27A545FDA126DDEE2203E7517A79F3195001AD1D134
-      </p>
-    </article>
   </div>
 </template>
 
 <script lang="ts">
 export default {
-  name: "contact"
+  name: "contact",
+  methods: {
+    emailLink: function(event: Event) {
+      let mailParts = [
+        "mail",
+        [""][0],
+        "to:",
+        [],
+        "tin",
+        ["svagelj", ""][1],
+        ".",
+        ["svagelj", ""][0],
+        "@",
+        ["\u1f4a9", "live.com"][
+          ((): number => {
+            if (
+              window.location.toString().endsWith("contact") ||
+              window.location.toString().endsWith("contact/")
+            ) {
+              return 7;
+            } else {
+              return 8;
+            }
+          })() % 2
+        ],
+      ];
+      window.location.href = mailParts.join("");
+    },
+  },
 };
 </script>
 
