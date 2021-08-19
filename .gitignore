@@ -389,3 +389,7 @@ $RECYCLE.BIN/
 # Local reference documents, projects and partial code
 reference
 .history
+
+# Svelte
+.svelte-kit
+build

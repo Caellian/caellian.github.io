@@ -1,0 +1,11 @@
+.random (@max: 1, @min: 0) {
+    @random-result: `Math.floor(Math.random() * (@{max} - @{min} + 1) + @{min})`;
+}
+
+.if (@condition, @property, @value, @else) when (@condition = true) {
+    @{property}: @value;
+}
+
+.if (@condition, @property, @value, @else) when (@condition = false) {
+    @{property}: @else;
+}

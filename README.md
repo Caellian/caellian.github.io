@@ -1,3 +1,8 @@
-# caellian.net
+# Web portfolio
 
-This is my personal web portfolio. I plan on improving it over time and possibly adding a blog.
+My personal web portfolio built with Svelte and ❤️.
+
+## License
+
+Components of the portfolio are licensed under MIT License.
+A copy of the MIT license is located in the [LICENSE](./LICENSE) file.
