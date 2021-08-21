@@ -91,7 +91,6 @@
 		.desc {
 			grid-area: 3 / 1 / 4 / 2;
 
-			list-style: none;
 			padding: 0.2rem 0.5rem;
 
 			background: #0003;
@@ -105,7 +104,6 @@
 		.tags {
 			grid-area: 4 / 1 / 5 / 2;
 
-			list-style: none;
 			padding: 0.2rem;
 
 			border-top: 1px dashed var(--text);

@@ -16,8 +16,8 @@
 
 <section id="hero">
 	<div>
-		<p class="name">Hi, my name is</p>
-		<h1><span class="accent-highlight">Tin Švagelj</span>.</h1>
+		<p>Hi, my name is</p>
+		<h1><span class="name">Tin Švagelj</span>.</h1>
 		<h2>I write fast,<br />bleeding-edge software.</h2>
 
 		<p>
@@ -27,7 +27,7 @@
 	</div>
 </section>
 
-<section class="container">
+<section class="container pagewide">
 	<h1 class="title">About Me</h1>
 
 	<p style="margin-bottom: 4vh;">
@@ -41,7 +41,7 @@
 	</Expand>
 </section>
 
-<section class="container">
+<section class="container pagewide">
 	<h1 class="title">Projects I'm Working On</h1>
 
 	{#each projects.active as p}
@@ -53,7 +53,7 @@
 	</div>
 </section>
 
-<section class="container current-langs">
+<section class="container pagewide current-langs">
 	<h1 class="title">What I'm Currently Using</h1>
 
 	<p>
@@ -78,11 +78,11 @@
 
 	#hero {
 		display: grid;
-		grid-template-columns: 1fr 3fr 3fr;
+		grid-template-columns: 1rem 1fr 1rem;
 		place-items: center;
 
-		@media (max-width: @mobile-size) {
-			grid-template-columns: 1rem 1fr 1rem;
+		@media (min-width: @mobile-size) {
+			grid-template-columns: 1fr 3fr 3fr;
 		}
 
 		height: calc(100vh - @nav-height);
@@ -97,11 +97,6 @@
 
 		div {
 			grid-area: 1 / 2 / 2 / 3;
-
-			.name {
-				font-size: 1.2rem;
-				color: var(--accent-light);
-			}
 
 			h1 {
 				margin-bottom: 2rem;
@@ -123,10 +118,12 @@
 				margin: 0;
 			}
 
-			.accent-highlight {
+			.name {
+				color: var(--accent);
+
 				transition: color ease-in-out @transition-short;
 				&:hover {
-					color: var(--accent);
+					color: var(--text);
 				}
 			}
 		}
@@ -135,9 +132,6 @@
 	.container {
 		padding: 2vh 0;
 		margin: 0 auto;
-
-		max-width: calc(100% - 2rem);
-		width: @tablet-size;
 
 		.block {
 			padding: 1rem;

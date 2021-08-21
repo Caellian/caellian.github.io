@@ -96,6 +96,15 @@ a {
 	}
 }
 
+li {
+	list-style: none;
+}
+
+.pagewide {
+	max-width: calc(100vw - 2rem);
+	width: @tablet-size;
+}
+
 .button {
 	display: block;
 
@@ -143,7 +152,13 @@ a {
 	align-content: center;
 
 	> * {
+		text-align: center;
+
 		margin-left: auto;
 		margin-right: auto;
+	}
+
+	h1 {
+		text-align: initial;
 	}
 }

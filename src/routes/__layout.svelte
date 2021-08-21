@@ -12,7 +12,7 @@
 </svelte:head>
 
 <nav id="navbar" style={navigate ? 'position:fixed;top:0;left:0;' : ''}>
-	<h1>caellian<span>::</span>com</h1>
+	<a href="https://caellian.com" class="name"><h1>caellian<span>::</span>com</h1></a>
 
 	<ul id="nav-links">
 		<NavLinks />
@@ -49,35 +49,37 @@
 		border-bottom: @border-style;
 		z-index: 1000;
 
-		h1 {
-			margin-top: auto;
-			margin-bottom: auto;
+		.name {
+			h1 {
+				margin-top: auto;
+				margin-bottom: auto;
 
-			padding: 0;
-			padding-left: 2vh;
+				padding: 0;
+				padding-left: 2vh;
 
-			z-index: 2;
+				z-index: 2;
 
-			font-size: 2rem;
-			color: var(--text);
-
-			transition: color @transition-short;
-
-			@media (min-width: @mobile-size) {
-				font-size: 2.5rem;
-			}
-
-			span {
-				color: var(--accent);
+				font-size: 2rem;
+				color: var(--text);
 
 				transition: color @transition-short;
-			}
 
-			&:hover {
-				color: var(--accent);
+				@media (min-width: @mobile-size) {
+					font-size: 2.5rem;
+				}
 
 				span {
-					color: var(--text);
+					color: var(--accent);
+
+					transition: color @transition-short;
+				}
+
+				&:hover {
+					color: var(--accent);
+
+					span {
+						color: var(--text);
+					}
 				}
 			}
 		}
@@ -112,8 +114,6 @@
 				height: 100%;
 
 				li {
-					list-style: none;
-
 					a {
 						padding-right: 1rem;
 						margin-bottom: 0.5rem;
@@ -195,7 +195,6 @@
 		li {
 			display: block;
 			width: max-content;
-			list-style: none;
 
 			a {
 				font-family: 'Quicksand', sans-serif;

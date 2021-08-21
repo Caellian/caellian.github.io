@@ -73,8 +73,6 @@
 		width: 100%;
 		height: max-content;
 
-		list-style: none;
-
 		.project {
 			flex-grow: 1;
 			flex-basis: 90%;
