@@ -66,8 +66,20 @@
 			curr += 1;
 		}
 
-		for (var e of collected) {
-			e.weight = Math.round(e.weight / total_weight * 100);
+		if (mobile && collected.length > 0) {
+			var recalc_total = 0;
+			var biggest = collected[0];
+			for (var e of collected) {
+				e.weight = Math.round(e.weight / total_weight * 100);
+				recalc_total += e.weight;
+				if (biggest.weight < e.weight) {
+					biggest = e;
+				}
+			}
+
+			if (recalc_total < 100) {
+				biggest.weight += 100 - recalc_total;
+			}
 		}
 
 		return collected;
