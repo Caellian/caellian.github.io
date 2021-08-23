@@ -35,15 +35,19 @@
 </div>
 
 <style lang="less">
+	@import "../../style/constants.less";
+
 	@color-gradient: linear-gradient(var(--bg-deg), var(--bg-from), var(--bg-to));
+	@shaded: #0003;
 
 	.project {
 		padding: 0.1rem;
 
+		height: 100%;
+		width: 100%;
+
 		background: var(--bg-from);
 		background: @color-gradient;
-
-		margin: 0.1rem;
 	}
 
 	.project-inner {
@@ -62,7 +66,11 @@
 		.lang {
 			grid-area: 1 / 1 / 2 / 2;
 
-			background: #0003;
+			background: var(--bg-accent);
+
+			@media (min-width: @tablet-size) {
+				background: @shaded;
+			}
 
 			font-size: 0.8rem;
 			text-align: right;
@@ -93,7 +101,11 @@
 
 			padding: 0.2rem 0.5rem;
 
-			background: #0003;
+			background: var(--bg-accent);
+
+			@media (min-width: @tablet-size) {
+				background: @shaded;
+			}
 
 			p {
 				margin: 0;
@@ -107,6 +119,12 @@
 			padding: 0.2rem;
 
 			border-top: 1px dashed var(--text);
+
+			background: var(--bg-accent);
+
+			@media (min-width: @tablet-size) {
+				background: none;
+			}
 
 			&::before {
 				content: 'tags:';
@@ -122,7 +140,7 @@
 				border: 1px solid var(--bg-from);
 				border-radius: 0.25rem;
 
-				background: #0003;
+				background: @shaded;
 
 				&:nth-child(n) {
 					&::after {

@@ -9,46 +9,49 @@
 	const forks = projectList.forks as Project[];
 </script>
 
-<section>
+<section class="pagewide">
 	<h1 class="title">Current Projects</h1>
 
 	<div class="project-list current">
 		{#each activeProjects as p}
-			<ProjectCard project={p} />
+			<div class="card">
+				<ProjectCard project={p} />
+			</div>
 		{/each}
 	</div>
 </section>
 
-<section>
+<section class="pagewide">
 	<h1 class="title">Previous Projects</h1>
 
 	<div class="project-list">
 		{#each previousProjects as p}
-			<ProjectCard project={p} />
+			<div class="card">
+				<ProjectCard project={p} />
+			</div>
 		{/each}
 	</div>
 </section>
 
-<section>
+<section class="pagewide">
 	<h1 class="title">OSS Contributions and Forks</h1>
 
 	<div class="project-list">
 		{#each forks as p}
-			<ProjectCard project={p} />
+			<div class="card">
+				<ProjectCard project={p} />
+			</div>
 		{/each}
 	</div>
 </section>
 
-<style lang="less" global>
+<style lang="less">
 	@import '../../style/constants.less';
 
 	section {
 		padding: 2vh 0;
 
 		margin: 0 auto;
-
-		max-width: calc(100% - 2rem);
-		width: @tablet-size;
 
 		@media (min-width: @tablet-size) {
 			> * {
@@ -73,12 +76,18 @@
 		width: 100%;
 		height: max-content;
 
-		.project {
+		.card {
 			flex-grow: 1;
 			flex-basis: 90%;
 
+			margin: 0.1rem;
+
 			@media (min-width: @mobile-size) {
 				flex-basis: 45%;
+			}
+
+			@media (max-width: @mobile-size) {
+				padding-bottom: 0.5rem;
 			}
 		}
 

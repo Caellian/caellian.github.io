@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Project from '$lib/components/FrontProject.svelte';
-	import LanguageDonut from '$lib/components/LanguageDonut.svelte';
+	import LanguageDonut from '$lib/components/LanguageUsage.svelte';
 
 	import Timeline from '$lib/components/Timeline.svelte';
 	import type { TimelineItem } from '$lib/components/Timeline.svelte';
@@ -61,20 +61,41 @@
 		thus the programming language I feel most comfortable with.
 	</p>
 
-	<div class="donut">
-		<div>
-			<LanguageDonut />
-		</div>
+	<div class="donut center">
+		<LanguageDonut />
 	</div>
 
 	<p>
-		Data provided by
+		Languages used within last 30 days; provided by
 		<a href="https://wakatime.com">WakaTime</a>.
 	</p>
 </section>
 
 <style lang="less">
 	@import '../style/constants.less';
+
+	.container {
+		padding: 2vh 0;
+		margin: 0 auto;
+
+		.block {
+			padding: 1rem;
+		}
+
+		@media (min-width: @tablet-size) {
+			padding: 15vh 0;
+
+			> * {
+				padding-left: 2rem;
+				padding-right: 2rem;
+			}
+
+			.title {
+				padding-left: 0;
+				padding-right: 0;
+			}
+		}
+	}
 
 	#hero {
 		display: grid;
@@ -129,40 +150,9 @@
 		}
 	}
 
-	.container {
-		padding: 2vh 0;
-		margin: 0 auto;
-
-		.block {
-			padding: 1rem;
-		}
-
-		@media (min-width: @tablet-size) {
-			padding: 15vh 0;
-
-			> * {
-				padding-left: 2rem;
-				padding-right: 2rem;
-			}
-
-			.title {
-				padding-left: 0;
-				padding-right: 0;
-			}
-		}
+.current-langs {
+	.donut {
+		margin: 2rem 0;
 	}
-
-	.current-langs {
-		.donut {
-			display: grid;
-			align-content: center;
-
-			margin: 3rem 0;
-
-			div {
-				width: 50%;
-				margin: 0 auto;
-			}
-		}
-	}
+}
 </style>

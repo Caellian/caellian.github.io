@@ -138,12 +138,21 @@
 			"url": "https://github.com/Caellian/BowEngine",
 			"description": [
 				"A standard LWJGL2 OpenGL rendering engine with very primitive shading.",
-				"This was the first game engine I wrote, it was painfuly slow due to my lack of experience and knowledge with rendering back then.",
-				"I even intended on using annotations for runtime physics handling which was... not very thought out. My head feels better now."
+				"This was the first game engine I wrote, it was painfuly slow due to my lack of experience and knowledge with rendering back then."
 			]
 		}
 	],
 	"forks": [
+		{
+			"id": "conky",
+			"name": "conky",
+			"tags": ["c", "lua", "xlib"],
+			"lang": "C",
+			"url": "https://github.com/brndnmtthws/conky/pull/955",
+			"description": [
+				"Added mouse event handling to conky (system monitor)."
+			]
+		},
 		{
 			"id": "review_heatmap",
 			"name": "review-heatmap",
@@ -164,7 +173,7 @@
 			"description": [
 				"feh is an image viewer.",
 				"Modified version of feh with added support for JSON configuration files.",
-				"I was asked by a teacher in my secondary school to add support for specifying custom image display times (images with text should be displayed longer) so I added support for this through configuration files."
+				"High school teacher asked me to add per-image configurable slideshow duration."
 			]
 		},
 		{

@@ -10,7 +10,7 @@
 	var langName: string = '';
 	var langColor: string = '#fff';
 
-	let mobile = false;
+	var mobile = false;
 
 	const LANGUAGE_CHART_COUNT = 6;
 	const IGNORED_LANGS = [
@@ -43,7 +43,7 @@
 	}
 
 	async function loadLanguages() {
-		let data: WakaTimeEntry[];
+		var data: WakaTimeEntry[];
 		try {
 			data = (await jsonp(USED_LANGUAGES))['data'] as WakaTimeEntry[];
 		} catch (error) {
@@ -51,10 +51,12 @@
 			data = [];
 		}
 
-		let curr = 0;
-		const collected = [];
+		var curr = 0;
+		var total_weight = 0;
+		const collected = [] as ChartEntry[];
 		while (curr < data.length && curr < 10) {
 			if (IGNORED_LANGS.indexOf(data[curr].name.toLowerCase()) == -1) {
+				total_weight += Math.round(data[curr].percent);
 				collected.push({
 					name: data[curr].name,
 					color: data[curr].color,
@@ -62,6 +64,10 @@
 				});
 			}
 			curr += 1;
+		}
+
+		for (var e of collected) {
+			e.weight = Math.round(e.weight / total_weight * 100);
 		}
 
 		return collected;
@@ -76,43 +82,44 @@
 	});
 </script>
 
-<div class="language-donut">
+<div class="language-usage">
 	{#await entries_promise}
 		<p>Loading...</p>
 	{:then value}
 		{#if mobile}
-			<ul>
+			<ul class="lang-list pagewide">
 				{#each value as entry}
-					<li>{entry.name}</li>
+					<li class="lang-entry" style="--color:{entry.color};">
+						<p class="name">{entry.name}</p>
+						<p class="weight">{entry.weight}%</p>
+					</li>
 				{/each}
 			</ul>
 		{:else}
-			<Donut
-				entries={value.slice(0, LANGUAGE_CHART_COUNT)}
-				background="var(--bg-accent)"
-				onSelect={languageSelected}
-			/>
-			<span class="lang-name" style="--shadow-color:{langColor};">
-				{langName}
-			</span>
+			<div class="labeled-donut center">
+				<div class="donut">
+					<Donut
+						entries={value.slice(0, LANGUAGE_CHART_COUNT)}
+						background="var(--bg-accent)"
+						onSelect={languageSelected}
+					/>
+				</div>
+				<p class="lang-name" style="--shadow-color:{langColor};">
+					{langName}
+				</p>
+			</div>
 		{/if}
 	{:catch _}
 		<p>Unable to load.</p>
 	{/await}
 </div>
 
-<style lang="less" global>
+<style lang="less">
 	@import '../../style/constants.less';
 
-	.language-donut {
-		display: grid;
-		place-items: center;
-
-		width: 100%;
-
-		> * {
-			grid-area: 1 / 1 / 2 / 2;
-		}
+	.labeled-donut {
+		width: 50%;
+		margin: auto;
 
 		.lang-name {
 			font-size: 2rem;
@@ -121,6 +128,50 @@
 
 			@media (min-width: @mobile-size) {
 				text-shadow: 0 0 1rem var(--shadow-color);
+			}
+		}
+	}
+
+	.language-usage {
+
+		width: 100%;
+
+	}
+
+	.lang-list {
+		display: flex;
+		flex-direction: column;
+
+		background: var(--bg-accent);
+		border: solid 2px var(--bg-light);
+		border-radius: 0.2rem;
+
+		.lang-entry {
+			display: flex;
+
+			padding: 0.5rem 1rem;
+
+			border-bottom: solid 2px var(--color);
+
+			&:nth-last-child(1) {
+				border-radius: 0.2rem;
+			}
+
+			.name {
+				flex-grow: 1;
+				color: var(--color);
+
+				font-size: 1.5rem;
+				font-weight: bold;
+
+				padding: 0;
+			}
+
+			.weight {
+				flex-basis: content;
+				color: var(--text);
+
+				padding: 0;
 			}
 		}
 	}
