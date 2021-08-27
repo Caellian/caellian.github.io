@@ -141,6 +141,8 @@
 			@media (min-width: @mobile-size) {
 				text-shadow: 0 0 1rem var(--shadow-color);
 			}
+
+			z-index: -1;
 		}
 	}
 
