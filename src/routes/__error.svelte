@@ -45,7 +45,10 @@
 	.center {
 		height: calc(100vh - @nav-height);
 
-		text-align: center;
+		h1,
+		h2 {
+			text-align: center;
+		}
 
 		button {
 			margin-top: 2vh;

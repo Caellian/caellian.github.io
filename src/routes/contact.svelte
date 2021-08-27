@@ -139,6 +139,10 @@
 
   .center {
     width: 100vw;
+
+    h2 {
+      text-align: center;
+    }
   }
 
   .tall {
