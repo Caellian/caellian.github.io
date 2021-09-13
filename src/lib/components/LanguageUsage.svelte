@@ -72,6 +72,7 @@
 
 		.lang-name
 			font-size 2rem
+			padding 0
 
 			transition all 0.2s linear
 
