@@ -1,4 +1,3 @@
-
 <div class="sidebar-placer">
     <div class="sidebar"></div>
     <div class="content">
@@ -6,9 +5,7 @@
     </div>
 </div>
 
-<style lang="less">
-    .sidebar-placer {
-        display: flex;
-
-    }
+<style lang="stylus">
+    .sidebar-placer
+        display flex
 </style>

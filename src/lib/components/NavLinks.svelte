@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 
-	export var onClick = (_: MouseEvent) => {};
-
 	interface NavLink {
 		link: string;
 		name: string;
@@ -26,10 +24,12 @@
 			name: 'Contact'
 		}
 	] as NavLink[];
+
+	export let on_click: (e: MouseEvent) => any = () => {};
 </script>
 
 {#each links as l}
 	<li class:current={$page.path === l.link}>
-		<a href={l.link} on:click={onClick}>{l.name}</a>
+		<a href={l.link} on:click={on_click}>{l.name}</a>
 	</li>
 {/each}

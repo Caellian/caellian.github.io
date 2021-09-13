@@ -171,27 +171,22 @@
 	{/each}
 </svg>
 
-<style lang="less">
-	@import "../../style/constants.less";
+<style lang="stylus">
+	@import "../../style/constants"
 
-	* {
-		fill: none;
-	}
+	*
+		fill none
 
-	.donut-chart {
-		overflow: visible;
+	.donut-chart
+		overflow visible
 
-		.entry {
-			.entry-border {
-				opacity: 0;
-				transition: opacity @transition-short linear;
-			}
+		.entry
+			.entry-border
+				opacity 0
+				transition opacity transition-short linear
 
-			&:hover {
-				.entry-border {
-					opacity: 1;
-				}
-			}
-		}
-	}
+			&:hover
+				.entry-border
+					opacity 1
+
 </style>

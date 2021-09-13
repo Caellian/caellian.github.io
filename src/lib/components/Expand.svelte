@@ -19,55 +19,55 @@
 	</div>
 </div>
 
-<style lang="less">
-	@import '../../style/constants.less';
+<style lang="stylus">
+	@import '../../style/constants'
 
-	.expand {
-		display: grid;
-		grid-template-columns: 1fr;
-		grid-template-rows: 1fr auto;
-		grid-row-gap: 2vh;
+	.expand
+		display grid
+		grid-template-columns 1fr
+		grid-template-rows 1fr auto
+		grid-row-gap 2vh
 
-		width: 100%;
-		height: max-content;
+		width 100%
+		height max-content
 
-		.fade {
-			grid-area: 1 / 1 / 2 / 2;
+		.fade
+			grid-area 1 / 1 / 2 / 2
 
-			display: block;
+			display block
 
-			width: 100%;
-			height: 50vh;
+			width 100%
+			height 50vh
 
-			background: linear-gradient(to bottom, #0000 0%, #0000 50%, var(--bg-color) 100%);
+			background linear-gradient(to bottom, #0000 0%, #0000 50%, var(--bg-color) 100%)
 
-			z-index: 50;
-		}
-		.content {
-			grid-area: 1 / 1 / 2 / 2;
+			z-index 50
 
-			height: 50vh;
-			overflow-y: hidden;
+		.content
+			grid-area 1 / 1 / 2 / 2
 
-			transition: height ease-in @transition-long;
-		}
-		.button-container {
-			grid-area: 2 / 1 / 3 / 2;
+			height 50vh
+			overflow-y hidden
 
-			margin-top: 1vh;
-		}
+			transition height ease-in transition-long
 
-		&.expanded {
-			.fade {
-				display: none;
-			}
-			.content {
-				height: 100%;
-				overflow-y: hidden;
-			}
-			.button-container {
-				display: none;
-			}
-		}
-	}
+		.button-container
+			grid-area 2 / 1 / 3 / 2
+
+			margin-top 1vh
+
+
+		&.expanded
+			.fade
+				display none
+
+			.content
+				height 100%
+				overflow-y hidden
+
+			.button-container
+				display none
+
+
+
 </style>

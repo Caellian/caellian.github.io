@@ -10,14 +10,10 @@
 	</div>
 </div>
 
-<style lang="less">
-	@import '../style/constants.less';
+<style lang="stylus">
+	.center
+		height calc(100vh - var(--nav-height))
 
-	.center {
-		height: calc(100vh - @nav-height);
-
-		h1 {
-			text-align: center;
-		}
-	}
+		h1
+			text-align center
 </style>

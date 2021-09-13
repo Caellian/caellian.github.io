@@ -3,20 +3,16 @@ import preprocess from 'svelte-preprocess';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	preprocess: preprocess({
-		less: {
-			javascriptEnabled: true,
-		}
-	}),
+  preprocess: preprocess({}),
 
-	kit: {
-		target: '#portfolio',
-		adapter: adapter({
-			pages: 'build',
-			assets: 'build',
-			fallback: null
-		})
-	}
+  kit: {
+    target: "#portfolio",
+    adapter: adapter({
+      pages: "build",
+      assets: "build",
+      fallback: null,
+    }),
+  },
 };
 
 export default config;

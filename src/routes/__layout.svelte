@@ -26,197 +26,164 @@
 </nav>
 
 <ul id="mobile-links" style="z-index:{navigate ? '1000' : '-100'};{navigate ? '' : 'opacity:0;'}">
-	<NavLinks onClick={() => (navigate = false)} />
+	<NavLinks on_click={() => {navigate = false}} />
 </ul>
 
 <main style="opacity:{navigate ? '0' : '1'};">
 	<slot />
 </main>
 
-<style lang="less" global>
-	@import '../style/global.less';
-	@import '../style/constants.less';
+<style global lang="stylus">
+	@import '../style/global'
+	@import '../style/constants'
 
-	#navbar {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
+	#navbar
+		display flex
+		justify-content space-between
+		align-items center
 
-		width: 100vw;
-		height: @nav-height;
-		background: var(--bg-color);
+		width 100vw
+		height nav-height
+		background var(--bg-color)
 
-		border-bottom: @border-style;
-		z-index: 1000;
+		border-bottom border-style
+		z-index 1000
 
-		.name {
-			h1 {
-				margin-top: auto;
-				margin-bottom: auto;
+		.name
+			h1
+				margin-top auto
+				margin-bottom auto
 
-				padding: 0;
-				padding-left: 2vh;
+				padding 0
+				padding-left 2vh
 
-				z-index: 2;
+				z-index 2
 
-				font-size: 2rem;
-				color: var(--text);
+				font-size 2rem
+				color var(--text)
 
-				transition: color @transition-short;
+				transition color transition-short
 
-				@media (min-width: @mobile-size) {
-					font-size: 2.5rem;
-				}
+				@media (min-width: mobile-size)
+					font-size 2.5rem
+				span
+					color var(--accent)
 
-				span {
-					color: var(--accent);
+					transition color transition-short
+				&:hover
+					color var(--accent)
 
-					transition: color @transition-short;
-				}
+					span
+						color var(--text)
 
-				&:hover {
-					color: var(--accent);
+		#nav-button
+			display grid
+			place-items center
 
-					span {
-						color: var(--text);
-					}
-				}
-			}
-		}
+			width nav-height
+			height nav-height
 
-		#nav-button {
-			display: grid;
-			place-items: center;
+			padding 1vh
 
-			width: @nav-height;
-			height: @nav-height;
+			border-left solid 2px var(--bg-accent)
+			cursor pointer // Not really needed, but hey, it's here
 
-			padding: 1vh;
+			@media screen and (min-width: mobile-size)
+				display none
 
-			border-left: solid 2px var(--bg-accent);
-			cursor: pointer; // Not really needed, but hey, it's here
+		#nav-links
+			display none
 
-			@media (min-width: @mobile-size) {
-				display: none;
-			}
-		}
+			@media screen and (min-width: mobile-size)
+				display flex
+				justify-content space-around
+				align-items flex-end
 
-		#nav-links {
-			display: none;
+				margin-bottom 0.5rem
 
-			@media (min-width: @mobile-size) {
-				display: flex;
-				justify-content: space-around;
-				align-items: flex-end;
+				height 100%
 
-				margin-bottom: 0.5rem;
+				li
+					a
+						padding-right 1rem
+						margin-bottom 0.5rem
 
-				height: 100%;
+						font-family 'Quicksand', sans-serif
+						font-size 1.5rem
+						color var(--text)
 
-				li {
-					a {
-						padding-right: 1rem;
-						margin-bottom: 0.5rem;
+						&:hover
+							color var(--accent-light)
+						&:active
+							color var(--accent)
+						&:after
+							visibility hidden
 
-						font-family: 'Quicksand', sans-serif;
-						font-size: 1.5rem;
-						color: var(--text);
+							content '_'
+							font-weight bold
 
-						&:hover {
-							color: var(--accent-light);
-						}
+							animation blinking transition-medium steps(2, start) infinite
+					&.current
+						a
+							color var(--accent)
 
-						&:active {
-							color: var(--accent);
-						}
+							&hover
+								color var(--accent)
+							&:after
+								visibility visible
 
-						&::after {
-							visibility: hidden;
+		@keyframes blinking
+			to
+				visibility hidden
 
-							content: '_';
-							font-weight: bold;
+	main
+		width 100vw
 
-							animation: blinking @transition-medium steps(2, start) infinite;
-						}
-					}
+		--nav-height nav-height
 
-					&.current {
-						a {
-							color: var(--accent);
+		min-height calc(100vh - var(--nav-height))
 
-							&:hover {
-								color: var(--accent);
-							}
+		overflow-x hidden
 
-							&::after {
-								visibility: visible;
-							}
-						}
-					}
-				}
-			}
-		}
+		transition opacity ease-in-out transition-medium
 
-		@keyframes blinking {
-			to {
-				visibility: hidden;
-			}
-		}
-	}
+	#mobile-links
+		display flex
+		flex-direction column
+		justify-content space-around
+		align-items center
 
-	main {
-		width: 100vw;
-		min-height: calc(100vh - @nav-height);
+		background var(--bg-color)
 
-		overflow-x: hidden;
+		--nav-height nav-height
 
-		transition: opacity ease-in-out @transition-medium;
-	}
+		position fixed
+		top nav-height
+		left 0
+		width 100vw
+		height calc(100vh - var(--nav-height))
 
-	#mobile-links {
-		display: flex;
-		flex-direction: column;
-		justify-content: space-around;
-		align-items: center;
+		text-align center
 
-		background: var(--bg-color);
+		opacity 1
+		transition opacity ease-in-out transition-medium
 
-		position: fixed;
-		top: @nav-height;
-		left: 0;
-		width: 100vw;
-		height: calc(100vh - @nav-height);
+		li
+			display block
+			width max-content
 
-		text-align: center;
+			a
+				font-family 'Quicksand', sans-serif
+				color var(--text)
+				font-size 1.3rem
 
-		opacity: 1;
-		transition: opacity ease-in-out @transition-medium;
-
-		li {
-			display: block;
-			width: max-content;
-
-			a {
-				font-family: 'Quicksand', sans-serif;
-				color: var(--text);
-				font-size: 1.3rem;
-
-				padding: 0.5rem;
-			}
-
-			&.current {
-				a {
-					border-bottom: solid 2px var(--accent-light);
-					color: var(--accent-light);
-				}
-			}
-
-			&:active {
-				a {
-					border-color: var(--accent);
-					color: var(--accent);
-				}
-			}
-		}
-	}
+				padding 0.5rem
+			&.current
+				a
+					border-bottom solid 2px var(--accent-light)
+					color var(--accent-light)
+			&:active
+				a
+					border-color var(--accent)
+					color var(--accent)
 </style>

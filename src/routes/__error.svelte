@@ -39,19 +39,14 @@
 	</div>
 {/if}
 
-<style lang="less">
-	@import '../style/constants.less';
-
-	.center {
-		height: calc(100vh - @nav-height);
+<style lang="stylus">
+	.center
+		min-height calc(100vh - var(--nav-height))
 
 		h1,
-		h2 {
-			text-align: center;
-		}
+		h2
+			text-align center
 
-		button {
-			margin-top: 2vh;
-		}
-	}
+		button
+			margin-top 2vh
 </style>

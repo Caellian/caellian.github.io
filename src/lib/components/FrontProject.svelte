@@ -9,51 +9,45 @@
     <p>{description}</p>
 </a>
 
-<style lang="less">
-	@import '../../style/constants.less';
+<style lang="stylus">
+	@import '../../style/constants'
 
-    a {
-        display: block;
+    a
+        display block
 
-        background-color: var(--bg-color);
-        padding: 1rem 2.5rem;
+        background-color var(--bg-color)
+        padding 1rem 2.5rem
 
-        height: min-content;
-        border-bottom: @border-style;
-        border-top: @border-style;
+        height min-content
+        border-bottom border-style
+        border-top border-style
 
-        transition: background-color ease-in-out @transition-medium;
-        transition: border-color ease-in-out @transition-short;
+        transition background-color ease-in-out transition-medium
+        transition border-color ease-in-out transition-short
 
-        > h3 {
-			font-family: 'Quicksand', sans-serif;
-			font-size: 1.4rem;
-			color: var(--text);
+        > h3
+            font-family 'Quicksand', sans-serif
+            font-size 1.4rem
+            color var(--text)
 
-            padding: 0;
-        }
-        > p {
-			font-size: 1rem;
-            padding: 0;
-        }
+            padding 0
 
-        &:hover {
-            background-color: var(--bg-accent);
+        > p
+            font-size 1rem
+            padding 0
 
-            border-color: var(--accent);
+        &:hover
+            background-color var(--bg-accent)
 
-            > h3 {
-                color: var(--accent-light);
-            }
-        }
+            border-color var(--accent)
 
-        &:active {
-            > h3 {
-                color: var(--accent);
-            }
-            > p {
-                color: var(--accent-light);
-            }
-        }
-    }
+            > h3
+                color var(--accent-light)
+
+        &:active
+            > h3
+                color var(--accent)
+
+            > p
+                color var(--accent-light)
 </style>
