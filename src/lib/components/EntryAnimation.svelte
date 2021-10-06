@@ -3,7 +3,13 @@
   import { onMount } from "svelte";
 
   import { css_vars } from "$lib/css";
-  import { Direction, direction_translate, EasingFunction, easing_function_css, transform_to_css } from "$lib/animation";
+  import {
+    Direction,
+    direction_translate,
+    EasingFunction,
+    easing_function_css,
+    transform_to_css,
+  } from "$lib/animation";
 
   export let duration: number = 600;
   export let direction: Direction = Direction.Up;

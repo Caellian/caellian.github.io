@@ -1,22 +1,24 @@
 <script lang="ts">
-	var expanded = false;
+  import { prerendering } from "$app/env";
 
-	function expand() {
-		expanded = true;
-	}
+  var expanded = prerendering;
+
+  function expand() {
+    expanded = true;
+  }
 </script>
 
 <div class="expand" class:expanded>
-	<div class="fade" />
-	<div class="content">
-		<slot />
-	</div>
+  <div class="fade" />
+  <div class="content">
+    <slot />
+  </div>
 
-	<div class="button-container center">
-		<button class="button" type="button" on:click|once={expand}>
-			<slot name="button">Expand content</slot>
-		</button>
-	</div>
+  <div class="button-container center">
+    <button class="button" type="button" on:click|once={expand}>
+      <slot name="button">Expand content</slot>
+    </button>
+  </div>
 </div>
 
 <style lang="stylus">

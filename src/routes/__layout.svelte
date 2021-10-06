@@ -1,36 +1,54 @@
 <script lang="ts">
-	import { prerendering } from '$app/env';
+  import { prerendering } from "$app/env";
+  import { page } from "$app/stores";
 
-	import Compass from '$lib/components/Compass.svelte';
-	import NavLinks from '$lib/components/NavLinks.svelte';
+  import Compass from "$lib/components/Compass.svelte";
+  import NavLinks from "$lib/components/NavLinks.svelte";
 
-	var navigate = false;
+  var navigate = $page.path === "/navigation";
 </script>
 
 <svelte:head>
-	<title>caellian::com</title>
+  <title>caellian::com</title>
 </svelte:head>
 
-<nav id="navbar" style={navigate ? 'position:fixed;top:0;left:0;' : ''}>
-	<a href="https://caellian.com" class="name"><h1>caellian<span>::</span>com</h1></a>
+<nav id="navbar" style={navigate ? "position:fixed;top:0;left:0;" : ""}>
+  <a href="/" class="name"><h1>caellian<span>::</span>com</h1></a>
 
-	<ul id="nav-links">
-		<NavLinks />
-	</ul>
+  <ul id="nav-links">
+    <NavLinks />
+  </ul>
 
-	{#if !prerendering}
-	<div on:click={() => (navigate = !navigate)} id="nav-button">
-		<Compass color={navigate ? 'var(--accent)' : 'var(--text)'} spin={navigate} />
-	</div>
-	{/if}
+  {#if prerendering}
+    <a href="/navigation" id="nav-button">
+      <Compass
+        color={navigate ? "var(--accent)" : "var(--text)"}
+        spin={navigate}
+      />
+    </a>
+  {:else}
+    <div on:click={() => (navigate = !navigate)} id="nav-button">
+      <Compass
+        color={navigate ? "var(--accent)" : "var(--text)"}
+        spin={navigate}
+      />
+    </div>
+  {/if}
 </nav>
 
-<ul id="mobile-links" style="z-index:{navigate ? '1000' : '-100'};{navigate ? '' : 'opacity:0;'}">
-	<NavLinks on_click={() => {navigate = false}} />
+<ul
+  id="mobile-links"
+  style="z-index:{navigate ? '1000' : '-100'};{navigate ? '' : 'opacity:0;'}"
+>
+  <NavLinks
+    on_click={() => {
+      navigate = false;
+    }}
+  />
 </ul>
 
 <main style="opacity:{navigate ? '0' : '1'};">
-	<slot />
+  <slot />
 </main>
 
 <style global lang="stylus">

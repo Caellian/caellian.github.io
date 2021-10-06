@@ -192,9 +192,11 @@ const IGNORE_LANGUAGES = [
   "toml",
   "json",
   "gettext catalog",
+  "objective-c",
+  "swift",
 ];
 
-const USED_LANGUAGES =
+export const USED_LANGUAGES =
   "https://wakatime.com/share/@Caellian/ece394af-3d6b-43d3-8743-8f8b00426216.json";
 
 async function get_languages(): Promise<ChartEntry[]> {
@@ -211,7 +213,10 @@ async function get_languages(): Promise<ChartEntry[]> {
   var total_weight = 0;
   const collected = [] as ChartEntry[];
   while (curr < data.length && curr < 10) {
-    if (IGNORE_LANGUAGES.indexOf(data[curr].name.toLowerCase()) == -1) {
+    if (
+      IGNORE_LANGUAGES.indexOf(data[curr].name.toLowerCase()) == -1 &&
+      data[curr].percent >= 0.5
+    ) {
       total_weight += Math.round(data[curr].percent);
       collected.push({
         name: data[curr].name,
@@ -242,7 +247,7 @@ async function get_languages(): Promise<ChartEntry[]> {
 }
 
 export const languages = async_time_limited_store(
-  "used-languages",
+  "com.caellian.used_languages",
   get_languages,
   Duration.ofDays(3)
 );

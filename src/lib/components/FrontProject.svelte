@@ -1,12 +1,12 @@
 <script lang="ts">
-    export var name: string;
-    export var description: string;
-    export var link: string | null | undefined;
+  export var name: string;
+  export var description: string;
+  export var link: string | null | undefined;
 </script>
 
 <a href={link || "."}>
-    <h3>{name}</h3>
-    <p>{description}</p>
+  <h3>{name}</h3>
+  <p>{description}</p>
 </a>
 
 <style lang="stylus">

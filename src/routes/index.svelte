@@ -11,7 +11,7 @@
 
   import timelineSource from "$lib/timeline.json";
   import EntryAnimation from "$lib/components/EntryAnimation.svelte";
-import { Direction } from "$lib/animation";
+  import { Direction } from "$lib/animation";
 
   let timelineItems: TimelineItem[] = timelineSource as TimelineItem[];
 </script>
@@ -66,24 +66,23 @@ import { Direction } from "$lib/animation";
 </EntryAnimation>
 
 <EntryAnimation>
-<section class="container pagewide current-langs">
-  <h1 class="title">What I'm Currently Using</h1>
+  <section class="container pagewide current-langs">
+    <h1 class="title">Languages I'm Currently Using</h1>
 
-  <p>
-    As I love experimenting with different technology stacks, my preferences
-    change frequently and thus the programming language I feel most comfortable
-    with.
-  </p>
+    <p>
+      As I love experimenting with different technology stacks, my use of
+      different programming languages varies.
+    </p>
 
-  <div class="donut center">
-    <LanguageDonut />
-  </div>
+    <div class="donut center">
+      <LanguageDonut />
+    </div>
 
-  <p>
-    Languages used within last 30 days; provided by
-    <a href="https://wakatime.com">WakaTime</a>.
-  </p>
-</section>
+    <p>
+      Languages used within last 30 days; provided by
+      <a href="https://wakatime.com">WakaTime</a>.
+    </p>
+  </section>
 </EntryAnimation>
 
 <style lang="stylus">

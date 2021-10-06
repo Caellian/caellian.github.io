@@ -2,7 +2,7 @@ name: update-served
 
 on:
   push:
-    branches: [ sources ]
+    branches: [sources]
 
 jobs:
   update:
@@ -13,13 +13,13 @@ jobs:
       - name: Checkout master branch
         uses: actions/checkout@v2
         with:
-          ref: 'master'
-          path: 'build'
+          ref: "master"
+          path: "build"
           submodules: true
       - name: Setup Node.js
         uses: actions/setup-node@v2-beta
         with:
-          node-version: '12'
+          node-version: "12"
       - name: Install dependencies
         run: |
           npm install
@@ -45,5 +45,5 @@ jobs:
           repository: build
           commit_message: Updated served page
           branch: ${{ github.head_ref }}
-          commit_options: '--no-verify --signoff'
+          commit_options: "--no-verify --signoff"
           commit_user_name: Automated build

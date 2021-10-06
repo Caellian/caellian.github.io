@@ -1,52 +1,59 @@
 <script lang="ts" context="module">
-	export interface TimelineItem {
-		time: string | null | undefined;
-		title: string | null | undefined;
-		description: string | null | undefined;
-	}
+  export interface TimelineItem {
+    time: string | null | undefined;
+    title: string | null | undefined;
+    description: string | null | undefined;
+  }
 </script>
 
 <script lang="ts">
-	export var items: TimelineItem[] = [];
-	export var lineWidth: string = '0.125rem';
+  export var items: TimelineItem[] = [];
+  export var lineWidth: string = "0.125rem";
 </script>
 
-<article class="timeline" style="grid-template-rows:repeat({items.length},auto);">
-	<div class="line" style="grid-area:1/2/{items.length + 1}/3;width:{lineWidth};" />
-	{#each items as item, i}
-		<div
-			class="pointed"
-			class:left={i % 2 == 1}
-			class:right={i % 2 == 0}
-			style="grid-row-start:{i + 1};grid-row-end:{i + 2};"
-		>
-			<span class="arrow" />
-			<section>
-				<slot {item} {i}>
-					{#if item.title != null}
-						<div class="entry-element">
-							<h1>{item.title}</h1>
-						</div>
-					{/if}
-					{#if item.description != null}
-						<div class="entry-element">
-							{@html item.description}
-						</div>
-					{/if}
-				</slot>
-			</section>
-		</div>
-		<div class="point" style="grid-area:{i + 1}/2/{i + 2}/3;" />
-			<span
-				style="grid-row-start:{i + 1};grid-row-end:{i + 2};"
-				class="time"
-				class:right={i % 2 == 1}
-				class:left={i % 2 == 0}>
-				{#if item.time != null}
-					{item.time}
-				{/if}
-			</span>
-	{/each}
+<article
+  class="timeline"
+  style="grid-template-rows:repeat({items.length},auto);"
+>
+  <div
+    class="line"
+    style="grid-area:1/2/{items.length + 1}/3;width:{lineWidth};"
+  />
+  {#each items as item, i}
+    <div
+      class="pointed"
+      class:left={i % 2 == 1}
+      class:right={i % 2 == 0}
+      style="grid-row-start:{i + 1};grid-row-end:{i + 2};"
+    >
+      <span class="arrow" />
+      <section>
+        <slot {item} {i}>
+          {#if item.title != null}
+            <div class="entry-element">
+              <h1>{item.title}</h1>
+            </div>
+          {/if}
+          {#if item.description != null}
+            <div class="entry-element">
+              {@html item.description}
+            </div>
+          {/if}
+        </slot>
+      </section>
+    </div>
+    <div class="point" style="grid-area:{i + 1}/2/{i + 2}/3;" />
+    <span
+      style="grid-row-start:{i + 1};grid-row-end:{i + 2};"
+      class="time"
+      class:right={i % 2 == 1}
+      class:left={i % 2 == 0}
+    >
+      {#if item.time != null}
+        {item.time}
+      {/if}
+    </span>
+  {/each}
 </article>
 
 <style lang="stylus">
