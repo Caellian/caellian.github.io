@@ -124,6 +124,29 @@
           </a>
         </li>
         <li>
+          <a href="https://matrix.to/#/@caellian:matrix.org" target="_blank">
+            <svg
+              role="img"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                style="stroke-width:1.5;stroke-linecap:square;fill-opacity:0;stroke-opacity:1"
+                d="m2.5,0.76-1.75,0V23.25H2.5"
+              />
+              <text
+                style="font-family:sans-serif;font-weight:bold;font-size:15px"
+                x="4.3"
+                y="16">m</text
+              >
+              <path
+                style="stroke-width:1.5;stroke-linecap:square;fill-opacity:0;stroke-opacity:1"
+                d="m21.5,0.76h1.75V23.25H21.5"
+              />
+            </svg>
+          </a>
+        </li>
+        <li>
           <a href="https://github.com/Caellian" target="_blank">
             <svg
               role="img"
@@ -293,15 +316,20 @@
         height 2rem;
 
       svg
-        path
-          fill var(--bg-light);
+        path, text
+          fill var(--bg-light)
+
+          stroke-opacity 0
+          stroke var(--bg-light)
 
         &:hover
-          path
+          path, text
             fill var(--text);
+            stroke var(--text);
 
       a:active
         svg
-          path
+          path, text
             fill var(--accent);
+            stroke var(--accent);
 </style>
