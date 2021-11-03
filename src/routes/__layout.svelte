@@ -36,16 +36,18 @@
   {/if}
 </nav>
 
-<ul
-  id="mobile-links"
-  style="z-index:{navigate ? '1000' : '-100'};{navigate ? '' : 'opacity:0;'}"
->
-  <NavLinks
-    on_click={() => {
-      navigate = false;
-    }}
-  />
-</ul>
+{#if !prerendering}
+  <ul
+    id="mobile-links"
+    style="z-index:{navigate ? '1000' : '-100'};{navigate ? '' : 'opacity:0;'}"
+  >
+    <NavLinks
+      on_click={() => {
+        navigate = false;
+      }}
+    />
+  </ul>
+{/if}
 
 <main style="opacity:{navigate ? '0' : '1'};">
   <slot />

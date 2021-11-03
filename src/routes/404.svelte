@@ -17,4 +17,8 @@
 
 		h1
 			text-align center
+
+    p
+			margin-left auto
+			margin-right auto
 </style>

@@ -194,10 +194,11 @@ const IGNORE_LANGUAGES = [
   "gettext catalog",
   "objective-c",
   "swift",
+  "openedge abl",
 ];
 
 export const USED_LANGUAGES =
-  "https://wakatime.com/share/@Caellian/ece394af-3d6b-43d3-8743-8f8b00426216.json";
+  "https://wakatime.com/share/@Caellian/175ff1dd-04a9-44ba-8379-dc93ce03b742.json";
 
 async function get_languages(): Promise<ChartEntry[]> {
   var data: WakaTimeEntry[];

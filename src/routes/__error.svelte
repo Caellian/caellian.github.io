@@ -51,6 +51,12 @@
 		h2
 			text-align center
 
+    p
+			margin-left auto
+			margin-right auto
+
 		button
 			margin-top 2vh
+			margin-left auto
+			margin-right auto
 </style>
