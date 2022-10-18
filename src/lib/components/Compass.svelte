@@ -1,13 +1,19 @@
 <script lang="ts">
   export var color = "#fff";
   export var spin: boolean = false;
+  export var size: string = "2rem";
+  export var width = size;
+  export var height = size;
 </script>
 
 <svg
   class="compass"
   style="--color: {color}"
   xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 512 512"
+  viewBox="0 0 510 513"
+  {width}
+  {height}
+  on:click
 >
   <ellipse class="outer-rim" cx="256" cy="256" rx="234" ry="234" />
   {#if spin}

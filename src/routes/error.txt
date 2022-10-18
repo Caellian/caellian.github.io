@@ -1,0 +1,4 @@
+{
+    "message":"document is not defined",
+    "name":"ReferenceError",
+    "stack":"ReferenceError: document is not defined\n    at LottiePlayer.svelte:132:4\n    at run (/data/Code/Projects/Portfolio/node_modules/svelte/internal/index.js:22:12)\n    at Array.forEach (<anonymous>)\n    at run_all (/data/Code/Projects/Portfolio/node_modules/svelte/internal/index.js:28:9)\n    at Object.render (/data/Code/Projects/Portfolio/node_modules/svelte/internal/index.js:1782:13)\n    at render_response (file:///data/Code/Projects/Portfolio/.svelte-kit/runtime/server/index.js:1283:27)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at async respond$1 (file:///data/Code/Projects/Portfolio/.svelte-kit/runtime/server/index.js:2901:4)\n    at async resolve (file:///data/Code/Projects/Portfolio/.svelte-kit/runtime/server/index.js:3303:11)\n    at async Object.handle (//data/Code/Projects/Portfolio/src/hooks:25:20)"}

@@ -152,10 +152,10 @@
 			background var(--bg-light)
 			background linear-gradient(
 				to bottom,
-				var(--bg-color) 0%,
+				var(--bg) 0%,
 				var(--bg-light) 5%,
 				var(--bg-light) 95%,
-				var(--bg-color) 100%
+				var(--bg) 100%
 			)
 
 			height 100%

@@ -1,19 +1,13 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  import { prerendering } from "$app/env";
-  import userInfo from "$lib/user";
-  import {
-    USED_LANGUAGES,
-    languages as language_data,
-    TimedLocalStorageStore,
-  } from "$lib/stores";
+  import { prerendering } from "$app/environment";
+
+  import languages from "$lib/used_languages.json";
 
   import Donut from "./Donut.svelte";
-  import type { ChartEntry, EntrySelection } from "./Donut.svelte";
-  import { css_vars } from "$lib/css";
-
-  const LANGUAGE_CHART_COUNT = 6;
+  import type { EntrySelection } from "./Donut.svelte";
+  import { cssVars, userInfo } from "$lib/util";
 
   let lang_name: string = "";
   let lang_style: string = "";
@@ -22,36 +16,35 @@
 
   function languageSelected(l: EntrySelection) {
     lang_name = l.name;
-    lang_style = css_vars({
+    lang_style = cssVars({
       lang_color: l.color,
     });
   }
 
-  let languages: TimedLocalStorageStore<ChartEntry[]> = null;
-
   onMount(async () => {
     mobile = userInfo().mobile;
-
-    languages = await language_data;
   });
 </script>
 
 <div class="language-usage">
   {#if prerendering}
-    <p>
-      You can locate language list in JSON format <a href={USED_LANGUAGES}
-        >here</a
-      >.
-    </p>
+    <ul class="lang-list pagewide">
+      {#each languages as entry}
+        <li class="lang-entry" style="--color:{entry.color};">
+          <p class="name">{entry.name}</p>
+          <p class="weight">{entry.weight.toPrecision(2)}%</p>
+        </li>
+      {/each}
+    </ul>
   {:else if languages === null}
-    <p>Loading...</p>
-  {:else if $languages.length > 0}
+    <p>Missing language data! This is an error.</p>
+  {:else if languages.length > 0}
     {#if mobile}
       <ul class="lang-list pagewide">
-        {#each $languages as entry}
+        {#each languages as entry}
           <li class="lang-entry" style="--color:{entry.color};">
             <p class="name">{entry.name}</p>
-            <p class="weight">{entry.weight}%</p>
+            <p class="weight">{entry.weight.toPrecision(2)}%</p>
           </li>
         {/each}
       </ul>
@@ -59,7 +52,7 @@
       <div class="labeled-donut center">
         <div class="donut">
           <Donut
-            entries={$languages.slice(0, LANGUAGE_CHART_COUNT)}
+            entries={languages}
             background="var(--bg-accent)"
             onSelect={languageSelected}
           />
@@ -100,7 +93,7 @@
 		flex-direction column
 
 		background var(--bg-accent)
-		border solid 2px var(--bg-light)
+		border solid 0.2rem var(--bg-light)
 		border-radius 0.2rem
 
 		.lang-entry
@@ -108,7 +101,7 @@
 
 			padding 0.5rem 1rem
 
-			border-bottom solid 2px var(--color)
+			border-bottom solid 0.2rem var(--color)
 
 			&:nth-last-child(1)
 				border-radius 0.2rem
@@ -124,7 +117,7 @@
 
 			.weight
 				flex-basis content
-				color var(--text)
+				color var(--fg)
 
 				padding 0
 

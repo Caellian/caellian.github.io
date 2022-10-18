@@ -1,16 +1,23 @@
-import adapter from '@sveltejs/adapter-static';
-import preprocess from 'svelte-preprocess';
+import adapter from "@sveltejs/adapter-auto";
+import preprocess from "svelte-preprocess";
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   preprocess: preprocess({}),
 
   kit: {
-    target: "#portfolio",
     adapter: adapter({
       pages: "build",
       assets: "build",
-      fallback: null,
+      fallback: "200.html",
+      precompress: true,
+      ssr: true,
+      hydrate: true,
+      router: false,
+      prerender: {
+        crawl: true,
+        enabled: true,
+      },
     }),
   },
 };

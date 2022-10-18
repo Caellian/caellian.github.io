@@ -1,13 +1,12 @@
 <script lang="ts">
-  import { css_vars } from "$lib/css";
-
+  import { cssVars } from "$lib/util";
   import type Project from "$lib/project";
 
   const from = Math.floor(Math.random() * 360);
   const to = from + Math.floor(Math.random() * 30) + 30;
   const deg = Math.floor(Math.random() * 150) + 30;
 
-  const project_style = css_vars({
+  const project_style = cssVars({
     bg_deg: `${deg}deg`,
     bg_from: `hsl(${from},80%,35%)`,
     bg_to: `hsl(${to},80%,35%)`,
@@ -20,6 +19,9 @@
     lang: "No lang",
     url: ".",
     description: [],
+    active: false,
+    contribution: false,
+    fork: false,
   };
 </script>
 
@@ -64,7 +66,7 @@
     height 100%
 
     background transparent
-    color var(--text)
+    color var(--fg)
 
     transition background ease-in 200ms
 
@@ -86,10 +88,10 @@
       grid-area 2 / 1 / 3 / 2
 
       width 100%
-      color var(--text)
+      color var(--fg)
 
-      border-top 1px dashed var(--text)
-      border-bottom 1px dashed var(--text)
+      border-top 1px dashed var(--fg)
+      border-bottom 1px dashed var(--fg)
 
       padding 0
 
@@ -117,7 +119,7 @@
 
       padding 0.2rem
 
-      border-top 1px dashed var(--text)
+      border-top 1px dashed var(--fg)
 
       background var(--bg-accent)
 
@@ -139,16 +141,8 @@
 
         background shaded
 
-        &:nth-child(n)
-          &::after
-            content ","
-
-        &:nth-last-child(1)
-          &::after
-            content ""
-
     &:hover
-      background var(--bg-color)
+      background var(--bg)
 
       h1
         color var(--accent)

@@ -1,0 +1,16 @@
+@font-face {
+  font-family: "Kiwi Maru";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Kiwi Maru"),
+    url(/assets/KiwiMaru.basic-latin.woff2) format("woff2");
+  unicode-range: 0-FF;
+}
+@font-face {
+  font-family: "Kiwi Maru";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Kiwi Maru"), url(/assets/KiwiMaru.croatian.woff2) format("woff2");
+  unicode-range: U+0106, U+0107, U+010C, U+010D, U+0110, U+0111, U+0160, U+0161,
+    U+017D, U+017E;
+}

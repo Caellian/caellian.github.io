@@ -16,7 +16,7 @@
       name: "Projects",
     },
     // {
-    //     link: "/blog",
+    //     link: "/b",
     //     name: "Blog"
     // },
     {
@@ -29,7 +29,7 @@
 </script>
 
 {#each links as l}
-  <li class:current={$page.path === l.link}>
+  <li class:current={$page.url.pathname === l.link}>
     <a href={l.link} on:click={on_click}>{l.name}</a>
   </li>
 {/each}

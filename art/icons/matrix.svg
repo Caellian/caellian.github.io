@@ -1,0 +1,5 @@
+<svg role="img" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path style="stroke-width:1.5;stroke-linecap:square;fill-opacity:0;stroke-opacity:1" d="m2.5,0.76-1.75,0V23.25H2.5" />
+    <text style="font-family:sans-serif;font-weight:bold;font-size:15px" x="4.5" y="16">m</text>
+    <path style="stroke-width:1.5;stroke-linecap:square;fill-opacity:0;stroke-opacity:1" d="m21.5,0.76h1.75V23.25H21.5" />
+</svg>
