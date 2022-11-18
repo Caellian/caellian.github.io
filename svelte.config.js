@@ -19,10 +19,10 @@ const config = {
     adapter: adapter({
       pages: "build",
       assets: "build",
+      fallback: "200.html",
       precompress: true,
-      ssr: true,
       hydrate: true,
-      router: false,
+      router: true,
       prerender: {
         crawl: true,
         enabled: true,
