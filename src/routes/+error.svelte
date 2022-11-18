@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from "$app/stores";
-  import FourOhFour from "./404.svelte";
+  import FourOhFour from "./404/+page.svelte";
 
   function copyError() {
     navigator.clipboard.writeText($page.error?.message || "");

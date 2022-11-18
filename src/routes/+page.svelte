@@ -38,7 +38,7 @@
     <p>Hello! My name is Tin and I like developing desktop applications and graphics software.</p>
     <p>My current area of interest is WASM+WGPU rendering.</p>
     <p>I'm available for hire and contracting.</p>
-    <a class="mastodon-link" rel="me" href="https://mastodon.social/@caellian">Mastodon</a>
+    <a class="hidden" rel="me" href="https://mastodon.social/@caellian">Mastodon</a>
   </section>
 
   <section class="pagewide current">
@@ -202,7 +202,4 @@ section.current a
 .current-langs
   .donut
     margin 2rem 0
-
-.mastodon-link
-  display none
 </style>

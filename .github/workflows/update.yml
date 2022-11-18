@@ -30,10 +30,6 @@ jobs:
           ls -lah
       - name: Build sources head
         run: npm run build
-      - name: Move 404
-        run: |
-          mv build/404/index.html build/404.html
-          rmdir build/404
       - name: Return .git after build
         run: |
           ls -lah
