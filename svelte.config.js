@@ -17,8 +17,8 @@ const config = {
 
   kit: {
     adapter: adapter({
-      pages: "build",
-      assets: "build",
+      pages: ".svelte-kit/cloudflare",
+      assets: ".svelte-kit/cloudflare",
       fallback: "200.html",
       precompress: true,
       hydrate: true,

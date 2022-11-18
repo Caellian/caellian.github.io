@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: "master"
-          path: "build"
+          path: ".svelte-kit/cloudflare"
           submodules: true
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -25,20 +25,20 @@ jobs:
           npm install
       - name: Move .git during build
         run: |
-          ls -lah build
-          mv build/.git build-git
+          ls -lah .svelte-kit/cloudflare
+          mv .svelte-kit/cloudflare/.git build-git
           ls -lah
       - name: Build sources head
         run: npm run build
       - name: Return .git after build
         run: |
           ls -lah
-          mv build-git build/.git
-          ls -lah build
+          mv build-git .svelte-kit/cloudflare/.git
+          ls -lah .svelte-kit/cloudflare
       - name: Commit updated master branch
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          repository: build
+          repository: .svelte-kit/cloudflare
           commit_message: Updated served page
           branch: ${{ github.head_ref }}
           commit_options: "--no-verify --signoff"
