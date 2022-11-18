@@ -22,7 +22,7 @@
 
 <NavBar />
 
-<div style="opacity:{navigate ? '0' : '1'};{theme.cssVars()}">
+<div class="layout-root" style="opacity:{navigate ? '0' : '1'};{theme.cssVars()}">
   <slot />
 </div>
 
@@ -30,9 +30,4 @@
 
 <style global lang="stylus">
 @import '../style/global'
-main
-  width 100vw
-  min-height calc(100vh - var(--nav-height))
-  overflow-x hidden
-  transition opacity ease-in-out transition-medium
 </style>

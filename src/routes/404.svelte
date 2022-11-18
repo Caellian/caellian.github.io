@@ -12,13 +12,13 @@
 </div>
 
 <style lang="stylus">
-      .center
-          height calc(100vh - var(--nav-height))
+.center
+  height calc(100vh - var(--nav-height))
 
-          h1
-              text-align center
+  h1
+    text-align center
 
-      p
-              margin-left auto
-              margin-right auto
+p
+  margin-left auto
+  margin-right auto
 </style>

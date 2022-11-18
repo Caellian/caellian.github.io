@@ -8,8 +8,8 @@
 
   const project_style = cssVars({
     bg_deg: `${deg}deg`,
-    bg_from: `hsl(${from},80%,35%)`,
-    bg_to: `hsl(${to},80%,35%)`,
+    bg_from: `hsl(${from},50%,45%)`,
+    bg_to: `hsl(${to},50%,45%)`
   });
 
   export var project: Project = {
@@ -43,107 +43,115 @@
 </div>
 
 <style lang="stylus">
-  @import "../../style/constants"
+shaded = #0004
 
-  color-gradient = linear-gradient(var(--bg-deg), var(--bg-from), var(--bg-to))
-  shaded = #0003
+.project
+  padding 0.25rem
 
-  .project
-    padding 0.1rem
+  height fit-content
+  width 25ch
+  aspect-ratio 2.25/3.5
+  margin auto
 
-    height 100%
+  background var(--bg-from)
+  background linear-gradient(var(--bg-deg), var(--bg-from), var(--bg-to))
+  border-radius 0.75rem
+
+  transition transform ease-out transition-short
+
+  &:hover
+    transform scale(1.05)
+
+.project-inner
+  display grid
+  grid-template-columns 1fr
+  grid-template-rows repeat(2, auto) 1fr auto
+
+  width 100%
+  height 100%
+
+  background transparent
+  color var(--fg)
+
+  transition background ease-in 200ms
+  border-radius 0.75rem
+
+  .lang
+    grid-area 1 / 1 / 2 / 2
+
+    background var(--bg-accent)
+
+    @media (min-width: tablet-size)
+      background shaded
+
+    font-size 0.8rem
+    text-align right
+
+    padding 0.25rem 0.5rem 0.2rem 0
+    border-radius 0.75rem 0.75rem 0 0
+
+  h1
+    grid-area 2 / 1 / 3 / 2
+
     width 100%
-
-    background var(--bg-from)
-    background color-gradient
-
-  .project-inner
-    display grid
-    grid-template-columns 1fr
-    grid-template-rows repeat(2, auto) 1fr auto
-
-    width 100%
-    height 100%
-
-    background transparent
     color var(--fg)
 
-    transition background ease-in 200ms
+    border-top 1px dashed var(--fg)
+    border-bottom 1px dashed var(--fg)
 
-    .lang
-      grid-area 1 / 1 / 2 / 2
+    padding 0
 
-      background var(--bg-accent)
+    text-align center
+    font-size 1.4rem
 
-      @media (min-width: tablet-size)
-        background shaded
+    transition color ease-in 200ms
 
-      font-size 0.8rem
-      text-align right
+  .desc
+    grid-area 3 / 1 / 4 / 2
 
-      padding-right 0.2rem
-      padding-bottom 0.2rem
+    padding 0.2rem 0.5rem
+    overflow-y scroll
+
+    background var(--bg-accent)
+    scrollbar-color var(--scroll-color) var(--bg-light)
+
+    @media (min-width: tablet-size)
+      background shaded
+
+    p
+      margin 0
+      text-align justify
+
+  .tags
+    grid-area 4 / 1 / 5 / 2
+
+    padding 0.2rem
+
+    border-top 1px dashed var(--fg)
+
+    background var(--bg-accent)
+
+    @media (min-width: tablet-size)
+      background none
+
+    &::before
+      content "tags:"
+      margin-right 0.2rem
+
+    li
+      display inline-block
+
+      padding 0 0.1rem
+      margin-right 0.2rem
+
+      border 1px solid var(--bg-from)
+      border-radius 0.25rem
+
+      background shaded
+
+  &:hover
+    background var(--bg)
 
     h1
-      grid-area 2 / 1 / 3 / 2
-
-      width 100%
-      color var(--fg)
-
-      border-top 1px dashed var(--fg)
-      border-bottom 1px dashed var(--fg)
-
-      padding 0
-
-      text-align center
-      font-size 1.4rem
-
-      transition color ease-in 200ms
-
-    .desc
-      grid-area 3 / 1 / 4 / 2
-
-      padding 0.2rem 0.5rem
-
-      background var(--bg-accent)
-
-      @media (min-width: tablet-size)
-        background shaded
-
-      p
-        margin 0
-        text-align justify
-
-    .tags
-      grid-area 4 / 1 / 5 / 2
-
-      padding 0.2rem
-
-      border-top 1px dashed var(--fg)
-
-      background var(--bg-accent)
-
-      @media (min-width: tablet-size)
-        background none
-
-      &::before
-        content "tags:"
-        margin-right 0.2rem
-
-      li
-        display inline-block
-
-        padding 0 0.1rem
-        margin-right 0.2rem
-
-        border 1px solid var(--bg-from)
-        border-radius 0.25rem
-
-        background shaded
-
-    &:hover
-      background var(--bg)
-
-      h1
-        color var(--accent)
+      color var(--accent)
 </style>

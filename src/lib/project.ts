@@ -5,9 +5,9 @@ export default interface Project {
   name: string;
 
   tags: string[];
-  active: boolean;
-  contribution: boolean;
-  fork: boolean;
+  active: boolean | undefined;
+  contribution: boolean | undefined;
+  fork: boolean | undefined;
   lang: string;
   url: string;
 

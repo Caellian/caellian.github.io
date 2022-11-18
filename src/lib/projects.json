@@ -3,6 +3,7 @@
     "id": "voxel_engine",
     "name": "Voxel Engine",
     "tags": ["rendering", "Vulkan"],
+    "active": true,
     "lang": "Rust",
     "description": [
       "Vulkan voxel game engine focused on dynamic and procedurally generated content.",
@@ -15,6 +16,7 @@
     "id": "java_decompiler",
     "name": "Java Decompiler",
     "tags": ["reverse engineering", "decompiler"],
+    "active": true,
     "lang": "Rust",
     "url": "https://github.com/Caellian/java-decompiler",
     "description": [

@@ -21,11 +21,15 @@
 {#if icon != null}
   <svg
     on:click
-    style="--color:{color}"
+    style="--color:{color};fill:var(--color);"
     class="{$$props.class || `icon-${name}`} icon"
     width={width || "1rem"}
     height={height || "1rem"}
-    fill={color}
-    viewBox="0 0 {icon?.dim} {icon?.dim}">{@html icon?.content}</svg
+    viewBox="-2 -2 {icon?.dim + 2} {icon?.dim + 2}">{@html icon?.content}</svg
   >
 {/if}
+
+<style lang="stylus">
+.icon
+  padding 0.15rem
+</style>

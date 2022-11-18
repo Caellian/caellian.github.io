@@ -1,6 +1,7 @@
 <script lang="ts">
   import { prerendering } from "$app/environment";
   import Icon from "$lib/components/Icon.svelte";
+  import IconLinks from "$lib/components/IconLinks.svelte";
   import emailjs from "@emailjs/browser";
 
   var name = "";
@@ -42,7 +43,7 @@
   }
 </script>
 
-<div class="v-fit">
+<main class="v-fit">
   <section class="center">
     {#if !prerendering && emailStatus == null}
       <h2>Contact Me via E-mail</h2>
@@ -76,7 +77,7 @@
             placeholder="Message content"
             required
           />
-          <input type="submit" value="Send" />
+          <input class="button" type="submit" value="Send" />
         </form>
       </div>
     {:else if !prerendering}
@@ -117,86 +118,13 @@
 
   <section id="contact-links" class="center">
     <h3>Find Me Elsewhere</h3>
-    <div class="links">
-      <div class="bracket left">
-        <p>Social</p>
-        <ul class="icons left">
-          <li>
-            <a href="tg://resolve?domain=caellian" target="_blank">
-              {#if prerendering}
-                Telegram
-              {:else}
-                <Icon size="2rem" name="telegram" />
-              {/if}
-            </a>
-          </li>
-          <li>
-            <a href="https://mastodon.social/@caellian" target="_blank">
-              {#if prerendering}
-                Mastodon
-              {:else}
-                <Icon size="2rem" name="mastodon" />
-              {/if}
-            </a>
-          </li>
-          <li>
-            <a href="https://matrix.to/#/@caellian:matrix.org" target="_blank">
-              {#if prerendering}
-                matrix.org
-              {:else}
-                <Icon size="2rem" name="matrix" />
-              {/if}
-            </a>
-          </li>
-          <li>
-            <a href="https://www.linkedin.com/in/tinsvagelj/" target="_blank">
-              {#if prerendering}
-                LinkedIn
-              {:else}
-                <Icon size="2rem" name="linkedin" />
-              {/if}
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="bracket right">
-        <p>Code</p>
-        <ul class="icons right">
-          <li>
-            <a href="https://github.com/Caellian" target="_blank">
-              {#if prerendering}
-                GitHub
-              {:else}
-                <Icon size="2rem" name="github" />
-              {/if}
-            </a>
-          </li>
-          <li>
-            <a href="https://bitbucket.org/Caellian" target="_blank">
-              {#if prerendering}
-                BitBucket
-              {:else}
-                <Icon size="2rem" name="bitbucket" />
-              {/if}
-            </a>
-          </li>
-          <li>
-            <a href="https://gitlab.com/Caellian" target="_blank">
-              {#if prerendering}
-                GitLab
-              {:else}
-                <Icon size="2rem" name="gitlab" />
-              {/if}
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
+    <IconLinks />
   </section>
-</div>
+</main>
 
 <style lang="stylus">
-@import "../../style/constants";
+main
+  width 100vw
 
 .v-fit
   display flex
@@ -259,105 +187,18 @@ form
   #message
     font-size 1.5em
 
-  input[type="submit"]
+  input.button
     padding 0.5rem 2rem
-    cursor pointer
+    margin 0 auto
+    border-radius 0.25rem
 
-    border solid 0.15rem var(--accent)
-    background none
-    color var(--fg)
-
-    font-family "Quicksand", sans-serif
     font-weight bold
     font-size 1.2rem
 
     transition ease-in-out 150ms
 
-    &:hover
-      background-color var(--accent-7)
-      color var(--bg)
-
-    &:active
-      background-color var(--accent)
-
 .mail-desc
   margin 0 auto
   width max-content
   color var(--fg)
-
-.links
-  display flex
-  gap 1rem
-  flex-direction column
-
-  width min-content
-  max-width 100%
-  overflow-x scroll
-
-  @media screen and (min-width 450px)
-    flex-direction row
-
-  .bracket
-    &:before
-      content ""
-      display block
-
-      height 0.5em
-      width 95%
-      margin 0 auto
-      margin-top 2rem
-      margin-bottom -2.5rem
-
-      border solid 0.15rem var(--bg-accent)
-      border-bottom none
-
-      transition border-color ease-in-out transition-medium
-
-    p
-      font-family "Quicksand", sans-serif
-      font-weight bold
-      color var(--fg)
-      transition color ease-in-out transition-medium
-
-    &:hover
-      &:before
-        border solid 0.15rem var(--fg)
-        border-bottom none
-      p
-        color var(--accent-7)
-
-      .icons>li
-        :global(svg path),
-        :global(svg text)
-          fill var(--fg)
-          stroke var(--fg)
-
-.icons
-  display flex
-  flex-direction column
-  justify-content space-around
-
-  @media screen and (min-width 250px)
-    flex-direction row
-
-  li
-    :global(svg)
-      margin 1rem
-    :global(svg path),
-    :global(svg text)
-      fill var(--bg-light)
-
-      stroke-opacity 0
-      stroke var(--bg-light)
-    a:hover
-      :global(svg path),
-      :global(svg text)
-        fill var(--accent-7) !important
-        stroke var(--accent-7) !important
-    a:active
-      :global(svg:active path),
-      :global(svg:active text)
-        fill var(--accent-6) !important
-        stroke var(--accent-6) !important
-
 </style>

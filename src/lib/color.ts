@@ -149,7 +149,9 @@ export class HSL implements Color {
     return this;
   }
   toCSS(): string {
-    return `hsl(${this.h},${this.s * 100}%,${this.l * 100}%)`;
+    return `hsl(${Math.round(this.h)},${Math.round(this.s * 100)}%,${Math.round(
+      this.l * 100
+    )}%)`;
   }
 }
 

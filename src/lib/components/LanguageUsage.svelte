@@ -68,57 +68,55 @@
 </div>
 
 <style lang="stylus">
-	@import '../../style/constants'
+.labeled-donut
+  width 50%
+  margin auto
 
-	.labeled-donut
-		width 50%
-		margin auto
+  .lang-name
+    font-size 2rem
+    padding 0
 
-		.lang-name
-			font-size 2rem
-			padding 0
+    transition all 0.2s linear
 
-			transition all 0.2s linear
+    @media (min-width: mobile-size)
+      text-shadow 0 0 1rem var(--lang-color, transparent)
 
-			@media (min-width: mobile-size)
-				text-shadow 0 0 1rem var(--lang-color, transparent)
+    z-index -1
 
-			z-index -1
+.language-usage
+  width 100%
 
-	.language-usage
-		width 100%
+.lang-list
+  display flex
+  flex-direction column
 
-	.lang-list
-		display flex
-		flex-direction column
+  background var(--bg-accent)
+  border solid 0.2rem var(--bg-light)
+  border-radius 0.2rem
 
-		background var(--bg-accent)
-		border solid 0.2rem var(--bg-light)
-		border-radius 0.2rem
+  .lang-entry
+    display flex
 
-		.lang-entry
-			display flex
+    padding 0.5rem 1rem
 
-			padding 0.5rem 1rem
+    border-bottom solid 0.2rem var(--color)
 
-			border-bottom solid 0.2rem var(--color)
+    &:nth-last-child(1)
+      border-radius 0.2rem
 
-			&:nth-last-child(1)
-				border-radius 0.2rem
+    .name
+      flex-grow 1
+      color var(--color)
 
-			.name
-				flex-grow 1
-				color var(--color)
+      font-size 1.5rem
+      font-weight bold
 
-				font-size 1.5rem
-				font-weight bold
+      padding 0
 
-				padding 0
+    .weight
+      flex-basis content
+      color var(--fg)
 
-			.weight
-				flex-basis content
-				color var(--fg)
-
-				padding 0
+      padding 0
 
 </style>

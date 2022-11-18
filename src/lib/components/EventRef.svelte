@@ -5,9 +5,14 @@
   export var description: string;
   export var url: string | null | undefined;
   export var time: string | null;
+
+  var pos = [0, 0];
+  function on_mousemove(ev: MouseEvent) {
+    pos = [ev.offsetX, ev.offsetY]
+  }
 </script>
 
-<a href={url || "."}>
+<a href={url || "."} on:mousemove={on_mousemove} style="--pos-x:{pos[0]}px;--pos-y:{pos[1]}px;">
   {#if time != null}
     <h4 style="grid-area: 1/1/2/2">{name}</h4>
     <p style="grid-area: 1/2/3/3" class="time">{time}</p>
@@ -19,57 +24,76 @@
 </a>
 
 <style lang="stylus">
-@import '../../style/constants'
-
 a
-    display grid
+  display grid
+  position relative
 
-    grid-template-columns 1fr auto
-    grid-template-rows auto 1fr
-    grid-column-gap 2rem
-    align-items center
+  grid-template-columns 1fr auto
+  grid-template-rows auto 1fr
+  grid-column-gap 2rem
+  align-items center
 
-    background-color var(--bg)
-    padding 1rem 0.5rem
-    margin 1rem 1rem
+  padding 1rem 0.5rem
+  margin 1rem 1rem
 
-    border 0.2rem solid var(--bg-accent)
-    border-radius 0.25rem
+  border 0.2rem solid var(--bg-accent)
+  border-radius 0.25rem
 
-    transition background-color ease-in-out transition-medium, border-color ease-in-out transition-short
+  transition background-color ease-in-out transition-medium, border-color ease-in-out transition-short
 
-    @media screen and (min-width mobile-size)
-        padding 1rem 2.5rem
-        margin 1rem
+  @media screen and (min-width mobile-size)
+    padding 1rem 2.5rem
+    margin 1rem
 
-    :global(.spinner)
-        grid-area: 1/2/3/3
+  .time,
+  :global(.spinner)
+    grid-area: 1/2/3/3
+
+  :global(*)
+    pointer-events none
+
+  h4
+    font-family 'Quicksand', sans-serif
+    font-size 1.4rem
+    color var(--fg)
+
+    padding 0
+
+  p
+    font-size 1rem
+    padding 0
+    width max-content
+
+  &:before
+    position absolute
+    top 0
+    left 0
+    z-index -10
+
+    display block
+
+    content ""
+    width 100%
+    height 100%
+    background radial-gradient(circle at var(--pos-x) var(--pos-y), var(--bg-accent) 0%, transparent 50%)
+
+    transition opacity ease-out 200ms
+    opacity 0
+
+  &:hover
+    border-color var(--accent)
 
     h4
-        font-family 'Quicksand', sans-serif
-        font-size 1.4rem
-        color var(--fg)
+      color var(--accent-7)
 
-        padding 0
+    &:before
+      opacity 1
+
+  &:active
+    h4
+      color var(--accent)
 
     p
-        font-size 1rem
-        padding 0
-        width max-content
-
-    &:hover
-        background-color var(--bg-accent)
-
-        border-color var(--accent)
-
-        h4
-            color var(--accent-7)
-
-    &:active
-        h4
-            color var(--accent)
-
-        p
-            color var(--accent-7)
+      color var(--accent-7)
 
 </style>

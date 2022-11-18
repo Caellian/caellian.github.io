@@ -37,18 +37,21 @@
 
 <style lang="stylus">
 a.button
-    display flex
-    align-items center
-    --icon-color var(--bg-accent)
-    padding 0.25rem 0.5rem
-    margin 0.25rem
+  display flex
+  align-items center
+  --icon-color var(--bg-accent)
+  padding 0.25rem 0.5rem
+  margin 0.25rem
 
-    p
-        padding 0
-        padding-left 0.5rem
-        font-family 'Quicksand', sans-serif
-        font-weight bold
+  p
+    padding 0
+    padding-left 0.5rem
+    font-family 'Quicksand', sans-serif
+    font-weight bold
 
-    &:hover
-        --icon-color var(--accent)
+  :global(.svg)
+    transition fill ease-in-out 200ms
+
+  &:hover
+    --icon-color var(--accent)
 </style>

@@ -187,8 +187,6 @@
 </svg>
 
 <style lang="stylus">
-	@import "../../style/constants"
-
 	*
 		fill none
 

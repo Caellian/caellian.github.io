@@ -163,10 +163,10 @@
   });
 </script>
 
-<main>
-  <section class="filters" style="--scroll-y:{Math.round(scroll_value)}px">
+<div class="content-wrapper">
+  <aside class="filters" style="--scroll-y:{Math.round(scroll_value)}px">
     {#if !prerendering}
-      <div class="search row">
+      <section class="search row">
         <div class="search" class:ready={search_query.trim().length > 0}>
           {#if search_query.trim().length == 0}
             <Icon name="search" size="2rem" />
@@ -190,56 +190,52 @@
           {#if show_filters}
             <p>i</p>
           {:else}
-            <Icon
-              name="filter"
-              size="3rem"
-              color="var(--icon-color, var(--accent))"
-            />
+            <Icon name="filter" size="2.5rem" />
           {/if}
         </button>
-      </div>
+      </section>
     {/if}
     {#if show_filters}
-      <div>
+      <section>
         <p>Category:</p>
         <ul class="choices">
           <li
-            on:click={toggle_tag("active")}
+            on:mouseup={toggle_tag("active")}
             class:active={tags.includes("active")}
           >
             <Icon name="remove" size="1.4rem" color="var(--accent)" />
             <p>Current</p>
           </li>
           <li
-            on:click={toggle_tag("project")}
+            on:mouseup={toggle_tag("project")}
             class:active={tags.includes("project")}
           >
             <Icon name="remove" size="1.4rem" color="var(--accent)" />
             <p>Project</p>
           </li>
           <li
-            on:click={toggle_tag("contrib")}
+            on:mouseup={toggle_tag("contrib")}
             class:active={tags.includes("contrib")}
           >
             <Icon name="remove" size="1.4rem" color="var(--accent)" />
             <p>Contribution</p>
           </li>
           <li
-            on:click={toggle_tag("fork")}
+            on:mouseup={toggle_tag("fork")}
             class:active={tags.includes("fork")}
           >
             <Icon name="remove" size="1.4rem" color="var(--accent)" />
             <p>Fork</p>
           </li>
         </ul>
-      </div>
+      </section>
       {#if shown_langs.length > 0}
-        <div>
+        <section>
           <p>Language:</p>
           <ul class="choices">
             {#each shown_langs as lang (lang)}
               <li
-                on:click={toggle_tag(`lang:${lang}`)}
+                on:mouseup={toggle_tag(`lang:${lang}`)}
                 class:active={tags.find((it) => it == `lang:${lang}`) !=
                   undefined}
               >
@@ -248,15 +244,15 @@
               </li>
             {/each}
           </ul>
-        </div>
+        </section>
       {/if}
       {#if shown_tags.length > 0}
-        <div>
+        <section>
           <p>Tags:</p>
           <ul class="tags choices">
             {#each shown_tags as tag (tag)}
               <li
-                on:click={toggle_tag(`tag:${tag}`)}
+                on:mouseup={toggle_tag(`tag:${tag}`)}
                 class:active={tags.find((it) => it == `tag:${tag}`) !=
                   undefined}
               >
@@ -265,10 +261,10 @@
               </li>
             {/each}
           </ul>
-        </div>
+        </section>
       {/if}
     {:else}
-      <div class="info">
+      <section class="info">
         <h3>Icon Map</h3>
         <div class="row">
           <Icon name="merge" size="2rem" />
@@ -276,60 +272,59 @@
         </div>
         <ul>
           <li class="row">
-            <span class="color" style="background-color:var(--yellow)" />
-            <p>Not merged</p>
-          </li>
-          <li class="row">
             <span class="color" style="background-color:var(--green)" />
             <p>Merged</p>
+          </li>
+          <li class="row">
+            <span class="color" style="background-color:var(--yellow)" />
+            <p>Not merged</p>
           </li>
           <li class="row">
             <span class="color" style="background-color:var(--blue)" />
             <p>Custom fork</p>
           </li>
         </ul>
-      </div>
+      </section>
     {/if}
-  </section>
-  <section class="results">
+  </aside>
+
+  <main class="results">
     <ul>
       {#each results as pr}
         <ProjectResult project={pr} />
       {/each}
     </ul>
-  </section>
-</main>
+  </main>
+</div>
 
 <style lang="stylus">
-@import "../../style/constants"
-
-main
+.content-wrapper
   display flex
   flex-direction column
-  gap 1rem
+  gap 0.5rem
 
-  padding 0.5rem
+  max-width 120ch
   margin 0 auto
 
   @media screen and (min-width 750px)
     display grid
     grid-template-columns 2fr 3fr
-    grid-column-gap 1rem
-    max-width 120ch
-    padding 1rem
+    gap 1rem
 
 .row
   display flex
   gap 0.5rem
 
 
-section.filters
+aside.filters
   display flex
   gap 0.5rem
   flex-direction column
 
   max-height calc(100vh - var(--nav-))
   padding 0.5rem
+  margin 0.5rem
+  margin-bottom 0
 
   background var(--bg-light)
   border-radius 1rem
@@ -338,10 +333,13 @@ section.filters
   overflow-y scroll
 
   @media screen and (min-width 750px)
-    margin-top var(--scroll-y, 0)
     height min-content
+
     padding 1rem
+    margin calc(var(--scroll-y, 0) + 1rem) 0 1rem 1rem
+
     transition margin-top ease-in-out 500ms
+
 
   .choices
     display flex
@@ -399,9 +397,9 @@ section.filters
           margin-right 0.2rem
           transform scale(1) rotateY(0deg)
 
-section.filters>.search.row
+aside.filters>.search.row
   display flex
-  gap 0.5rem
+  gap 1rem
 
   .search
     flex-grow 1
@@ -423,31 +421,22 @@ section.filters>.search.row
       flex-grow 1
       font-size 1.2rem
 
-    :global(.icon>path)
+    :global(.icon-search>path)
       transform translateX(-5%)
-      transition fill ease-in-out 200ms
     :global(.icon-remove>path)
-      transform translateX(5%)
+      transform translateX(1%)
+    :global(.icon-remove)
+      border 0.15rem solid var(--accent)
     :global(.icon)
-      opacity 1
-      background-color var(--transparent)
-
       width 2.25rem
       border-radius 1rem
-      padding 0.1rem
       margin auto 0
-      transition background-color ease-in-out 200ms
 
-    &.ready
-      --icon-color var(--bg)
-      input
-        order 1
-      :global(.icon)
-        order 2
-        background-color var(--accent)
   button
-    min-width 3.5rem
-    min-height 3.5rem
+    min-width 3rem
+    min-height 3rem
+    max-height 3rem
+
     margin auto 0
     padding 0
 
@@ -467,19 +456,15 @@ section.filters>.search.row
       transform translateY(-5%)
 
     &:hover
-      border-color var(--accent-7)
-      background var(--accent-2)
-      --icon-color var(--accent-7)
+      --icon-color var(--accent)
       p
         color var(--accent-7)
     &:active
-      border-color var(--accent-9)
-      background var(--accent)
-      --icon-color var(--bg)
+      --icon-color var(--accent-7)
       p
         color var(--bg)
 
-section.filters>.info
+aside.filters>.info
   ul
     margin-left 1rem
     .row
@@ -497,11 +482,17 @@ section.filters>.info
     border 0.3rem solid var(--bg)
 
 
-section.results
+main.results
+  margin 0.5rem
+  margin-top 0
+
   ul
     display flex
     flex-direction column
     gap 1rem
 
     list-style none
+
+  @media screen and (min-width 750px)
+    margin 1rem 1rem 0 0
 </style>

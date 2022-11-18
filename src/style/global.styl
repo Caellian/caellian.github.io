@@ -123,7 +123,7 @@ button,
   border solid 0.15rem var(--bg-accent)
   border-radius 100vh
 
-  transition background-color ease-in-out transition-medium, border-color ease-in-out transition-short
+  transition background-color ease-in-out transition-short, border-color ease-in-out transition-short
 
   font-family 'Quicksand', sans-serif
   font-size 1rem
@@ -132,12 +132,13 @@ button,
   cursor pointer
 
   &:hover
-    background-color var(--bg-accent)
+    background-color var(--accent-1)
     border-color var(--accent)
 
     color var(--accent-7)
 
   &:active
+    background-color var(--accent-2)
     color var(--accent)
 
   @media screen and (min-width: tablet-size)

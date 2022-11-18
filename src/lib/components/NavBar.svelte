@@ -1,5 +1,6 @@
 <script lang="ts">
   import { prerendering } from "$app/environment";
+  import { onMount } from "svelte";
   import Compass from "./Compass.svelte";
   import NavLinks from "./NavLinks.svelte";
 
@@ -45,8 +46,6 @@
 {/if}
 
 <style lang="stylus">
-@import '../../style/constants'
-
 #navbar
   display flex
   justify-content space-between
@@ -100,7 +99,7 @@
   border-left solid 0.2rem var(--bg-accent)
   cursor pointer // Not really needed, but hey, it's here
 
-  @media screen and (min-width: mobile-size)
+  @media screen and (min-width: 690px)
     display none
 
 #nav-links
@@ -112,7 +111,7 @@
 
   height calc(100% - 2rem)
 
-  @media screen and (max-width mobile-size)
+  @media screen and (max-width 690px)
     display none
 
 :global(#nav-links>li>a)

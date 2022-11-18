@@ -39,8 +39,12 @@ export function mode_to_str(mode: Mode): string {
 
 const STEP_COUNT = 10;
 
-type StyleArg = {
+type ThemeCss = {
   [id: string]: string;
+};
+
+type ColorList = {
+  [id: string]: Color;
 };
 
 export class Theme {
@@ -57,54 +61,62 @@ export class Theme {
     }
   }
 
-  colorList() {
+  colorMap(): Map<string, Color> {
     const hsl = this.accent.toHSL();
-    const result: StyleArg = {};
+    const result = new Map();
 
-    result["accent"] = new HSL(hsl.h, 1, 0.5).toCSS();
+    result.set("accent", hsl);
 
     if (this.mode == Mode.Light) {
-      result["bg"] = new HSL(0, 0, 0.85).toCSS();
-      result["bg-light"] = new HSL(0, 0, 0.9).toCSS();
-      result["bg-accent"] = new HSL(0, 0, 1).toCSS();
-      result["fg"] = new HSL(0, 0, 0.1).toCSS();
-      result["fg-accent"] = new HSL(0, 0, 0.2).toCSS();
+      result.set("bg", new HSL(0, 0, 0.85));
+      result.set("bg-light", new HSL(0, 0, 0.9));
+      result.set("bg-accent", new HSL(0, 0, 1));
+      result.set("fg", new HSL(0, 0, 0.1));
+      result.set("fg-accent", new HSL(0, 0, 0.2));
 
       for (let i = STEP_COUNT; i >= 0; i--) {
         const l = (1.0 / STEP_COUNT) * i;
         const color = new HSL(hsl.h, hsl.s, l);
-        result[`accent-${STEP_COUNT - i}`] = color.toCSS();
+        result.set(`accent-${STEP_COUNT - i}`, color);
       }
     } else if (this.mode == Mode.Dark) {
-      result["bg"] = new HSL(0, 0, 0.1).toCSS();
-      result["bg-light"] = new HSL(0, 0, 0.15).toCSS();
-      result["bg-accent"] = new HSL(0, 0, 0.2).toCSS();
-      result["fg"] = new HSL(0, 0, 0.8).toCSS();
-      result["fg-accent"] = new HSL(0, 0, 0.9).toCSS();
+      result.set("bg", new HSL(0, 0, 0.1));
+      result.set("bg-light", new HSL(0, 0, 0.15));
+      result.set("bg-accent", new HSL(0, 0, 0.2));
+      result.set("fg", new HSL(0, 0, 0.8));
+      result.set("fg-accent", new HSL(0, 0, 0.9));
 
       for (let i = 0; i <= STEP_COUNT; i++) {
         const l = (1.0 / STEP_COUNT) * i;
         const color = new HSL(hsl.h, hsl.s, l);
-        result[`accent-${i}`] = color.toCSS();
+        result.set(`accent-${i}`, color);
       }
     }
 
-    result["red"] = new HSL(0, 0.6, 0.6).toCSS();
-    result["orange"] = new HSL(30, 0.6, 0.6).toCSS();
-    result["yellow"] = new HSL(60, 0.6, 0.6).toCSS();
-    result["green"] = new HSL(120, 0.6, 0.6).toCSS();
-    result["aqua"] = new HSL(150, 0.6, 0.6).toCSS();
-    result["cyan"] = new HSL(180, 0.6, 0.6).toCSS();
-    result["blue"] = new HSL(180, 0.6, 0.6).toCSS();
-    result["purple"] = new HSL(270, 0.6, 0.6).toCSS();
-    result["pink"] = new HSL(300, 0.6, 0.6).toCSS();
-    result["magenta"] = new HSL(330, 0.6, 0.6).toCSS();
+    result.set("red", new HSL(0, 0.6, 0.6));
+    result.set("orange", new HSL(30, 0.6, 0.6));
+    result.set("yellow", new HSL(60, 0.6, 0.6));
+    result.set("green", new HSL(120, 0.6, 0.6));
+    result.set("aqua", new HSL(150, 0.6, 0.6));
+    result.set("cyan", new HSL(180, 0.6, 0.6));
+    result.set("blue", new HSL(180, 0.6, 0.6));
+    result.set("purple", new HSL(270, 0.6, 0.6));
+    result.set("pink", new HSL(300, 0.6, 0.6));
+    result.set("magenta", new HSL(330, 0.6, 0.6));
 
     return result;
   }
 
+  colorCss(): ThemeCss {
+    let result: ThemeCss = {};
+    for (const [k, v] of this.colorMap().entries()) {
+      result[k] = v.toCSS();
+    }
+    return result;
+  }
+
   cssVars() {
-    return cssVars(this.colorList());
+    return cssVars(this.colorCss());
   }
 
   styleTag() {

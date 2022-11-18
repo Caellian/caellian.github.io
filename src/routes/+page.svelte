@@ -12,10 +12,10 @@
 
 <main>
   <section id="hero">
-    <div>
+    <div class="wrapper">
       <p>Hi, my name is</p>
       <h1><span class="name">Tin Švagelj</span>.</h1>
-      <h2>I write fast,<br />bleeding-edge software.</h2>
+      <h2>I write fast,<br />well-behaved software.</h2>
 
       <p>
         I'm a software engineer based in Croatia who specializes in building
@@ -26,27 +26,30 @@
         Rijeka.
       </p>
     </div>
+
+    <div class="bg-layer"></div>
+    <div class="bg-layer"></div>
+    <div class="bg-layer"></div>
   </section>
 
   <section class="pagewide">
     <h1 class="title">About Me</h1>
 
-    <p style="margin-bottom: 4vh;">
-      Hello! My name is Tin and I love programming and testing undocumented and
-      experimental libraries.
-    </p>
+    <p>Hello! My name is Tin and I like developing desktop applications and graphics software.</p>
+    <p>My current area of interest is WASM+WGPU rendering.</p>
+    <p>I'm available for hire and contracting.</p>
   </section>
 
-  <section class="pagewide">
+  <section class="pagewide current">
     <h1 class="title">I'm Currently Working On</h1>
 
-    {#each projects.filter((it) => it.active) as p}
-      <ProjectCard project={p} />
-    {/each}
-
-    <div class="center block">
-      <a class="button" href="/projects">See More</a>
+    <div class="cards">
+      {#each projects.filter((it) => it.active) as p}
+        <ProjectCard project={p} />
+      {/each}
     </div>
+
+    <a class="button" href="/projects">See More</a>
   </section>
 
   <section class="pagewide">
@@ -87,73 +90,115 @@
 </main>
 
 <style lang="stylus">
-@import '../style/constants'
+main
+  width 100vw
 
 section
-    padding 2vh 0
-    margin 0 auto
+  padding 2vh 0
+  margin 0 auto
 
-    .block
-        padding 1rem
+  @media screen and (min-width: tablet-size)
+    padding 15vh 0
 
-    @media screen and (min-width: tablet-size)
-        padding 15vh 0
-
-        > *
-            padding-left 2rem
-            padding-right 2rem
-        .title
-            padding-left 0
-            padding-right 0
+    > *
+      padding-left 2rem
+      padding-right 2rem
+    .title
+      padding-left 0
+      padding-right 0
 
 #hero
-    display grid
-    grid-template-columns 1rem 1fr 1rem
-    place-items center
+  position relative
+  display grid
+  grid-template-columns 1rem 1fr 1rem
+  place-items center
 
-    @media screen and (min-width: 1050px)
-        grid-template-columns 1fr 3fr 3fr
+  min-height calc(100vh - var(--nav-height) + 0.5rem)
+  height max-content
+  padding 0
+  margin-bottom 10vh
 
-    min-height calc(100vh - var(--nav-height) + 0.5rem)
-    height fit-content
+  overflow hidden
+  border-bottom solid 0.15rem var(--bg-accent)
 
-    margin-bottom 10vh
+  .bg-layer
+    display block
+    margin 0
+    padding 0
+    width 100vw
+    height 100vh
+    z-index -100
 
-    background-image radial-gradient(var(--bg-accent) 0.12rem, transparent 0)
+    background-image radial-gradient(var(--dots-color) 0.12rem, transparent 0)
+    background-position 50% 50%
     background-attachment fixed
-    background-size 4rem 4rem
+    transition background-size ease-in-out transition-medium
 
-    border-bottom solid 0.15rem var(--bg-accent)
+  div
+    grid-area 1 / 2 / 2 / 3
 
-    div
-        grid-area 1 / 2 / 2 / 3
+  .wrapper
+    margin-bottom 1rem
 
-        margin-bottom 1rem
+    background-color hsla(0, 0%, 0%, 0.2)
+    padding 2rem
+    border-radius 1rem
 
-        h1
-            margin-bottom 2rem
+    h1
+      margin-bottom 2rem
 
-            font-size 4rem
-            color var(--fg)
+      font-size 4rem
+      color var(--fg)
 
-        h2
-            font-size 2rem
-            color var(--accent)
+    h2
+      font-size 2rem
+      color var(--accent)
 
-            &:hover
-                color var(--accent)
+      &:hover
+        color var(--accent)
 
-        p
-            margin 0
+    p
+      margin 0
 
-        .name
-            color var(--accent)
+    .name
+      color var(--accent)
+      transition color ease-in-out transition-short
 
-            transition color ease-in-out transition-short
-            &:hover
-                color var(--fg)
+      &:hover
+        color var(--fg)
+
+  @media screen and (min-width: 1050px)
+    grid-template-columns 1fr 3fr 3fr
+
+  @media screen and (min-width: tablet-size)
+    :nth-child(2).bg-layer
+      --dots-color var(--accent-1)
+      background-size 3rem 3rem
+    :nth-child(3).bg-layer
+      --dots-color var(--accent-2)
+      background-size 3.5rem 3.5rem
+    :nth-child(4).bg-layer
+      --dots-color var(--accent-3)
+      background-size 4rem 4rem
+
+    .wrapper
+      transition background-color transition-medium ease-in-out
+
+    &:hover
+      .bg-layer
+        background-size 5rem 5rem
+
+      .wrapper
+        background-color hsla(0, 0%, 0%, 0.6)
+section.current a
+  margin 1rem auto
+
+.cards
+  display flex
+  flex-wrap wrap
+  gap 1rem
 
 .current-langs
-    .donut
-        margin 2rem 0
+  .donut
+    margin 2rem 0
 </style>

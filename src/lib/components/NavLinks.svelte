@@ -16,7 +16,7 @@
       name: "Projects",
     },
     // {
-    //     link: "/b",
+    //     link: "/blog",
     //     name: "Blog"
     // },
     {
