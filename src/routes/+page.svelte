@@ -7,6 +7,7 @@
   import languages from "$lib/used_languages.json";
   import EventRef from "$lib/components/EventRef.svelte";
   import TechStack from "$lib/components/TechStack.svelte";
+  import { BUILD_DATE } from "$lib/build_time";
 </script>
 
 <main>
@@ -37,6 +38,7 @@
     <p>Hello! My name is Tin and I like developing desktop applications and graphics software.</p>
     <p>My current area of interest is WASM+WGPU rendering.</p>
     <p>I'm available for hire and contracting.</p>
+    <a class="mastodon-link" rel="me" href="https://mastodon.social/@caellian">Mastodon</a>
   </section>
 
   <section class="pagewide current">
@@ -82,7 +84,7 @@
       <p>
         Languages used within last 30 days collected using <a
           href="https://activitywatch.net/">Activity Watch</a
-        >.
+        >, last updated {BUILD_DATE}.
       </p>
     </section>
   {/if}
@@ -200,4 +202,7 @@ section.current a
 .current-langs
   .donut
     margin 2rem 0
+
+.mastodon-link
+  display none
 </style>
