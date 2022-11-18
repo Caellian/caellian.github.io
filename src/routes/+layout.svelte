@@ -1,15 +1,12 @@
 <script lang="ts">
   export const prerender = true;
+  export const ssr = false;
 
-  import { prerendering } from "$app/environment";
   import { page } from "$app/stores";
   import { RGB } from "$lib/color";
 
-  import Compass from "$lib/components/Compass.svelte";
   import NavBar from "$lib/components/NavBar.svelte";
-  import NavLinks from "$lib/components/NavLinks.svelte";
   import { Mode, Theme } from "$lib/theme";
-  import { onMount } from "svelte";
 
   var navigate = $page.url.pathname === "/navigation";
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { BUILD_DATE } from "$lib/build_time";
   import LanguageDonut from "$lib/components/LanguageUsage.svelte";
   import ProjectCard from "$lib/components/ProjectCard.svelte";
 
@@ -44,7 +43,7 @@
     <h1 class="title">I'm Currently Working On</h1>
 
     <div class="cards">
-      {#each projects.filter((it) => it.active) as p}
+      {#each projects.filter((it) => it && it.active) as p}
         <ProjectCard project={p} />
       {/each}
     </div>
@@ -83,7 +82,7 @@
       <p>
         Languages used within last 30 days collected using <a
           href="https://activitywatch.net/">Activity Watch</a
-        >; last updated {BUILD_DATE}.
+        >.
       </p>
     </section>
   {/if}
