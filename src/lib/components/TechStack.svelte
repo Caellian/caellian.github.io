@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { openUrl } from "$lib/util";
   import Icon from "./Icon.svelte";
 
   const stack = {

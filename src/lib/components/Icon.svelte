@@ -20,7 +20,7 @@
 
 {#if icon != null}
   <svg
-    on:click
+    on:mouseup
     style="--color:{color};fill:var(--color);"
     class="{$$props.class || `icon-${name}`} icon"
     width={width || "1rem"}

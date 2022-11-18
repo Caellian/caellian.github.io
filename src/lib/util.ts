@@ -1,16 +1,26 @@
-export interface UserInfo {
-  mobile: boolean;
-  appleWebKit: boolean;
+export const BUILD_DATE = new Date().toLocaleDateString();
+export const BUILD_TIME = new Date().toLocaleTimeString();
+
+export class Limits {
+  private static _ua: String | null;
+  private static _mobile: boolean | undefined;
+  private static _webkit: boolean | undefined;
+
+  get ua(): String | null {
+    return Limits._ua ??= (typeof window !== 'undefined' && window.navigator && window.navigator.userAgent) || null;
+  }
+
+  public get is_mobile(): boolean {
+    return Limits._mobile ??= this.ua?.match(/(iPhone|iPod|iPad|Android|BlackBerry)/) != null;
+  }
+
+  public get is_webkit(): boolean {
+    let i = this.ua?.indexOf("WebKit");
+    return Limits._webkit ??= i != null && i > -1;
+  }
 }
 
-export function userInfo(): UserInfo {
-  const UA = (window && window.navigator && window.navigator.userAgent) || "";
-
-  return {
-    mobile: UA.match(/(iPhone|iPod|iPad|Android|BlackBerry)/) != null, // donut is slow on mobile
-    appleWebKit: UA.indexOf("AppleWebKit") > -1, // SVG animation is/was slow in WebKit based browsers
-  };
-}
+export const LIMITS = new Limits();
 
 export function openUrl(url: string, new_tab = true) {
   if (new_tab) {

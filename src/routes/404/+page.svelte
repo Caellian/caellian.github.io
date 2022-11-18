@@ -7,7 +7,7 @@
       wasn't created yet.
     </p>
 
-    <p>Use the navigation bar above to go to a page that exists.</p>
+    <p>Use the navigation bar above to go to a page that DOES exist.</p>
   </div>
 </div>
 

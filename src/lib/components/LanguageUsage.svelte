@@ -1,18 +1,14 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-
   import { prerendering } from "$app/environment";
 
   import languages from "$lib/used_languages.json";
 
   import Donut from "./Donut.svelte";
   import type { EntrySelection } from "./Donut.svelte";
-  import { cssVars, userInfo } from "$lib/util";
+  import { cssVars, LIMITS } from "$lib/util";
 
   let lang_name: string = "";
   let lang_style: string = "";
-
-  let mobile = false;
 
   function languageSelected(l: EntrySelection) {
     lang_name = l.name;
@@ -20,10 +16,6 @@
       lang_color: l.color,
     });
   }
-
-  onMount(async () => {
-    mobile = userInfo().mobile;
-  });
 </script>
 
 <div class="language-usage">
@@ -39,7 +31,7 @@
   {:else if languages === null}
     <p>Missing language data! This is an error.</p>
   {:else if languages.length > 0}
-    {#if mobile}
+    {#if LIMITS.is_mobile || LIMITS.is_webkit}
       <ul class="lang-list pagewide">
         {#each languages as entry}
           <li class="lang-entry" style="--color:{entry.color};">
