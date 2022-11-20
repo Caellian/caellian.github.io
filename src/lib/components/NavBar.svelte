@@ -28,7 +28,7 @@
 
   {#if !prerendering}
     <Compass
-      on:click={toggleNavigate()}
+      on:mouseup={toggleNavigate()}
       color={navigate ? "var(--accent)" : "var(--fg)"}
       spin={navigate}
     />
@@ -37,7 +37,7 @@
 
 {#if !prerendering}
   <ul id="mobile-links" class:navigate>
-    <NavLinks on_click={toggleNavigate(false)} />
+    <NavLinks on:click={toggleNavigate(false)} />
   </ul>
 {/if}
 

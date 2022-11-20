@@ -13,7 +13,7 @@
   viewBox="0 0 510 513"
   {width}
   {height}
-  on:click
+  on:mouseup
 >
   <ellipse class="outer-rim" cx="256" cy="256" rx="234" ry="234" />
   {#if spin}

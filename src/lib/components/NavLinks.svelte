@@ -1,5 +1,8 @@
 <script lang="ts">
   import { page } from "$app/stores";
+  import { createEventDispatcher } from "svelte";
+
+  const clickDispatch = createEventDispatcher();
 
   interface NavLink {
     link: string;
@@ -25,11 +28,15 @@
     },
   ] as NavLink[];
 
-  export let on_click: (e: MouseEvent) => any = () => {};
+  function on_click(target: string) {
+    return () => {
+      clickDispatch('click', { target });
+    };
+  };
 </script>
 
 {#each links as l}
   <li class:current={$page.url.pathname === l.link}>
-    <a href={l.link} on:click={on_click}>{l.name}</a>
+    <a href={l.link} on:click={on_click(l.link)}>{l.name}</a>
   </li>
 {/each}

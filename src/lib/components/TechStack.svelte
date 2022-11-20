@@ -86,10 +86,10 @@ ul.stack>li
     font-size 1.25rem
     padding 0.25rem
 
-  @media screen and (min-width 300px)
+  @media screen and (min-width tablet-width)
     width 40vw
 
-    ul.items
+    .items
       grid-area 1/1/2/2
     h2
       grid-area 2/1/3/2
