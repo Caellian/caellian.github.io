@@ -8,7 +8,7 @@
 
   var navigate = $page.url.pathname === "/navigation";
 
-  let theme = new Theme(RGB.parse("#ff7b00"), Mode.Dark);
+  let theme = new Theme(RGB.parse("#00b3b3"), Mode.Dark);
 </script>
 
 <svelte:head>
