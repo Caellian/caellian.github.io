@@ -1,0 +1,13 @@
+#!/usr/bin/sh
+
+function install_hook() {
+    cp scripts/$1 .git/hooks/ && chmod +x .git/hooks/$1 && echo '- '$1' hook copied'
+}
+
+echo '> installing hooks...'
+
+rm -rf ''
+for file in $(ls scripts/hook-*); do
+    install_hook 'build-icons'
+done
+

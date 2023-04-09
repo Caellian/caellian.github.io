@@ -9,7 +9,7 @@
 </script>
 
 <script lang="ts">
-  import { prerendering } from "$app/environment";
+  import { browser } from "$app/environment";
   import Icon from "./Icon.svelte";
 
   export const data: Data = new Map([
@@ -69,7 +69,7 @@
         {#each data.get(name) || [] as link}
           <li class="link">
             <a href={link.url} target="_blank" rel="noreferrer">
-              {#if prerendering}
+              {#if !browser}
                 {link.name}
               {:else}
                 <Icon size="2rem" name={link.icon} />

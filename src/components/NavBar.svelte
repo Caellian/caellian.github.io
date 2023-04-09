@@ -1,12 +1,9 @@
 <script lang="ts">
-  import { prerendering } from "$app/environment";
-  import { onMount } from "svelte";
+  import { browser } from "$app/environment";
   import Compass from "./Compass.svelte";
   import NavLinks from "./NavLinks.svelte";
 
   export let navigate = false;
-
-  const LOCK_HEIGHT = "<style>body{height:100vh;overflow:hidden}</style>";
 
   function toggleNavigate(force: boolean | undefined = undefined) {
     return () => {
@@ -26,7 +23,7 @@
     <NavLinks />
   </ul>
 
-  {#if !prerendering}
+  {#if browser}
     <Compass
       on:mouseup={toggleNavigate()}
       color={navigate ? "var(--accent)" : "var(--fg)"}
@@ -35,14 +32,19 @@
   {/if}
 </nav>
 
-{#if !prerendering}
+{#if browser}
   <ul id="mobile-links" class:navigate>
     <NavLinks on:click={toggleNavigate(false)} />
   </ul>
 {/if}
 
 {#if navigate}
-  {@html LOCK_HEIGHT}
+  <style>
+    #portfolio {
+      height: 100vh;
+      overflow: hidden;
+    }
+  </style>
 {/if}
 
 <style lang="stylus">

@@ -34,18 +34,18 @@
 
 <style lang="stylus">
 .center
-    min-height calc(100vh - var(--nav-height))
+  min-height calc(100vh - var(--nav-height))
 
-  h1,
-  h2
-      text-align center
+h1,
+h2
+  text-align center !important
 
-  p
-      margin-left auto
-      margin-right auto
+p
+  margin-left auto
+  margin-right auto
 
-  button
-      margin-top 2vh
-      margin-left auto
-      margin-right auto
+button
+  margin-top 2vh
+  margin-left auto
+  margin-right auto
 </style>

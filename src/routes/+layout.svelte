@@ -1,8 +1,9 @@
 <script lang="ts">
+  import { browser } from "$app/environment";
   import { page } from "$app/stores";
   import { RGB } from "$lib/color";
 
-  import NavBar from "$lib/components/NavBar.svelte";
+  import NavBar from "$components/NavBar.svelte";
   import { Mode, Theme } from "$lib/theme";
 
   var navigate = $page.url.pathname === "/navigation";
@@ -16,12 +17,14 @@
 
 <NavBar />
 
-<div class="layout-root" style="opacity:{navigate ? '0' : '1'};{theme.cssVars()}">
+<div class="layout-root" style="opacity:{navigate ? '0' : '1'}">
   <slot />
 </div>
 
-{@html theme.styleTag()}
+{#if browser}
+  {@html theme.styleTag()}
+{/if}
 
 <style global lang="stylus">
-@import '../style/global'
+  @import "../style/global";
 </style>

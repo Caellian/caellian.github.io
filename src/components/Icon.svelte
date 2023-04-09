@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { parse } from "$lib/color";
+  import { browser } from "$app/environment";
 
   interface Icon {
     dim: number;
     content: string;
   }
 
-  import icon_list from "$lib/icons.json";
+  import icon_list from "$data/icons.json";
   const icons: { [key: string]: Icon } = icon_list;
 
   export let name: string;
@@ -18,7 +18,7 @@
   let icon = icons[name] || null;
 </script>
 
-{#if icon != null}
+{#if icon != null && browser}
   <svg
     on:mouseup
     style="--color:{color};fill:var(--color);"

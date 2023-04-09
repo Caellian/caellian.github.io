@@ -1,0 +1,10 @@
+# About Me
+
+Hello! My name is Tin and I like developing desktop applications and graphics software.
+
+My main current area of interest is WASM+WGPU rendering, but I'm also always on the lookout for new technologies and techniques that can help me to better understand the field and become a more proficient developer.
+
+My diverse skill set and history in several different programming languages allow me to approach problems with a unique perspective,
+and my willingness to try out new technologies gives me a competitive edge in the field.
+
+I have a deep appreciation for low level code and the important role it plays in creating efficient and performant graphics applications.

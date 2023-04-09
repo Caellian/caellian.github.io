@@ -14,7 +14,7 @@ export default interface Project {
   description: string[];
 }
 
-export async function github_query(query: string) {
+export async function github_graphql(query: string) {
   const headers = {
     Authorization: `bearer ${GITHUB_TOKEN}`,
   };
@@ -31,16 +31,16 @@ export async function github_query(query: string) {
 
 // Can be used to generate activity heatmap
 export async function getContributions() {
-  return github_query(
+  return github_graphql(
     'query{user(login:"Caellian"){contributionsCollection{contributionCalendar{colors totalContributions weeks{contributionDays{color contributionCount date weekday}firstDay}}}}}'
   );
 }
 
 export async function getRepoContributions() {
   const data =
-    github_query(
+    (await github_graphql(
       'query{user(login:"Caellian"){repositoriesContributedTo(last:20){edges{node{name url owner{login}}}}}}'
-    )?.data || {};
+    ))?.data || {};
   /**
    * {"data":{"user":{"repositoriesContributedTo":{"edges":[{"node":{"name":"stylus","owner":{"login":"stylus"}}},{"node":{"name":"qBittorrent","owner":{"login":"qbittorrent"}}},{"node":{"name":"intellij-rust","owner":{"login":"intellij-rust"}}},{"node":{"name":"TheSims4ScriptModBuilder","owner":{"login":"LuquanLi"}}},{"node":{"name":"AndroidFaker","owner":{"login":"Android1500"}}}]}}}}
    */
@@ -70,7 +70,7 @@ export interface PullRequest {
 export async function getPullRequests(): Promise<PullRequest[]> {
   let data =
     (
-      await github_query(
+      await github_graphql(
         'query{user(login:"Caellian"){pullRequests(last:25){edges{node{repository{name owner{login}}title url merged closed}}}}}'
       )
     )?.data || {};

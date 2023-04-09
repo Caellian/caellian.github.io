@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { prerendering } from "$app/environment";
+  import { browser } from "$app/environment";
 
-  import languages from "$lib/used_languages.json";
+  import languages from "$data/used_languages.json";
 
   import Donut from "./Donut.svelte";
   import type { EntrySelection } from "./Donut.svelte";
@@ -19,7 +19,7 @@
 </script>
 
 <div class="language-usage">
-  {#if prerendering}
+  {#if !browser}
     <ul class="lang-list pagewide">
       {#each languages as entry}
         <li class="lang-entry" style="--color:{entry.color};">

@@ -1,30 +1,41 @@
 <script lang="ts">
+  import MouseShine from "./MouseShine.svelte";
   import Spinner from "./Spinner.svelte";
 
   export var name: string;
   export var description: string;
-  export var url: string | null | undefined;
+  export var url: string | null | undefined = undefined;
   export var time: string | null;
-
-  var pos = [0, 0];
-  function on_mousemove(ev: MouseEvent) {
-    pos = [ev.offsetX, ev.offsetY]
-  }
 </script>
 
-<a href={url || "."} on:mousemove={on_mousemove} style="--pos-x:{pos[0]}px;--pos-y:{pos[1]}px;">
-  {#if time != null}
-    <h4 style="grid-area: 1/1/2/2">{name}</h4>
-    <p style="grid-area: 1/2/3/3" class="time">{time}</p>
+<MouseShine>
+  {#if url}
+    <a class="container" href={url}>
+      {#if time != null}
+        <h4 style="grid-area: 1/1/2/2">{name}</h4>
+        <p style="grid-area: 1/2/3/3" class="time">{time}</p>
+      {:else}
+        <h4 style="grid-area: 1/1/2/3">{name}</h4>
+        <Spinner clazz="time" size="2rem" />
+      {/if}
+      <p style="grid-area: 2/1/3/3">{description}</p>
+    </a>
   {:else}
-    <h4 style="grid-area: 1/1/2/3">{name}</h4>
-    <Spinner clazz="time" size="2rem" />
+    <div class="container">
+      {#if time != null}
+        <h4 style="grid-area: 1/1/2/2">{name}</h4>
+        <p style="grid-area: 1/2/3/3" class="time">{time}</p>
+      {:else}
+        <h4 style="grid-area: 1/1/2/3">{name}</h4>
+        <Spinner clazz="time" size="2rem" />
+      {/if}
+      <p style="grid-area: 2/1/3/3">{description}</p>
+    </div>
   {/if}
-  <p style="grid-area: 2/1/3/3">{description}</p>
-</a>
+</MouseShine>
 
 <style lang="stylus">
-a
+.container
   display grid
   position relative
 
@@ -34,17 +45,15 @@ a
   align-items center
 
   padding 1rem 0.5rem
-  margin 1rem 1rem
 
   border 0.2rem solid var(--bg-accent)
   border-radius 0.25rem
+  background transparent
 
   transition background-color ease-in-out transition-medium, border-color ease-in-out transition-short
 
   @media screen and (min-width mobile-size)
     padding 1rem 2.5rem
-    margin 1rem
-
   .time,
   :global(.spinner)
     grid-area: 1/2/3/3
@@ -75,8 +84,7 @@ a
     content ""
     width 100%
     height 100%
-    background radial-gradient(circle at var(--pos-x) var(--pos-y), var(--bg-accent) 0%, transparent 50%)
-
+    
     transition opacity ease-out 200ms
     opacity 0
 

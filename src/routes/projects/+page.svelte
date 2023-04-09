@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { prerendering } from "$app/environment";
-  import Icon from "$lib/components/Icon.svelte";
-  import NavBar from "$lib/components/NavBar.svelte";
-  import ProjectResult from "$lib/components/ProjectResult.svelte";
+  import { browser } from "$app/environment";
+  import Icon from "$components/Icon.svelte";
+  import ProjectResult from "$components/ProjectResult.svelte";
   import type Project from "$lib/project";
-  import projects from "$lib/projects.json";
+  import projects from "$data/projects.json";
   import { deboundce } from "$lib/util";
   import { onMount } from "svelte";
 
@@ -164,8 +163,8 @@
 </script>
 
 <div class="content-wrapper">
-  <aside class="filters" style="--scroll-y:{Math.round(scroll_value)}px">
-    {#if !prerendering}
+  {#if browser}
+    <aside class="filters" style="--scroll-y:{Math.round(scroll_value)}px">
       <section class="search row">
         <div class="search" class:ready={search_query.trim().length > 0}>
           {#if search_query.trim().length == 0}
@@ -194,99 +193,100 @@
           {/if}
         </button>
       </section>
-    {/if}
-    {#if show_filters}
-      <section>
-        <p>Category:</p>
-        <ul class="choices">
-          <li
-            on:mouseup={toggle_tag("active")}
-            class:active={tags.includes("active")}
-          >
-            <Icon name="remove" size="1.4rem" color="var(--accent)" />
-            <p>Current</p>
-          </li>
-          <li
-            on:mouseup={toggle_tag("project")}
-            class:active={tags.includes("project")}
-          >
-            <Icon name="remove" size="1.4rem" color="var(--accent)" />
-            <p>Project</p>
-          </li>
-          <li
-            on:mouseup={toggle_tag("contrib")}
-            class:active={tags.includes("contrib")}
-          >
-            <Icon name="remove" size="1.4rem" color="var(--accent)" />
-            <p>Contribution</p>
-          </li>
-          <li
-            on:mouseup={toggle_tag("fork")}
-            class:active={tags.includes("fork")}
-          >
-            <Icon name="remove" size="1.4rem" color="var(--accent)" />
-            <p>Fork</p>
-          </li>
-        </ul>
-      </section>
-      {#if shown_langs.length > 0}
+
+      {#if show_filters}
         <section>
-          <p>Language:</p>
+          <p>Category:</p>
           <ul class="choices">
-            {#each shown_langs as lang (lang)}
-              <li
-                on:mouseup={toggle_tag(`lang:${lang}`)}
-                class:active={tags.find((it) => it == `lang:${lang}`) !=
-                  undefined}
-              >
-                <Icon name="remove" size="1.4rem" color="var(--accent)" />
-                <p>{lang}</p>
-              </li>
-            {/each}
+            <li
+              on:mouseup={toggle_tag("active")}
+              class:active={tags.includes("active")}
+            >
+              <Icon name="remove" size="1.4rem" color="var(--accent)" />
+              <p>Current</p>
+            </li>
+            <li
+              on:mouseup={toggle_tag("project")}
+              class:active={tags.includes("project")}
+            >
+              <Icon name="remove" size="1.4rem" color="var(--accent)" />
+              <p>Project</p>
+            </li>
+            <li
+              on:mouseup={toggle_tag("contrib")}
+              class:active={tags.includes("contrib")}
+            >
+              <Icon name="remove" size="1.4rem" color="var(--accent)" />
+              <p>Contribution</p>
+            </li>
+            <li
+              on:mouseup={toggle_tag("fork")}
+              class:active={tags.includes("fork")}
+            >
+              <Icon name="remove" size="1.4rem" color="var(--accent)" />
+              <p>Fork</p>
+            </li>
+          </ul>
+        </section>
+        {#if shown_langs.length > 0}
+          <section>
+            <p>Language:</p>
+            <ul class="choices">
+              {#each shown_langs as lang (lang)}
+                <li
+                  on:mouseup={toggle_tag(`lang:${lang}`)}
+                  class:active={tags.find((it) => it == `lang:${lang}`) !=
+                    undefined}
+                >
+                  <Icon name="remove" size="1.4rem" color="var(--accent)" />
+                  <p>{lang}</p>
+                </li>
+              {/each}
+            </ul>
+          </section>
+        {/if}
+        {#if shown_tags.length > 0}
+          <section>
+            <p>Tags:</p>
+            <ul class="tags choices">
+              {#each shown_tags as tag (tag)}
+                <li
+                  on:mouseup={toggle_tag(`tag:${tag}`)}
+                  class:active={tags.find((it) => it == `tag:${tag}`) !=
+                    undefined}
+                >
+                  <Icon name="remove" size="1.4rem" color="var(--accent)" />
+                  <p>{tag}</p>
+                </li>
+              {/each}
+            </ul>
+          </section>
+        {/if}
+      {:else}
+        <section class="info">
+          <h3>Icon Map</h3>
+          <div class="row">
+            <Icon name="merge" size="2rem" />
+            <h4>Fork</h4>
+          </div>
+          <ul>
+            <li class="row">
+              <span class="color" style="background-color:var(--green)" />
+              <p>Merged</p>
+            </li>
+            <li class="row">
+              <span class="color" style="background-color:var(--yellow)" />
+              <p>Not merged</p>
+            </li>
+            <li class="row">
+              <span class="color" style="background-color:var(--blue)" />
+              <p>Custom fork</p>
+            </li>
           </ul>
         </section>
       {/if}
-      {#if shown_tags.length > 0}
-        <section>
-          <p>Tags:</p>
-          <ul class="tags choices">
-            {#each shown_tags as tag (tag)}
-              <li
-                on:mouseup={toggle_tag(`tag:${tag}`)}
-                class:active={tags.find((it) => it == `tag:${tag}`) !=
-                  undefined}
-              >
-                <Icon name="remove" size="1.4rem" color="var(--accent)" />
-                <p>{tag}</p>
-              </li>
-            {/each}
-          </ul>
-        </section>
-      {/if}
-    {:else}
-      <section class="info">
-        <h3>Icon Map</h3>
-        <div class="row">
-          <Icon name="merge" size="2rem" />
-          <h4>Fork</h4>
-        </div>
-        <ul>
-          <li class="row">
-            <span class="color" style="background-color:var(--green)" />
-            <p>Merged</p>
-          </li>
-          <li class="row">
-            <span class="color" style="background-color:var(--yellow)" />
-            <p>Not merged</p>
-          </li>
-          <li class="row">
-            <span class="color" style="background-color:var(--blue)" />
-            <p>Custom fork</p>
-          </li>
-        </ul>
-      </section>
-    {/if}
-  </aside>
+    </aside>
+  {/if}
 
   <main class="results">
     <ul>

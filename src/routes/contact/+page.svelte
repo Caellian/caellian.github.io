@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { prerendering } from "$app/environment";
-  import Icon from "$lib/components/Icon.svelte";
-  import IconLinks from "$lib/components/IconLinks.svelte";
+  import { browser } from "$app/environment";
+  import Icon from "$components/Icon.svelte";
+  import IconLinks from "$components/IconLinks.svelte";
   import emailjs from "@emailjs/browser";
 
   var name = "";
@@ -45,7 +45,7 @@
 
 <main class="v-fit">
   <section class="center">
-    {#if !prerendering && emailStatus == null}
+    {#if browser && emailStatus == null}
       <h2>Contact Me via E-mail</h2>
       <div>
         <form on:submit|preventDefault={sendEmail} class="pagewide">
@@ -80,7 +80,7 @@
           <input class="button" type="submit" value="Send" />
         </form>
       </div>
-    {:else if !prerendering}
+    {:else if browser}
       {#if emailStatus == "error"}
         <div class="status error">
           <svg viewBox="0 0 24 24">
@@ -108,7 +108,7 @@
     {/if}
   </section>
 
-  {#if !prerendering}
+  {#if browser}
     <p class="mail-desc">
       (the form will send an e-mail to: <a href="mailto:tin.svagelj@gmail.com"
         >tin.svagelj@live.com</a

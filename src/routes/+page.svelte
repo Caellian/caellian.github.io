@@ -1,50 +1,54 @@
 <script lang="ts">
-  import LanguageDonut from "$lib/components/LanguageUsage.svelte";
-  import ProjectCard from "$lib/components/ProjectCard.svelte";
+  import LanguageDonut from "$components/LanguageUsage.svelte";
+  import ProjectCard from "$components/ProjectCard.svelte";
 
-  import projects from "$lib/projects.json";
-  import education from "$lib/official_education.json";
-  import languages from "$lib/used_languages.json";
-  import EventRef from "$lib/components/EventRef.svelte";
-  import TechStack from "$lib/components/TechStack.svelte";
-  import { LIMITS } from "$lib/util";
-  import { prerender } from "./+layout";
-  import { BUILD_DATE } from "$lib/util";
+  import projects from "$data/projects.json";
+  import jobs from "$data/job_history.json";
+  import education from "$data/official_education.json";
+  import languages from "$data/used_languages.json";
+  import EventRef from "$components/EventRef.svelte";
+  import About from "$content/About.svx";
+  import { BUILD_DATE, LIMITS } from "$lib/util";
+
+  import "../style/global.styl";
 </script>
 
 <main>
   <section id="hero">
+    <img src="/profile.png" alt="profile" />
     <div class="wrapper">
-      <p>Hi, my name is</p>
-      <h1><span class="name">Tin Švagelj</span>.</h1>
-      <h2>I write fast,<br />well-behaved software.</h2>
+      <span>
+        <p>Hi, my name is</p>
+        <h1><span class="name">Tin Švagelj</span>.</h1>
+        <h2>I write fast,<br />well-behaved software.</h2>
 
-      <p>
-        I'm a software developer based in Croatia who specializes in building
-        desktop applications.
-      </p>
-      <p>
-        Currently, I'm studying Information Technologies at University of
-        Rijeka.
-      </p>
+        <p>
+          I'm a software developer based in Croatia who loves graphics
+          programming.
+        </p>
+        <p>
+          Currently, I'm studying Information Technologies at University of
+          Rijeka.
+        </p>
+      </span>
     </div>
 
-    <div class="bg-layer"></div>
-    <div class="bg-layer"></div>
-    <div class="bg-layer"></div>
+    {#if !LIMITS.is_mobile}
+      <div class="bg-layer" />
+      <div class="bg-layer" />
+      <div class="bg-layer" />
+    {/if}
   </section>
 
   <section class="pagewide">
-    <h1 class="title">About Me</h1>
-
-    <p>Hello! My name is Tin and I like developing desktop applications and graphics software.</p>
-    <p>My current area of interest is WASM+WGPU rendering.</p>
-    <p>I'm available for hire and contracting.</p>
-    <a class="hidden" rel="me" href="https://mastodon.social/@caellian">Mastodon</a>
+    <About />
+    <a class="hidden" rel="me" href="https://mastodon.social/@caellian"
+      >Mastodon</a
+    >
   </section>
 
   <section class="pagewide current">
-    <h1 class="title">I'm Currently Working On</h1>
+    <h1 class="title">Personal Projects</h1>
 
     <div class="cards">
       {#each projects.filter((it) => it && it.active) as p}
@@ -55,24 +59,37 @@
     <a class="button" href="/projects">See More</a>
   </section>
 
+  <!--<section class="pagewide">
+    <h1 class="title">Employment History</h1>
+
+    <ul class="event-list">
+      {#each jobs as job}
+        <li>
+          <EventRef
+            name={job.name}
+            description={job.desc}
+            time={job.duration}
+          />
+        </li>
+      {/each}
+    </ul>
+  </section>-->
+
   <section class="pagewide">
     <h1 class="title">Official Education</h1>
 
-    {#each education as edu}
-      <EventRef
-        name={edu.name}
-        description={edu.degree}
-        time={edu.completion}
-        url={edu.url}
-      />
-    {/each}
-  </section>
-
-  <section class="pagewide">
-    <h1 class="title">Tech Stack</h1>
-    <p>Here's a list of technologies I'm up to speed with:</p>
-
-    <TechStack />
+    <ul class="event-list">
+      {#each education as edu}
+        <li>
+          <EventRef
+            name={edu.name}
+            description={edu.degree}
+            time={edu.completion}
+            url={edu.url}
+          />
+        </li>
+      {/each}
+    </ul>
   </section>
 
   {#if languages.length > 1}
@@ -111,49 +128,66 @@ section
       padding-right 0
 
 #hero
-  position relative
-  display grid
-  grid-template-columns 1rem 1fr 1rem
+  display flex
+  flex-direction column
+  justify-content space-evenly
   place-items center
 
   min-height calc(100vh - var(--nav-height) + 0.5rem)
   height max-content
+  max-width 100%
   padding 0
+  padding-inline 1ch
   margin-bottom 10vh
 
   overflow hidden
   border-bottom solid 0.15rem var(--bg-accent)
 
-  @media screen and (min-width: 1050px)
-    grid-template-columns 1fr 3fr 3fr
+  @media screen and (min-width: desktop-size)
+    display grid
+    padding-block 0
+    grid-template-columns 1fr 3fr 2fr 2fr 1fr
 
   .bg-layer
-    display block
-    margin 0
-    padding 0
-    width 100vw
-    height 100vh
-    z-index -100
+    display none
 
-    --dots-color var(--accent-3)
-    background-image radial-gradient(var(--dots-color) 0.12rem, transparent 0)
-    background-position 50% 50%
-    background-attachment fixed
-    background-size 5rem 5rem
-    transition background-size ease-in-out transition-medium
+    @media screen and (min-width: desktop-size)
+      display block
+      margin 0
+      padding 0
+      width 100vw
+      height 100vh
+      z-index -100
 
-  div
-    grid-area 1 / 1 / 2 / 4
-
-  .wrapper
-    margin-bottom 1rem
-
-    grid-area 1 / 2 / 2 / 3
+      --dots-color var(--bg-light) 
+      background-image radial-gradient(var(--dots-color) 0.12rem, transparent 0)
+      background-position 50% 50%
+      background-attachment fixed
+      background-size 5rem 5rem
+      transition background-size ease-in-out transition-medium
+  
+  img[alt="profile"]
+    width 10rem
+    width @css{max(15vw, 10rem)}
+    aspect-ratio 1 / 1
+    border-radius 100%
+    padding 0.5rem
+    margin 1rem
+    outline solid 2px var(--accent)
 
     @media screen and (min-width: tablet-size)
-      background-color hsla(0, 0%, 0%, 0.2)
+      grid-area 1 / 4 / 2 / 5
+
+  .wrapper
+    display grid
+    align-items center
+    grid-area 1 / 2 / 2 / 3
+    height 100%
+
+    @media screen and (min-width: tablet-size)
       padding 1.5rem
-      border-radius 1rem
+    @media screen and (min-width: desktop-size)
+      background-color hsla(0, 0%, 0%, 0.2)
 
     h1
       margin-bottom 2rem
@@ -170,6 +204,7 @@ section
 
     p
       margin 0
+      max-width 60ch
 
     .name
       color var(--accent)
@@ -177,34 +212,48 @@ section
 
       &:hover
         color var(--fg)
+  
+  .bg-layer
+    grid-row 1 / 2
+    grid-column 1 / -1
 
   @media screen and (min-width: tablet-size)
-    :nth-child(2).bg-layer
+    // :nth-child(1 of .bg-layer)
+    // waiting for https://bugzilla.mozilla.org/show_bug.cgi?id=854148
+    >div:nth-of-type(2).bg-layer
       --dots-color var(--accent-1)
-    :nth-child(3).bg-layer
+    >div:nth-of-type(3).bg-layer
       --dots-color var(--accent-2)
-    :nth-child(4).bg-layer
+    >div:nth-of-type(4).bg-layer
       --dots-color var(--accent-3)
 
     .wrapper
       transition background-color transition-medium ease-in-out
 
     &:hover
-      :nth-child(2).bg-layer
+      >div:nth-of-type(2).bg-layer
         background-size 3.25rem 3.25rem
-      :nth-child(3).bg-layer
+      >div:nth-of-type(3).bg-layer
         background-size 3.5rem 3.5rem
-      :nth-child(4).bg-layer
+      >div:nth-of-type(4).bg-layer
         background-size 3.75rem 3.75rem
 
-      .wrapper
-        background-color hsla(0, 0%, 0%, 0.4)
+    @media screen and (min-width: desktop-size)
+      &:hover
+        .wrapper
+          background-color hsla(0, 0%, 0%, 0.4)
 section.current a
   margin 1rem auto
 
 .cards
   display flex
   flex-wrap wrap
+  gap 1rem
+  justify-content center
+
+.event-list
+  display flex
+  flex-direction column
   gap 1rem
 
 .current-langs

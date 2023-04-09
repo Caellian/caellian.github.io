@@ -8,7 +8,7 @@ const config = {
     mdsvex(),
     preprocess({
       stylus: {
-        prependData: "@import 'src/style/constants';",
+        prependData: "@import 'src/style/constants';\n",
       },
     }),
   ],
