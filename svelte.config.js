@@ -28,6 +28,9 @@ const config = {
         enabled: true,
       },
     }),
+    prerender: {
+      origin: "https://caellian.me",
+    },
   },
 };
 

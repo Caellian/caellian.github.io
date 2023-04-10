@@ -47,6 +47,11 @@ type ColorList = {
   [id: string]: Color;
 };
 
+interface ThemeSettings {
+  primary: Color;
+  secondary: Color;
+}
+
 export class Theme {
   constructor(public accent: Color, public mode: Mode) {
     let accent_hsl = accent.toHSL();
@@ -65,33 +70,48 @@ export class Theme {
     const hsl = this.accent.toHSL();
     const result = new Map();
 
-    result.set("accent", hsl);
-
     if (this.mode == Mode.Light) {
-      result.set("bg", new HSL(0, 0, 0.85));
-      result.set("bg-light", new HSL(0, 0, 0.9));
-      result.set("bg-accent", new HSL(0, 0, 1));
+      hsl.l = 0.4;
+      result.set("bg", new HSL(0, 0, 0.98));
+      result.set("bg-l", "98%");
+      result.set("bg-light", new HSL(0, 0, 0.95));
+      result.set("bg-light-l", "95%");
+      result.set("bg-accent", new HSL(0, 0, 0.9));
+      result.set("bg-accent-l", "90%");
       result.set("fg", new HSL(0, 0, 0.1));
+      result.set("fg-l", "10%");
       result.set("fg-accent", new HSL(0, 0, 0.2));
+      result.set("fg-accent-l", "20%");
 
       for (let i = STEP_COUNT; i >= 0; i--) {
         const l = (1.0 / STEP_COUNT) * i;
         const color = new HSL(hsl.h, hsl.s, l);
         result.set(`accent-${STEP_COUNT - i}`, color);
+        result.set(`accent-${STEP_COUNT - i}-l`, `${Math.round(l * 100)}%`);
       }
     } else if (this.mode == Mode.Dark) {
+      hsl.l = 0.45;
       result.set("bg", new HSL(0, 0, 0.1));
+      result.set("bg-l", "10%");
       result.set("bg-light", new HSL(0, 0, 0.15));
+      result.set("bg-light-l", "15%");
       result.set("bg-accent", new HSL(0, 0, 0.2));
+      result.set("bg-accent-l", "20%");
       result.set("fg", new HSL(0, 0, 0.8));
+      result.set("fg-l", "80%");
       result.set("fg-accent", new HSL(0, 0, 0.9));
+      result.set("fg-accent-l", "90%");
 
       for (let i = 0; i <= STEP_COUNT; i++) {
         const l = (1.0 / STEP_COUNT) * i;
         const color = new HSL(hsl.h, hsl.s, l);
         result.set(`accent-${i}`, color);
+        result.set(`accent-${STEP_COUNT - i}-l`, `${Math.round(l * 100)}%`);
       }
     }
+
+    result.set("accent", hsl);
+    result.set("accent-l", `${hsl.l * 100}%`);
 
     result.set("red", new HSL(0, 0.6, 0.6));
     result.set("orange", new HSL(30, 0.6, 0.6));
@@ -110,7 +130,7 @@ export class Theme {
   colorCss(): ThemeCss {
     let result: ThemeCss = {};
     for (const [k, v] of this.colorMap().entries()) {
-      result[k] = v.toCSS();
+      result[k] = v.toString();
     }
     return result;
   }
@@ -124,14 +144,17 @@ export class Theme {
   }
 }
 
-export function load_theme() {
-  const mode =
-    parse_mode(localStorage.getItem("ui-theme-mode")) ||
-    (window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? Mode.Dark
-      : Mode.Light) ||
-    Mode.Dark;
+export function load_theme(accent: string = "#00b3b3") {
+  let mode = parse_mode(localStorage.getItem("ui-theme-mode"));
+  let theme = new Theme(RGB.parse(accent), mode || Mode.Dark);
 
-  return new Theme(RGB.parse("#ff7b00"), mode);
+  if (!mode && window.matchMedia) {
+    const mm = window.matchMedia("(prefers-color-scheme: dark)");
+    theme.mode = mm.matches ? Mode.Dark : Mode.Light;
+    mm.addEventListener("change", (e) => {
+      theme.mode = e.matches ? Mode.Dark : Mode.Light;
+    });
+  }
+
+  return theme;
 }

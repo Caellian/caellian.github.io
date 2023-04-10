@@ -86,7 +86,7 @@ export class RGB implements Color {
   }
 
   toString(): string {
-    return `RGB { r: ${this.r}, g: ${this.g}, b: ${this.b}}`;
+    return this.toCSS();
   }
 }
 
@@ -148,10 +148,15 @@ export class HSL implements Color {
   toHSL(): HSL {
     return this;
   }
+
   toCSS(): string {
     return `hsl(${Math.round(this.h)},${Math.round(this.s * 100)}%,${Math.round(
       this.l * 100
     )}%)`;
+  }
+
+  toString(): string {
+    return this.toCSS();
   }
 }
 

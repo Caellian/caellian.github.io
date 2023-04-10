@@ -36,8 +36,8 @@
 
   const project_style = cssVars({
     bg_deg: `${deg}deg`,
-    bg_from: `hsl(${from},50%,45%)`,
-    bg_to: `hsl(${from + 40},50%,45%)`,
+    bg_from: `hsl(${from},50%,var(--accent-l))`,
+    bg_to: `hsl(${from + 40},50%,var(--accent-l))`,
   });
 
   let container: HTMLDivElement;
