@@ -1,3 +1,3 @@
 [submodule "src/posts"]
 	path = src/posts
-	url = git@github.com:Caellian/blog.git
+	url = https://github.com/Caellian/blog.git

@@ -7,18 +7,16 @@
 
 {#if data.post}
   {#if data.post.previous}
-    <p>
-      Previous post: <a href="/blog/{data.post.previous}"
-        >{data.previousTitle}</a
-      >
-    </p>
+    <a rel="prev" href="/blog/{data.post.previous}">
+      Previous post: {data.previousTitle}
+    </a>
   {/if}
 
   <h1>{data.post.title}</h1>
   <div>{@html data.content}</div>
 
   {#if data.post.next}
-    <p>Next post: <a href="/blog/{data.post.next}">{data.nextTitle}</a></p>
+    <a rel="next" href="/blog/{data.post.next}">Next post: {data.nextTitle}</a>
   {/if}
 {:else}
   <p>Unknown post</p>

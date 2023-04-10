@@ -2,6 +2,10 @@
 
 My personal web portfolio & blog.
 
+## Build
+
+Clone with `--recurse-submodules` to also get blog posts.
+
 ## License
 
 Components of the portfolio are licensed under GPL license, version 3.0.
