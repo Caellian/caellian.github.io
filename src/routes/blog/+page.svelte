@@ -14,5 +14,4 @@
   </ul>
 </main>
 
-<style lang="stylus">
-</style>
+<a class="hidden" href="/blog/index">Blog index</a>
