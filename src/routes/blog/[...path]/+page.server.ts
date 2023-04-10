@@ -1,7 +1,7 @@
-import { Blog } from "../../../lib/blog";
+import { BLOG } from "$lib/blog";
 
-async function postTitle(blog: Blog, slug: string) {
-  let post = await blog.getPost(slug);
+async function postTitle(slug: string) {
+  let post = await BLOG.getPost(slug);
   if (post) {
     return await post.title();
   }
@@ -9,14 +9,12 @@ async function postTitle(blog: Blog, slug: string) {
 }
 
 export const load = async ({ params }: { params: { path: string } }) => {
-  const blog = new Blog("src/posts");
-  const post = await blog.getPost(params.path);
+  const post = await BLOG.getPost(params.path);
   const postInfo = await post?.info();
   const content = await post?.content();
 
-  const previousTitle =
-    postInfo?.previous && postTitle(blog, postInfo?.previous);
-  const nextTitle = postInfo?.next && postTitle(blog, postInfo?.next);
+  const previousTitle = postInfo?.previous && postTitle(postInfo?.previous);
+  const nextTitle = postInfo?.next && postTitle(postInfo?.next);
 
   return {
     post: postInfo,

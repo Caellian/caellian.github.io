@@ -29,16 +29,30 @@ export interface PostInfo extends PostRSSInfo {
 const EXTENSIONS = ["md", "svx"];
 
 export class Blog {
+  _files: string[] | null;
+  _posts: Post[] | null;
+
+  /**
+   * @param path relative to environment cwd (project root)
+   */
   constructor(public path: string) {
     if (!this.path.endsWith("/")) {
       this.path += "/";
     }
+    this._files = null;
+    this._posts = null;
   }
 
   async postFiles() {
-    return (await glob(EXTENSIONS.map((ext) => this.path + "**/*." + ext)))
+    if (this._files) {
+      return this._files;
+    }
+
+    return (this._files = (
+      await glob(EXTENSIONS.map((ext) => this.path + "**/*." + ext))
+    )
       .map((path) => path.substring(this.path.length).replace(/^\//, ""))
-      .filter((path) => path != "README.md");
+      .filter((path) => path != "README.md"));
   }
 
   async getRepo() {
@@ -46,8 +60,13 @@ export class Blog {
   }
 
   async posts() {
+    if (this._posts) {
+      return this._posts;
+    }
     const self = this;
-    return (await this.postFiles()).map((path) => new Post(self, path));
+    return (this._posts = (await this.postFiles()).map(
+      (path) => new Post(self, path)
+    ));
   }
 
   async getPost(slug: string) {
@@ -68,6 +87,8 @@ export class Blog {
     return undefined;
   }
 }
+
+export const BLOG = new Blog("posts");
 
 export interface PostChange {
   date: Date;

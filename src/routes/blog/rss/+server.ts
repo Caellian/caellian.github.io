@@ -1,12 +1,11 @@
-import { Blog, PostRSSInfo } from "../../../lib/blog";
+import { BLOG, PostRSSInfo } from "$lib/blog";
 
 export const prerender = true;
 
 const URL = "https://caellian.me";
 
 export const GET = async () => {
-  const blog = new Blog("src/posts");
-  const posts = await blog.posts();
+  const posts = await BLOG.posts();
   const feed = await Promise.all(posts.map((post) => post.rssInfo()));
   feed.sort((a, b) => (a.published < b.published ? 1 : -1));
 
