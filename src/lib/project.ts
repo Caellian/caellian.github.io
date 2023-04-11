@@ -5,11 +5,11 @@ export default interface Project {
   name: string;
 
   tags: string[];
-  active: boolean | undefined;
-  contribution: boolean | undefined;
-  fork: boolean | undefined;
+  active?: boolean;
+  contribution?: boolean;
+  fork?: boolean;
   lang: string;
-  url: string;
+  url?: string;
 
   description: string[];
 }
@@ -51,7 +51,8 @@ export async function getRepoContributions() {
   const result: Record<string, unknown>[] = [];
   for (const i of edges) {
     const node: Record<string, unknown> = i?.node || {};
-    node.owner = node.owner?.login || "unknown";
+    node.owner =
+      (node.owner as Record<string, string> | null)?.login || "unknown";
     result.push(node);
   }
 

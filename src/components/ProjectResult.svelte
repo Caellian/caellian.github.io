@@ -30,7 +30,9 @@
     {/if}
     <p class="description">{@html project.description.join("<br>")}</p>
     <div class="bg" />
-    <RepoLink link={project.url} />
+    {#if project.url}
+      <RepoLink link={project.url} />
+    {/if}
   </li>
 {/if}
 

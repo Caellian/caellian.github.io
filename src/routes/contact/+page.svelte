@@ -7,7 +7,7 @@
   var email = "";
   var message = "";
 
-  var emailStatus = null;
+  var emailStatus: string | null = null;
 
   function valid() {
     return (

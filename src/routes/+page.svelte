@@ -7,7 +7,7 @@
   import education from "$data/official_education.json";
   import languages from "$data/used_languages.json";
   import EventRef from "$components/EventRef.svelte";
-  import About from "$content/About.svx";
+  import About, { metadata } from "$content/About.svx";
   import { BUILD_DATE, LIMITS } from "$lib/util";
 
   import "../style/global.styl";

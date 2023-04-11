@@ -1,4 +1,4 @@
-import { BLOG, PostRSSInfo } from "$lib/blog";
+import { BLOG, type PostRSSInfo } from "$lib/blog";
 
 export const prerender = true;
 

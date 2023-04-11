@@ -65,7 +65,7 @@
 
   var selected = -1;
 
-  var segments = [];
+  var segments: Entry[] = [];
 
   let currRot = -90 + startAngle;
 

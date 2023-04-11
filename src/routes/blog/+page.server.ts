@@ -1,4 +1,4 @@
-import { BLOG, PostInfo } from "$lib/blog";
+import { BLOG, type PostInfo } from "$lib/blog";
 
 export const load = async () => {
   const posts = await Promise.all(

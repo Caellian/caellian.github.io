@@ -10,6 +10,13 @@ interface Preprocessed {
   map?: string;
 }
 
+const enum RevwalkSort {
+  NONE = 0,
+  TOPOLOGICAL = 1,
+  TIME = 2,
+  REVERSE = 4,
+}
+
 export interface PostRSSInfo {
   title: string;
   description?: string;
@@ -185,7 +192,7 @@ export class Post {
     const revwalk = NodeGit.Revwalk.create(repo);
     const head = await repo.getHeadCommit();
     revwalk.push(head.id());
-    revwalk.sorting(NodeGit.Revwalk.SORT.TIME | NodeGit.Revwalk.SORT.REVERSE);
+    revwalk.sorting(RevwalkSort.TIME | RevwalkSort.REVERSE);
 
     const entries = await revwalk.fileHistoryWalk(this.path, 1000);
 

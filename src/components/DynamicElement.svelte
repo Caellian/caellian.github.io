@@ -1,7 +1,7 @@
 <script lang="ts">
   export let type = "div";
   export let className: string | undefined = undefined;
-  export let props: object = {};
+  export let props: Record<string, string> = {};
 
   let content: HTMLDivElement;
 

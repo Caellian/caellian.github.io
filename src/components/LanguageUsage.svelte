@@ -1,11 +1,18 @@
 <script lang="ts">
   import { browser } from "$app/environment";
 
-  import languages from "$data/used_languages.json";
+  import language_data from "$data/used_languages.json";
 
   import Donut from "./Donut.svelte";
   import type { EntrySelection } from "./Donut.svelte";
   import { cssVars, LIMITS } from "$lib/util";
+
+  interface Language {
+    name: string;
+    color: string;
+    weight: number;
+  }
+  const languages: Language[] = language_data;
 
   let lang_name = "";
   let lang_style = "";

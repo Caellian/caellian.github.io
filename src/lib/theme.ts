@@ -146,7 +146,7 @@ export class Theme {
 
 export function load_theme(accent = "#00b3b3") {
   const mode = parse_mode(localStorage.getItem("ui-theme-mode"));
-  const theme = new Theme(RGB.parse(accent), mode || Mode.Dark);
+  const theme = new Theme(RGB.parse(accent)!, mode || Mode.Dark);
 
   if (!mode && window.matchMedia) {
     const mm = window.matchMedia("(prefers-color-scheme: dark)");

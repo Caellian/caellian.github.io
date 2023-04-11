@@ -2,7 +2,9 @@ import { writable } from "svelte/store";
 import { RGB } from "./color";
 import { Mode, mode_to_str, Theme } from "./theme";
 
-export const theme = writable(new Theme(RGB.parse("#14a7eb"), Mode.Dark));
+// TODO: Use store theme in root layout
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+export const theme = writable(new Theme(RGB.parse("#14a7eb")!, Mode.Dark));
 theme.subscribe((t: Theme) => {
   if (typeof localStorage !== "undefined") {
     localStorage.setItem("ui-theme-mode", mode_to_str(t.mode));

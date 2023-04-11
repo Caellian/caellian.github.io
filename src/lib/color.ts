@@ -61,7 +61,7 @@ export class RGB implements Color {
     }
   }
 
-  static parse(input: string): RGB | null {
+  static parse(input: string): Color | null {
     let m = input.match(/^#([0-9a-f]{3})$/i);
     if (m != null) {
       const s = m[1];

@@ -1,14 +1,14 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { page } from "$app/stores";
-  import { RGB } from "$lib/color";
+  import { Color, RGB } from "$lib/color";
 
   import NavBar from "$components/NavBar.svelte";
   import { Mode, Theme } from "$lib/theme";
 
   var navigate = $page.url.pathname === "/navigation";
 
-  const theme = new Theme(RGB.parse("#00b3b3"), Mode.Dark);
+  const theme = new Theme(RGB.parse("#00b3b3")!, Mode.Dark);
 </script>
 
 <svelte:head>

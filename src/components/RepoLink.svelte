@@ -28,12 +28,10 @@
   }
 </script>
 
-{#if link != null}
-  <a href={link} class="button repo-link">
-    <Icon size="2rem" name={icon()} />
-    <p>{label()}</p>
-  </a>
-{/if}
+<a href={link} class="button repo-link">
+  <Icon size="2rem" name={icon()} />
+  <p>{label()}</p>
+</a>
 
 <style lang="stylus">
 a.button
