@@ -1,5 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
+  import toPX from "to-px";
 
   interface Icon {
     dim: number;
@@ -10,9 +11,9 @@
   const icons: { [key: string]: Icon } = icon_list;
 
   export let name: string;
-  export let size = "1rem";
-  export let width = size || "1rem";
-  export let height = size || "1rem";
+  export let size = "1em";
+  export let width = toPX(size || "1em");
+  export let height = toPX(size || "1em");
   export let color = "var(--icon-color, #fff)";
 
   const icon = icons[name] || null;
@@ -23,8 +24,8 @@
     on:mouseup
     style="--color:{color};fill:var(--color);"
     class="{$$props.class || `icon-${name}`} icon"
-    width={width || "1rem"}
-    height={height || "1rem"}
+    {width}
+    {height}
     viewBox="-2 -2 {icon?.dim + 2} {icon?.dim + 2}">{@html icon?.content}</svg
   >
 {/if}
