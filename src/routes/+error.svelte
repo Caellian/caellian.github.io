@@ -3,7 +3,9 @@
   import FourOhFour from "./404/+page.svelte";
 
   function copyError() {
-    navigator.clipboard.writeText($page.error?.message || "");
+    navigator &&
+      navigator.clipboard &&
+      navigator.clipboard.writeText($page.error?.message || "");
   }
 </script>
 

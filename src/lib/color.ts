@@ -1,6 +1,6 @@
 import { clamp } from "$lib/util";
 
-abstract class Color {
+export abstract class Color {
   abstract toRGB(): RGB;
   abstract toHSL(): HSL;
   abstract toCSS(): string;
@@ -115,7 +115,7 @@ export class HSL implements Color {
   }
 
   static parse(input: string): HSL | null {
-    let matches = HSLA_RE.exec(input);
+    const matches = HSLA_RE.exec(input);
     if (matches) {
       return new HSL(
         parseFloat(matches[1]),

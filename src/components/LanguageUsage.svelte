@@ -7,8 +7,8 @@
   import type { EntrySelection } from "./Donut.svelte";
   import { cssVars, LIMITS } from "$lib/util";
 
-  let lang_name: string = "";
-  let lang_style: string = "";
+  let lang_name = "";
+  let lang_style = "";
 
   function languageSelected(l: EntrySelection) {
     lang_name = l.name;

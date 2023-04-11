@@ -8,7 +8,7 @@
 
 <script lang="ts">
   export var items: TimelineItem[] = [];
-  export var lineWidth: string = "0.125rem";
+  export var lineWidth = "0.125rem";
 </script>
 
 <article

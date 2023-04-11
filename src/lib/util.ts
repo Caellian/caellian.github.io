@@ -2,21 +2,26 @@ export const BUILD_DATE = new Date().toLocaleDateString();
 export const BUILD_TIME = new Date().toLocaleTimeString();
 
 export class Limits {
-  private static _ua: String | null;
+  private static _ua: string | null;
   private static _mobile: boolean | undefined;
   private static _webkit: boolean | undefined;
 
-  get ua(): String | null {
-    return Limits._ua ??= (typeof window !== 'undefined' && window.navigator && window.navigator.userAgent) || null;
+  get ua(): string | null {
+    return (Limits._ua ??=
+      (typeof window !== "undefined" &&
+        window.navigator &&
+        window.navigator.userAgent) ||
+      null);
   }
 
   public get is_mobile(): boolean {
-    return Limits._mobile ??= this.ua?.match(/(iPhone|iPod|iPad|Android|BlackBerry)/) != null;
+    return (Limits._mobile ??=
+      this.ua?.match(/(iPhone|iPod|iPad|Android|BlackBerry)/) != null);
   }
 
   public get is_webkit(): boolean {
-    let i = this.ua?.indexOf("WebKit");
-    return Limits._webkit ??= i != null && i > -1;
+    const i = this.ua?.indexOf("WebKit");
+    return (Limits._webkit ??= i != null && i > -1);
   }
 }
 
@@ -38,7 +43,7 @@ export function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(value, max));
 }
 
-export function round_n(value: number, decimals: number = 2) {
+export function round_n(value: number, decimals = 2) {
   if (decimals < 0) {
     throw new Error(`tried rounding number to ${decimals} decimals`);
   } else if (decimals == 0) {
@@ -50,7 +55,7 @@ export function round_n(value: number, decimals: number = 2) {
 
 export function css_style_constructor(
   variables: Record<string, string>,
-  prefix: string = ""
+  prefix = ""
 ): string {
   let builder = "";
 
@@ -66,7 +71,7 @@ export function cssVars(variables: Record<string, string>): string {
   return css_style_constructor(variables);
 }
 
-export function deboundce<R, T extends any[]>(
+export function deboundce<R, T extends unknown[]>(
   f: (...args: T) => R,
   timeout = 300
 ) {
@@ -79,12 +84,12 @@ export function deboundce<R, T extends any[]>(
   };
 }
 
-export function chainFn<T extends any[]>(
-  head: (...args: T) => any,
-  ...tail: Function[]
+export function chainFn<T extends unknown[]>(
+  head: (...args: T) => unknown,
+  ...tail: ((arg: unknown) => unknown)[]
 ) {
   return (...params: T) => {
-    let result: any = head(...params);
+    let result: unknown = head(...params);
     for (const fn of tail) {
       result = fn(result);
     }
@@ -92,9 +97,9 @@ export function chainFn<T extends any[]>(
   };
 }
 
-export function filter_split<E>(iter: Iterable<E>, f: (element: E) => Boolean) {
-  let matches = [];
-  let rest = [];
+export function filter_split<E>(iter: Iterable<E>, f: (element: E) => boolean) {
+  const matches = [];
+  const rest = [];
 
   for (const el of iter) {
     if (f(el)) {

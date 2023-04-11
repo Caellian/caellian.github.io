@@ -14,7 +14,7 @@
   let shown_tags: string[] = show_tags();
 
   let show_filters = true;
-  let search_query: string = "";
+  let search_query = "";
 
   const MAX_TAGS = 12;
 
@@ -37,7 +37,7 @@
   }
 
   function show_languages() {
-    let s: Set<string> = new Set();
+    const s: Set<string> = new Set();
 
     for (const proj of results) {
       s.add(proj.lang);
@@ -46,7 +46,7 @@
       s.add(lang);
     }
 
-    let result = Array.from(s);
+    const result = Array.from(s);
     result.sort((a, z) => a.localeCompare(z));
     return result;
   }
@@ -84,7 +84,7 @@
     console.log(text);
 
     if (Array.isArray(text)) {
-      let joined = text.join(" ").toLowerCase();
+      const joined = text.join(" ").toLowerCase();
       return words.filter((word) => joined.includes(word)).length > 0;
     } else {
       text = text.toLowerCase();
@@ -93,7 +93,7 @@
   }
 
   function get_results(): Project[] {
-    let words = search_query
+    const words = search_query
       .toLowerCase()
       .trim()
       .replace(/[ \t]+/, " ")
@@ -105,23 +105,23 @@
 
     let result: Project[] = [];
 
-    let active = tags.includes("active");
-    let project = tags.includes("project");
-    let contrib = tags.includes("contrib");
-    let fork = tags.includes("fork");
-    let any_kind = !project && !contrib && !fork;
+    const active = tags.includes("active");
+    const project = tags.includes("project");
+    const contrib = tags.includes("contrib");
+    const fork = tags.includes("fork");
+    const any_kind = !project && !contrib && !fork;
 
     const langs = get_tag_langs();
     const clean_tags = get_tags();
 
     for (const proj of projects) {
-      let active_ = !active || proj.active;
-      let contrib_ = contrib && proj.contribution;
-      let fork_ = fork && proj.fork;
-      let project_ = project && !proj.contribution && !proj.fork;
+      const active_ = !active || proj.active;
+      const contrib_ = contrib && proj.contribution;
+      const fork_ = fork && proj.fork;
+      const project_ = project && !proj.contribution && !proj.fork;
 
-      let lang_ = langs.length == 0 || langs.includes(proj.lang);
-      let tags_ =
+      const lang_ = langs.length == 0 || langs.includes(proj.lang);
+      const tags_ =
         clean_tags.length == 0 ||
         clean_tags
           .map((tag) => proj.tags.includes(tag))
@@ -152,8 +152,8 @@
   let scroll_value = 0;
 
   onMount(() => {
-    window.addEventListener("scroll", (_: Event) => {
-      let nav = document.querySelector("nav#navbar");
+    window.addEventListener("scroll", () => {
+      const nav = document.querySelector("nav#navbar");
       scroll_value = Math.max(
         window.pageYOffset - (nav?.clientHeight || 0) - 4,
         0

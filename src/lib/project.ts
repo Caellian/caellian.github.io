@@ -38,17 +38,19 @@ export async function getContributions() {
 
 export async function getRepoContributions() {
   const data =
-    (await github_graphql(
-      'query{user(login:"Caellian"){repositoriesContributedTo(last:20){edges{node{name url owner{login}}}}}}'
-    ))?.data || {};
+    (
+      await github_graphql(
+        'query{user(login:"Caellian"){repositoriesContributedTo(last:20){edges{node{name url owner{login}}}}}}'
+      )
+    )?.data || {};
   /**
    * {"data":{"user":{"repositoriesContributedTo":{"edges":[{"node":{"name":"stylus","owner":{"login":"stylus"}}},{"node":{"name":"qBittorrent","owner":{"login":"qbittorrent"}}},{"node":{"name":"intellij-rust","owner":{"login":"intellij-rust"}}},{"node":{"name":"TheSims4ScriptModBuilder","owner":{"login":"LuquanLi"}}},{"node":{"name":"AndroidFaker","owner":{"login":"Android1500"}}}]}}}}
    */
   const edges = data?.user?.repositoriesContributedTo?.edges || [];
 
-  let result = [];
+  const result: Record<string, unknown>[] = [];
   for (const i of edges) {
-    let node = i?.node || {};
+    const node: Record<string, unknown> = i?.node || {};
     node.owner = node.owner?.login || "unknown";
     result.push(node);
   }
@@ -68,7 +70,7 @@ export interface PullRequest {
 }
 
 export async function getPullRequests(): Promise<PullRequest[]> {
-  let data =
+  const data =
     (
       await github_graphql(
         'query{user(login:"Caellian"){pullRequests(last:25){edges{node{repository{name owner{login}}title url merged closed}}}}}'
@@ -77,9 +79,9 @@ export async function getPullRequests(): Promise<PullRequest[]> {
 
   const edges = data?.user?.pullRequests?.edges || [];
 
-  let result = [];
+  const result = [];
   for (const edge of edges) {
-    let node = edge.node;
+    const node = edge.node;
     node.repository = node.repository || {};
     node.repository.owner = node.repository?.owner?.login || "";
     if (node.merged || !node.closed) {

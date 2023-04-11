@@ -63,9 +63,8 @@ export class Blog {
     if (this._posts) {
       return this._posts;
     }
-    const self = this;
     return (this._posts = (await this.postFiles()).map(
-      (path) => new Post(self, path)
+      (path) => new Post(this, path)
     ));
   }
 
@@ -188,7 +187,7 @@ export class Post {
     revwalk.push(head.id());
     revwalk.sorting(NodeGit.Revwalk.SORT.TIME | NodeGit.Revwalk.SORT.REVERSE);
 
-    let entries = await revwalk.fileHistoryWalk(this.path, 1000);
+    const entries = await revwalk.fileHistoryWalk(this.path, 1000);
 
     this._history = [];
     for (const e of entries) {
@@ -220,9 +219,6 @@ export class Post {
   }
 
   async rssInfo() {
-    const fm = await this.frontmatter();
-    const title = (fm.title as string) || this.fileName();
-
     return {
       title: await this.title(),
       description: await this.description(),

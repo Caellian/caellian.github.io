@@ -30,9 +30,9 @@
 
   function on_click(target: string) {
     return () => {
-      clickDispatch('click', { target });
+      clickDispatch("click", { target });
     };
-  };
+  }
 </script>
 
 {#each links as l}

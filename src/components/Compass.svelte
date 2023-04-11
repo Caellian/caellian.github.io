@@ -1,9 +1,11 @@
 <script lang="ts">
+  import toPX from "to-px";
+
   export var color = "#fff";
-  export var spin: boolean = false;
-  export var size: string = "2rem";
-  export var width = size;
-  export var height = size;
+  export var spin = false;
+  export var size = "2rem";
+  export var width = toPX(size);
+  export var height = toPX(size);
 </script>
 
 <svg

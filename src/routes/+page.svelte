@@ -3,7 +3,7 @@
   import ProjectCard from "$components/ProjectCard.svelte";
 
   import projects from "$data/projects.json";
-  import jobs from "$data/job_history.json";
+  //import jobs from "$data/job_history.json";
   import education from "$data/official_education.json";
   import languages from "$data/used_languages.json";
   import EventRef from "$components/EventRef.svelte";

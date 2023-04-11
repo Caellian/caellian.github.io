@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { LIMITS } from "$lib/util";
-
   var shine_on = false;
   var pos = [0, 0];
 

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { browser } from "$app/environment";
-  import Icon from "$components/Icon.svelte";
   import IconLinks from "$components/IconLinks.svelte";
   import emailjs from "@emailjs/browser";
 
@@ -19,7 +18,7 @@
     );
   }
 
-  function sendEmail(_: Event) {
+  function sendEmail() {
     if (!valid()) {
       return;
     }

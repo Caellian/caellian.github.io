@@ -1,5 +1,5 @@
 import { browser } from "$app/environment";
-import { darker, HSL, lighter, RGB, type Color } from "./color";
+import { HSL, RGB, type Color } from "./color";
 import { cssVars } from "./util";
 
 export enum Mode {
@@ -43,18 +43,18 @@ type ThemeCss = {
   [id: string]: string;
 };
 
-type ColorList = {
+export type ColorList = {
   [id: string]: Color;
 };
 
-interface ThemeSettings {
+export interface ThemeSettings {
   primary: Color;
   secondary: Color;
 }
 
 export class Theme {
   constructor(public accent: Color, public mode: Mode) {
-    let accent_hsl = accent.toHSL();
+    const accent_hsl = accent.toHSL();
     accent = new HSL(accent_hsl.h, 1, 0.5);
 
     if (browser) {
@@ -128,7 +128,7 @@ export class Theme {
   }
 
   colorCss(): ThemeCss {
-    let result: ThemeCss = {};
+    const result: ThemeCss = {};
     for (const [k, v] of this.colorMap().entries()) {
       result[k] = v.toString();
     }
@@ -144,9 +144,9 @@ export class Theme {
   }
 }
 
-export function load_theme(accent: string = "#00b3b3") {
-  let mode = parse_mode(localStorage.getItem("ui-theme-mode"));
-  let theme = new Theme(RGB.parse(accent), mode || Mode.Dark);
+export function load_theme(accent = "#00b3b3") {
+  const mode = parse_mode(localStorage.getItem("ui-theme-mode"));
+  const theme = new Theme(RGB.parse(accent), mode || Mode.Dark);
 
   if (!mode && window.matchMedia) {
     const mm = window.matchMedia("(prefers-color-scheme: dark)");

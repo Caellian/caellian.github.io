@@ -10,12 +10,12 @@
   const icons: { [key: string]: Icon } = icon_list;
 
   export let name: string;
-  export let size: string = "1rem";
-  export let width: string = size || "1rem";
-  export let height: string = size || "1rem";
-  export let color: string = "var(--icon-color, #fff)";
+  export let size = "1rem";
+  export let width = size || "1rem";
+  export let height = size || "1rem";
+  export let color = "var(--icon-color, #fff)";
 
-  let icon = icons[name] || null;
+  const icon = icons[name] || null;
 </script>
 
 {#if icon != null && browser}

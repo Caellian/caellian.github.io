@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cssVars, LIMITS, Limits } from "$lib/util";
+  import { cssVars, LIMITS } from "$lib/util";
   import type Project from "$lib/project";
   import { onMount } from "svelte";
 
@@ -60,8 +60,8 @@
         window.requestAnimationFrame(() => {
           const offsetX = e.pageX - center.x;
           const offsetY = e.pageY - center.y;
-          let x = (offsetX / bounds.width) * 4;
-          let y = -(offsetY / bounds.height) * 4;
+          const x = (offsetX / bounds.width) * 4;
+          const y = -(offsetY / bounds.height) * 4;
 
           child.style.transform = t(y, x);
         });

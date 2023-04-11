@@ -24,19 +24,19 @@
 
 <script lang="ts">
   export var entries: ChartEntry[];
-  export var sort: boolean = true;
+  export var sort = true;
 
   if (sort) {
     entries.sort((a, b) => b.weight - a.weight);
   }
 
-  export var background: string = "#fff";
-  export var round: boolean = true;
-  export var width: number = 12;
+  export var background = "#fff";
+  export var round = true;
+  export var width = 12;
   export var entryWidth: number | null = null;
-  export var spacing: number = 4;
-  export var startAngle: number = 0;
-  export var borderWidth: number = 1;
+  export var spacing = 4;
+  export var startAngle = 0;
+  export var borderWidth = 1;
   export var borderColor: string | null = null;
   export var shadowColor: string | null = "rgba(0, 0, 0, 0.2)";
   export var onSelect: (selection: EntrySelection) => void = () => {
@@ -109,7 +109,7 @@
   }
 
   function enter(entry: Entry) {
-    return (_: MouseEvent) => {
+    return () => {
       selected = entry.id;
       onSelect(entry);
     };
@@ -167,7 +167,7 @@
               borderWidth * 2};filter:{borderColor
               ? 'none'
               : 'brightness(150%)'};"
-            on:focus={() => {}}
+            on:focus
             on:mouseover={enter(entry)}
           />
         {/if}
@@ -178,7 +178,7 @@
           cy="50"
           stroke-dasharray="{entry.length},{circumference - entry.length}"
           style="stroke:{entry.color};stroke-width:{segWidth};"
-          on:focus={() => {}}
+          on:focus
           on:mouseover={enter(entry)}
         />
       </g>

@@ -1,7 +1,7 @@
 import { BLOG } from "$lib/blog";
 
 async function postTitle(slug: string) {
-  let post = await BLOG.getPost(slug);
+  const post = await BLOG.getPost(slug);
   if (post) {
     return await post.title();
   }

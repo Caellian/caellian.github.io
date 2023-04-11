@@ -1,23 +1,13 @@
 {
   "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
-		"paths": {
-			"$lib/": [
-				"./src/lib"
-			],
-			"$lib/*": [
-				"./src/lib/*"
-			],
-			"$content/*": [
-				"./src/content/*"
-			],
-			"$data/*": [
-				"./src/data/*"
-			],
-			"$components/*": [
-				"./src/components/*"
-			]
-		},
+    "paths": {
+      "$lib/": ["./src/lib"],
+      "$lib/*": ["./src/lib/*"],
+      "$content/*": ["./src/content/*"],
+      "$data/*": ["./src/data/*"],
+      "$components/*": ["./src/components/*"]
+    },
     "allowJs": true,
     "checkJs": true,
     "esModuleInterop": true,
@@ -27,9 +17,7 @@
     "sourceMap": true,
     "strict": true
   },
-  "include": [
-    "src/**/*.svx"
-  ]
+  "include": ["src/**/*.svx"]
   // Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
   //
   // If you want to overwrite includes/excludes, make sure to copy over the relevant includes/excludes

@@ -9,7 +9,7 @@ export const GET = async () => {
   const feed = await Promise.all(posts.map((post) => post.rssInfo()));
   feed.sort((a, b) => (a.published < b.published ? 1 : -1));
 
-  let body = render(feed).replace("\n", "");
+  const body = render(feed).replace("\n", "");
   const options = {
     headers: {
       "Cache-Control": `max-age=0, s-maxage=3600`,
