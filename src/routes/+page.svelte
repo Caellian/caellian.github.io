@@ -10,6 +10,8 @@
   import About from "$content/About.svx";
   import { BUILD_DATE, LIMITS } from "$lib/util";
 
+  const active_projects = projects.filter((it) => it && it.active);
+
   import "../style/global.styl";
 </script>
 
@@ -47,6 +49,7 @@
     >
   </section>
 
+  {#if active_projects.length > 0}
   <section class="pagewide current">
     <h1 class="title">Personal Projects</h1>
 
@@ -58,6 +61,7 @@
 
     <a class="button" href="/projects">See More</a>
   </section>
+  {/if}
 
   <!--<section class="pagewide">
     <h1 class="title">Employment History</h1>

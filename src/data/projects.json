@@ -4,6 +4,7 @@
     "name": "Wordel",
     "tags": ["Avalonia UI", "gui"],
     "lang": "C#",
+    "active": true,
     "url": "https://github.com/Caellian/Wordel",
     "description": [
       "A wordle clone I wrote as a final assignment for a class.",
@@ -35,6 +36,7 @@
     "name": "Java Decompiler",
     "tags": ["reverse engineering", "decompiler"],
     "lang": "Rust",
+    "active": true,
     "url": "https://github.com/Caellian/java-decompiler",
     "description": [
       "Java decompiler written from scratch to be as performant as possible with large .jar files.",
