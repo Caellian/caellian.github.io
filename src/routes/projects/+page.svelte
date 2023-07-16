@@ -153,8 +153,8 @@
   }
 
   function clear_query() {
-    console.log("Clickeded");
     search_query = "";
+    update_results();
   }
 
   onMount(() => {
