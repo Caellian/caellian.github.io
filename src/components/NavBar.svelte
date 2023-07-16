@@ -17,7 +17,7 @@
 </script>
 
 <nav id="navbar" class:fixed={navigate}>
-  <a href="/" class="name"><h1>caellian<span>::</span>me</h1></a>
+  <a href="/" class="name"><h1>tinsvagelj<span>::</span>net</h1></a>
 
   <ul id="nav-links">
     <NavLinks />

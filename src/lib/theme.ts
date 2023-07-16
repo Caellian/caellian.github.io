@@ -144,8 +144,9 @@ export class Theme {
   }
 }
 
-export function load_theme(accent = "#00b3b3") {
+export function load_theme(accent = "#00a4ba") {
   const mode = parse_mode(localStorage.getItem("ui-theme-mode"));
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const theme = new Theme(RGB.parse(accent)!, mode || Mode.Dark);
 
   if (!mode && window.matchMedia) {

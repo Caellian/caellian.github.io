@@ -1,18 +1,19 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { page } from "$app/stores";
-  import { Color, RGB } from "$lib/color";
+  import { RGB } from "$lib/color";
 
   import NavBar from "$components/NavBar.svelte";
   import { Mode, Theme } from "$lib/theme";
 
   var navigate = $page.url.pathname === "/navigation";
 
-  const theme = new Theme(RGB.parse("#00b3b3")!, Mode.Dark);
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const theme = new Theme(RGB.parse("#00a4ba")!, Mode.Dark);
 </script>
 
 <svelte:head>
-  <title>caellian::me</title>
+  <title>tinsvagelj::net</title>
 </svelte:head>
 
 <NavBar />

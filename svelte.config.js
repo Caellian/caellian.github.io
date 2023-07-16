@@ -29,7 +29,7 @@ const config = {
       },
     }),
     prerender: {
-      origin: "https://caellian.me",
+      origin: "https://tinsvagelj.net",
     },
   },
 };

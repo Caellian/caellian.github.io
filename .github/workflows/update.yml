@@ -3,6 +3,8 @@ name: update-served
 on:
   push:
     branches: [sources]
+    paths:
+      - src/**
 
 jobs:
   update:

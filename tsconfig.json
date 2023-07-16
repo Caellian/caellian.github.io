@@ -19,7 +19,5 @@
     "sourceMap": true,
     "strict": true
   },
-  "include": [
-    "./src/**/*.svx",
-  ],
+  "include": ["./src/**/*.svx"]
 }

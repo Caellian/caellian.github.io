@@ -30,10 +30,16 @@
     };
   }
 
+  let scroll_value = 0;
+  let result_list_el: HTMLUListElement;
+
   function update_results() {
     results = get_results();
     shown_langs = show_languages();
     shown_tags = show_tags();
+
+    let rect = result_list_el.getBoundingClientRect();
+    scroll_value = Math.min(scroll_value, rect.height);
   }
 
   function show_languages() {
@@ -80,9 +86,6 @@
   }
 
   function find_words(words: string[], text: string | string[]) {
-    console.log(words);
-    console.log(text);
-
     if (Array.isArray(text)) {
       const joined = text.join(" ").toLowerCase();
       return words.filter((word) => joined.includes(word)).length > 0;
@@ -149,14 +152,20 @@
     return result;
   }
 
-  let scroll_value = 0;
+  function clear_query() {
+    console.log("Clickeded");
+    search_query = "";
+  }
 
   onMount(() => {
     window.addEventListener("scroll", () => {
       const nav = document.querySelector("nav#navbar");
-      scroll_value = Math.max(
-        window.pageYOffset - (nav?.clientHeight || 0) - 4,
-        0
+
+      let content_bounds = result_list_el.getBoundingClientRect();
+
+      scroll_value = Math.min(
+        Math.max(window.scrollY - (nav?.clientHeight || 0) - 4, 0),
+        content_bounds.height
       );
     });
   });
@@ -176,13 +185,13 @@
             on:keyup={deboundce(update_results)}
           />
           {#if search_query.trim().length > 0}
-            <Icon
-              name="remove"
-              size="2rem"
-              on:click={() => {
-                search_query = "";
-              }}
-            />
+            <div
+              class="clear-query-button"
+              on:click={clear_query}
+              on:keyup={clear_query}
+            >
+              <Icon name="remove" size="2rem" />
+            </div>
           {/if}
         </div>
         <button on:click={() => (show_filters = !show_filters)}>
@@ -264,7 +273,7 @@
         {/if}
       {:else}
         <section class="info">
-          <h3>Icon Map</h3>
+          <h3>Legend</h3>
           <div class="row">
             <Icon name="merge" size="2rem" />
             <h4>Fork</h4>
@@ -289,7 +298,7 @@
   {/if}
 
   <main class="results">
-    <ul>
+    <ul bind:this={result_list_el}>
       {#each results as pr}
         <ProjectResult project={pr} />
       {/each}
@@ -338,7 +347,7 @@ aside.filters
     padding 1rem
     margin calc(var(--scroll-y, 0) + 1rem) 0 1rem 1rem
 
-    transition margin-top ease-in-out 500ms
+    transition margin-top ease-out 200ms
 
 
   .choices
@@ -421,16 +430,20 @@ aside.filters>.search.row
       flex-grow 1
       font-size 1.2rem
 
-    :global(.icon-search>path)
-      transform translateX(-5%)
-    :global(.icon-remove>path)
-      transform translateX(1%)
-    :global(.icon-remove)
+    .clear-query-button
       border 0.15rem solid var(--accent)
-    :global(.icon)
+      border-radius 100vw
+      margin auto -0.25rem
+      width 2.25rem
+      height 2.25rem
+      cursor pointer
+
+    :global(.icon-search)
       width 2.25rem
       border-radius 1rem
       margin auto 0
+    :global(.icon-search>path)
+      transform translateX(-5%)
 
   button
     min-width 3rem

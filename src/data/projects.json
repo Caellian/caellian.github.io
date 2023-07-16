@@ -1,9 +1,19 @@
 [
   {
+    "id": "wordel",
+    "name": "Wordel",
+    "tags": ["Avalonia UI", "gui"],
+    "lang": "C#",
+    "url": "https://github.com/Caellian/Wordel",
+    "description": [
+      "A wordle clone I wrote as a final assignment for a class.",
+      "I learned basics of modern C# through this project, as well as using a multi-platform UI framework."
+    ]
+  },
+  {
     "id": "voxel_engine",
     "name": "Voxel Engine",
     "tags": ["rendering", "WGPU"],
-    "active": true,
     "lang": "Rust",
     "description": [
       "Vulkan voxel game engine focused on dynamic and procedurally generated content.",
@@ -14,7 +24,6 @@
     "id": "lisp_interpreter",
     "name": "Lisp Interpreter",
     "tags": ["interpreter"],
-    "active": true,
     "lang": "C",
     "description": [
       "I wanted to write a project in C to remind myself of times before borrow checker existed.",
