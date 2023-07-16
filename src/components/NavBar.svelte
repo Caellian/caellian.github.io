@@ -1,5 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
+  import { onMount } from "svelte";
   import Compass from "./Compass.svelte";
   import NavLinks from "./NavLinks.svelte";
 
@@ -14,16 +15,32 @@
       }
     };
   }
+
+  let compact_layout_query: MediaQueryList | null = null;
+  let compact_layout = false;
+
+  function handleQueryChange() {
+    if (!compact_layout_query) return;
+    compact_layout = compact_layout_query.matches;
+  }
+
+  onMount(() => {
+    compact_layout_query = window.matchMedia("(max-width: 690px)");
+    compact_layout = compact_layout_query.matches;
+    compact_layout_query.addEventListener("change", handleQueryChange);
+  });
 </script>
 
 <nav id="navbar" class:fixed={navigate}>
   <a href="/" class="name"><h1>tinsvagelj<span>::</span>net</h1></a>
 
-  <ul id="nav-links">
-    <NavLinks />
-  </ul>
+  {#if !compact_layout}
+    <ul id="nav-links">
+      <NavLinks />
+    </ul>
+  {/if}
 
-  {#if browser}
+  {#if browser && compact_layout}
     <Compass
       on:mouseup={toggleNavigate()}
       color={navigate ? "var(--accent)" : "var(--fg)"}
@@ -32,7 +49,7 @@
   {/if}
 </nav>
 
-{#if browser}
+{#if browser && compact_layout}
   <ul id="mobile-links" class:navigate>
     <NavLinks on:click={toggleNavigate(false)} />
   </ul>
@@ -42,6 +59,7 @@
   <style>
     #portfolio {
       height: 100vh;
+      height: 100svh;
       overflow: hidden;
     }
   </style>
@@ -101,9 +119,6 @@
   border-left solid 0.2rem var(--bg-accent)
   cursor pointer // Not really needed, but hey, it's here
 
-  @media screen and (min-width: 690px)
-    display none
-
 #nav-links
   display flex
   justify-content space-around
@@ -112,9 +127,6 @@
   margin-top 2rem
 
   height calc(100% - 2rem)
-
-  @media screen and (max-width 690px)
-    display none
 
 :global(#nav-links>li>a)
     padding-right 1rem
@@ -170,9 +182,6 @@
   z-index -100
 
   text-align center
-
-  @media screen and (min-width: mobile-size)
-    display none
 
   :global(li)
     display block
