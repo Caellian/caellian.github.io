@@ -164,7 +164,9 @@
   top var(--nav-height)
   left 0
   width 100vw
+  height 100vh
   height calc(100vh - var(--nav-height))
+  height calc(100svh - var(--nav-height))
   z-index -100
 
   text-align center
