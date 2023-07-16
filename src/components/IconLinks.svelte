@@ -13,6 +13,7 @@
   import { onMount } from "svelte";
   import Icon from "./Icon.svelte";
   import LINKS from "$data/social.json";
+  import { LIMITS } from "$lib/util";
 
   export const data: Data = new Map(Object.entries(LINKS));
 
@@ -43,7 +44,7 @@
   style={`flex-direction:${display_width >= max_width ? "row" : "column"};`}
 >
   {#each [...data.keys()] as name}
-    <li class="bracket">
+    <li class={`bracket ${LIMITS.is_mobile ? "mobile" : ""}`}>
       <p>{name}</p>
       <ul
         class="icons"
@@ -99,7 +100,8 @@ ul.links
       color var(--fg)
       transition color ease-in-out transition-medium
 
-    &:hover
+    &:hover,
+    .mobile
       &:before
         border solid 0.15rem var(--fg)
         border-bottom none
