@@ -62,6 +62,9 @@
       height: 100svh;
       overflow: hidden;
     }
+    .layout-root {
+      display: none;
+    }
   </style>
 {/if}
 

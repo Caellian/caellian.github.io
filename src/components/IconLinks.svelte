@@ -10,62 +10,47 @@
 
 <script lang="ts">
   import { browser } from "$app/environment";
+  import { onMount } from "svelte";
   import Icon from "./Icon.svelte";
+  import LINKS from "$data/social.json";
 
-  export const data: Data = new Map([
-    [
-      "Social",
-      [
-        {
-          name: "Telegram",
-          icon: "telegram",
-          url: "tg://resolve?domain=caellian",
-        },
-        {
-          name: "Mastodon",
-          icon: "mastodon",
-          url: "https://mastodon.social/@caellian",
-        },
-        {
-          name: "matrix.org",
-          icon: "matrix",
-          url: "https://matrix.to/#/@caellian:matrix.org",
-        },
-        {
-          name: "LinkedIn",
-          icon: "linkedin",
-          url: "https://www.linkedin.com/in/tinsvagelj/",
-        },
-      ],
-    ],
-    [
-      "Code",
-      [
-        {
-          name: "GitHub",
-          icon: "github",
-          url: "https://github.com/Caellian",
-        },
-        {
-          name: "BitBucket",
-          icon: "bitbucket",
-          url: "https://bitbucket.org/Caellian",
-        },
-        {
-          name: "GitLab",
-          icon: "gitlab",
-          url: "https://gitlab.com/Caellian",
-        },
-      ],
-    ],
-  ]);
+  export const data: Data = new Map(Object.entries(LINKS));
+
+  let links: HTMLUListElement | null = null;
+
+  let display_width = 600;
+  let max_width = 540;
+  let short_width = 310;
+
+  onMount(() => {
+    const children_widths = Array.from(links?.children || []).map(
+      (it) => it.getBoundingClientRect().width
+    );
+
+    short_width = Math.max(...children_widths);
+    max_width = children_widths.reduce((sum, it) => sum + it, 0);
+
+    window.addEventListener("resize", () => {
+      display_width = document.body.clientWidth;
+    });
+    display_width = document.body.clientWidth;
+  });
 </script>
 
-<ul class="links">
+<ul
+  bind:this={links}
+  class="links"
+  style={`flex-direction:${display_width >= max_width ? "row" : "column"};`}
+>
   {#each [...data.keys()] as name}
     <li class="bracket">
       <p>{name}</p>
-      <ul class="icons">
+      <ul
+        class="icons"
+        style={`flex-direction:${
+          display_width >= short_width ? "row" : "column"
+        };`}
+      >
         {#each data.get(name) || [] as link}
           <li class="link">
             <a href={link.url} target="_blank" rel="noreferrer">
@@ -88,13 +73,9 @@
 ul.links
   display flex
   gap 1rem
-  flex-direction column
 
   width min-content
   max-width 100%
-
-  @media screen and (min-width 450px)
-    flex-direction row
 
   .bracket
     &:before
@@ -134,11 +115,7 @@ ul.links
 
 .icons
   display flex
-  flex-direction column
   justify-content space-around
-
-  @media screen and (min-width 250px)
-    flex-direction row
 
 li.link
   :global(svg)

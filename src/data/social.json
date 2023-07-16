@@ -1,0 +1,42 @@
+{
+  "Social": [
+    {
+      "name": "Telegram",
+      "icon": "telegram",
+      "url": "tg://resolve?domain=caellian"
+    },
+    {
+      "name": "Mastodon",
+      "icon": "mastodon",
+      "url": "https://mastodon.social/@caellian"
+    },
+    {
+      "name": "matrix.org",
+      "icon": "matrix",
+      "url": "https://matrix.to/#/@caellian:matrix.org"
+    },
+    {
+      "name": "LinkedIn",
+      "icon": "linkedin",
+      "url": "https://www.linkedin.com/in/tinsvagelj/"
+    }
+  ],
+
+  "Code": [
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/Caellian"
+    },
+    {
+      "name": "BitBucket",
+      "icon": "bitbucket",
+      "url": "https://bitbucket.org/Caellian"
+    },
+    {
+      "name": "GitLab",
+      "icon": "gitlab",
+      "url": "https://gitlab.com/Caellian"
+    }
+  ]
+}
