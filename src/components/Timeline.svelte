@@ -1,13 +1,17 @@
-<script lang="ts" context="module">
-  export interface TimelineItem {
-    time: string | null | undefined;
-    title: string | null | undefined;
-    description: string | null | undefined;
-  }
+<script context="module">
+  /**
+   * @typedef {Object} TimelineItem
+   * @prop {string | null} [time]
+   * @prop {string | null} [title]
+   * @prop {string | null} [description]
+   */
 </script>
 
-<script lang="ts">
-  export var items: TimelineItem[] = [];
+<script>
+  /**
+   * @type {TimelineItem[]}
+   */
+  export var items = [];
   export var lineWidth = "0.125rem";
 </script>
 

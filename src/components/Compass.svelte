@@ -1,8 +1,8 @@
-<script lang="ts">
+<script>
   import toPX from "to-px";
 
   export var color = "#fff";
-  export var spin: boolean = false;
+  export var spin = false;
   export var size = "2rem";
   export var width = toPX(size);
   export var height = toPX(size);

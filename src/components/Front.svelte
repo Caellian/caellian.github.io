@@ -1,7 +1,7 @@
-<script lang="ts">
-  export var name: string;
-  export var description: string;
-  export var link: string | null | undefined;
+<script>
+  export var name;
+  export var description;
+  export var link;
 </script>
 
 <a href={link || "."}>

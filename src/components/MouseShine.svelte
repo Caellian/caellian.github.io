@@ -1,8 +1,8 @@
-<script lang="ts">
+<script>
   var shine_on = false;
   var pos = [0, 0];
 
-  function on_mousemove(ev: MouseEvent) {
+  function on_mousemove(ev) {
     pos = [ev.offsetX, ev.offsetY];
     shine_on = true;
   }

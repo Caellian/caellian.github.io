@@ -4,9 +4,9 @@ import { Mode, mode_to_str, Theme } from "./theme";
 
 // TODO: Use store theme in root layout
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-export const theme = writable(new Theme(RGB.parse("#14a7eb")!, Mode.Dark));
-theme.subscribe((t: Theme) => {
+export const theme = writable(new Theme(RGB.parse("#14a7eb"), Mode.Dark));
+theme.subscribe((t) => {
   if (typeof localStorage !== "undefined") {
-    localStorage.setItem("ui-theme-mode", mode_to_str(t.mode));
+    localStorage.setItem("ui-theme-mode", t.mode);
   }
 });

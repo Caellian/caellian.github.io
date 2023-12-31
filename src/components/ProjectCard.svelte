@@ -1,9 +1,11 @@
-<script lang="ts">
+<script>
   import { cssVars, LIMITS } from "$lib/util";
-  import type Project from "$lib/project";
   import { onMount } from "svelte";
 
-  export var project: Project = {
+  /**
+   * @type {import("../lib/project").Project}
+   */
+  export var project = {
     id: "none",
     name: "None",
     tags: [],
@@ -15,7 +17,10 @@
     fork: false,
   };
 
-  function start_color(name: string) {
+  /**
+   * @param {string} name
+   */
+  function start_color(name) {
     let result = 0;
     for (let i = 0; i < name.length; i++) {
       result += name.charCodeAt(i);
@@ -23,7 +28,10 @@
     return result % 360;
   }
 
-  function color_rotation(name: string) {
+  /**
+   * @param {string} name
+   */
+  function color_rotation(name) {
     let result = 0;
     for (let i = 0; i < name.length; i++) {
       result += name.charCodeAt(i);
@@ -40,14 +48,20 @@
     bg_to: `hsl(${from + 40},50%,var(--accent-l))`,
   });
 
-  let container: HTMLDivElement;
+  /**
+   * @type {HTMLDivElement}
+   */
+  let container;
 
-  const t = (x: number, y: number) =>
-    `perspective(20rem) rotateX(${x}deg) rotateY(${y}deg) `;
+  /**
+   * @param {number} x
+   * @param {number} y
+   */
+  const t = (x, y) => `perspective(20rem) rotateX(${x}deg) rotateY(${y}deg) `;
 
   onMount(() => {
     if (!LIMITS.is_mobile) {
-      const child = container.firstElementChild as HTMLDivElement;
+      const child = container.firstElementChild;
 
       container.onmousemove = (e) => {
         e.stopPropagation();

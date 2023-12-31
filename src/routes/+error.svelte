@@ -1,11 +1,11 @@
-<script lang="ts">
+<script>
   import { page } from "$app/stores";
   import FourOhFour from "./404/+page.svelte";
 
   function copyError() {
     navigator &&
       navigator.clipboard &&
-      navigator.clipboard.writeText($page.error?.message || "");
+      navigator.clipboard.writeText($page.error.message || "");
   }
 </script>
 
@@ -17,7 +17,7 @@
       <h1>Sorry, the website errored. 😅</h1>
       <h2>Error status: {$page.status}</h2>
       {#if $page.error}
-        <p>{$page.error?.message}</p>
+        <p>{$page.error.message}</p>
       {/if}
       <p>
         This shouldn't happen.<br />

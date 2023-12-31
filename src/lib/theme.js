@@ -1,13 +1,22 @@
 import { browser } from "$app/environment";
-import { HSL, RGB, type Color } from "./color";
+import { HSL, RGB } from "./color";
 import { cssVars } from "./util";
 
-export enum Mode {
-  Dark,
-  Light,
-}
+/**
+ * Represents the mode.
+ * @readonly
+ * @enum {"dark" | "light"}
+ */
+export const Mode = Object.freeze({
+  Dark: 'dark',
+  Light: 'light',
+});
 
-export function contrast_mode(mode: Mode): Mode {
+/**
+ * @param {Mode} mode
+ * @returns {Mode}
+ */
+export function contrast_mode(mode) {
   switch (mode) {
     case Mode.Dark:
       return Mode.Light;
@@ -16,7 +25,11 @@ export function contrast_mode(mode: Mode): Mode {
   }
 }
 
-export function parse_mode(name: string | null): Mode | null {
+/**
+ * @param {string | null} name
+ * @returns {Mode | null}
+ */
+export function parse_mode(name) {
   if (name == null) {
     return null;
   }
@@ -28,7 +41,11 @@ export function parse_mode(name: string | null): Mode | null {
   return null;
 }
 
-export function mode_to_str(mode: Mode): string {
+/**
+ * @param {Mode} mode
+ * @returns {string}
+ */
+export function mode_to_str(mode) {
   switch (mode) {
     case Mode.Dark:
       return "dark";
@@ -39,34 +56,35 @@ export function mode_to_str(mode: Mode): string {
 
 const STEP_COUNT = 10;
 
-type ThemeCss = {
-  [id: string]: string;
-};
-
-export type ColorList = {
-  [id: string]: Color;
-};
-
-export interface ThemeSettings {
-  primary: Color;
-  secondary: Color;
-}
+/**
+ * @typedef {Object.<string, string>} ThemeCss
+ * @typedef {Object.<string, import("./color.js").Color>} ColorList
+ * @typedef {{primary: import("./color.js").Color, secondary: import("./color.js").Color}} ThemeSettings
+ */
 
 export class Theme {
-  constructor(public accent: Color, public mode: Mode) {
+  /**
+   * @param {import("./color.js").Color} accent
+   * @param {Mode} mode
+   */
+  constructor(accent, mode) {
     const accent_hsl = accent.toHSL();
-    accent = new HSL(accent_hsl.h, 1, 0.5);
+    this.accent = new HSL(accent_hsl.h, 1, 0.5);
+    this.mode = mode;
 
     if (browser) {
       window
         .matchMedia("(prefers-color-scheme: dark)")
         .addEventListener("change", (event) => {
-          mode = event.matches ? Mode.Dark : Mode.Light;
+          this.mode = event.matches ? Mode.Dark : Mode.Light;
         });
     }
   }
 
-  colorMap(): Map<string, Color> {
+  /**
+   * @returns {Object.<string, Color>}
+   */
+  colorMap() {
     const hsl = this.accent.toHSL();
     const result = new Map();
 
@@ -127,8 +145,11 @@ export class Theme {
     return result;
   }
 
-  colorCss(): ThemeCss {
-    const result: ThemeCss = {};
+  /**
+   * @returns {ThemeCss}
+   */
+  colorCss() {
+    const result = {};
     for (const [k, v] of this.colorMap().entries()) {
       result[k] = v.toString();
     }
@@ -147,7 +168,7 @@ export class Theme {
 export function load_theme(accent = "#00a4ba") {
   const mode = parse_mode(localStorage.getItem("ui-theme-mode"));
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const theme = new Theme(RGB.parse(accent)!, mode || Mode.Dark);
+  const theme = new Theme(RGB.parse(accent), mode || Mode.Dark);
 
   if (!mode && window.matchMedia) {
     const mm = window.matchMedia("(prefers-color-scheme: dark)");

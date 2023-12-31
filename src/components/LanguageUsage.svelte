@@ -1,26 +1,33 @@
-<script lang="ts">
+<script>
   import { browser } from "$app/environment";
 
   import language_data from "$data/used_languages.json";
 
   import Donut from "./Donut.svelte";
-  import type { EntrySelection } from "./Donut.svelte";
   import { cssVars, LIMITS } from "$lib/util";
 
-  interface Language {
-    name: string;
-    color: string;
-    weight: number;
-  }
-  const languages: Language[] = language_data;
+  /**
+   * @typedef {Object} Language
+   * @prop {string} name
+   * @prop {string} color
+   * @prop {number} weight
+   */
+
+  /**
+   * @type {Language[]}
+   */
+  const languages = language_data;
 
   let lang_name = "";
   let lang_style = "";
 
-  function languageSelected(l: EntrySelection) {
-    lang_name = l.name;
+  /**
+   * @param {Language} lang
+   */
+  function languageSelected(lang) {
+    lang_name = lang.name;
     lang_style = cssVars({
-      lang_color: l.color,
+      lang_color: lang.color,
     });
   }
 </script>

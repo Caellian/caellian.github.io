@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   import { browser } from "$app/environment";
   import IconLinks from "$components/IconLinks.svelte";
   import emailjs from "@emailjs/browser";
@@ -7,7 +7,7 @@
   var email = "";
   var message = "";
 
-  var emailStatus: string | null = null;
+  var emailStatus = null;
 
   function valid() {
     return (

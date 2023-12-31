@@ -1,10 +1,34 @@
 [
   {
+    "id": "contiguous-mem",
+    "name": "contiguous-mem",
+    "tags": ["allocator", "memory management", "systems"],
+    "lang": "Rust",
+    "active": true,
+    "url": "https://github.com/Caellian/contiguous_mem",
+    "description": [
+      "Created an arena allocator in the form of a heterogeneous collection that stores the types of stored entries at the point of insertion.",
+      "Abstracted details about internal data types to allow for usage independently of the desired referencing method (`Owned`, `Rc`, `Arc`) and state storage (`RefCell`, `Mutex`).",
+      "Added support for switching the background allocator from the system-wide (`malloc`) to specialized."
+    ]
+  },
+  {
+    "id": "litesim",
+    "name": "litesim",
+    "tags": ["simulation", "abstraction"],
+    "lang": "Rust",
+    "active": true,
+    "url": "https://github.com/Caellian/litesim",
+    "description": [
+      "Discrete-event simulation library.",
+      "Used proc-macros to greatly simplify implementation of simulation models."
+    ]
+  },
+  {
     "id": "wordel",
     "name": "Wordel",
     "tags": ["Avalonia UI", "gui"],
     "lang": "C#",
-    "active": true,
     "url": "https://github.com/Caellian/Wordel",
     "description": [
       "A wordle clone I wrote as a final assignment for a class.",
@@ -18,7 +42,7 @@
     "lang": "Rust",
     "description": [
       "Vulkan voxel game engine focused on dynamic and procedurally generated content.",
-      "It also allows me to explore different rendering techniques, SPIR-V, low level rendering, data management, ..."
+      "It allows me to explore different rendering techniques, SPIR-V, low level rendering, data management, ..."
     ]
   },
   {
@@ -47,7 +71,7 @@
   {
     "id": "math",
     "name": "Math",
-    "tags": ["linear algebra"],
+    "tags": ["linear algebra", "abstraction"],
     "lang": "Kotlin",
     "url": "https://github.com/Caellian/Math",
     "description": [

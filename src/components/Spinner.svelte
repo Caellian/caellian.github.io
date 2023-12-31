@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   export let color = "var(--accent)";
   export let size = "1em";
   export let clazz = "";

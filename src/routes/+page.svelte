@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   import LanguageDonut from "$components/LanguageUsage.svelte";
   import ProjectCard from "$components/ProjectCard.svelte";
 

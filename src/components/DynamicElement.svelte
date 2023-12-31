@@ -1,11 +1,11 @@
-<script lang="ts">
+<script>
   export let type = "div";
-  export let className: string | undefined = undefined;
-  export let props: Record<string, string> = {};
+  export let className = undefined;
+  export let props = {};
 
-  let content: HTMLDivElement;
+  let content;
 
-  function uplift(node: HTMLDivElement) {
+  function uplift(node) {
     // content will only be defined after the first render, so all logic can be done in update
     return {
       update() {

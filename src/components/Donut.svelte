@@ -1,29 +1,32 @@
-<script lang="ts" context="module">
-  export interface ChartEntry {
-    name?: string;
-    color?: string;
-    weight: number;
-  }
+<script context="module">
+  /** @typedef {Object} ChartEntry
+   * @prop {string} [name]
+   * @prop {string} [color]
+   * @prop {number} weight
+   */
 
-  export interface Entry {
-    id: number;
-    name: string;
-    color: string;
-    weight: number;
-    length: number;
-    borderLength: number;
-    rotation: number;
-  }
+  /** @typedef {Object} Entry
+   * @prop {number} id
+   * @prop {string} name
+   * @prop {string} color
+   * @prop {number} weight
+   * @prop {number} length
+   * @prop {number} borderLength
+   * @prop {number} rotation
+   */
 
-  export interface EntrySelection {
-    id: number;
-    name: string;
-    color: string;
-  }
+  /** @typedef {Object} EntrySelection
+   * @prop {number} id
+   * @prop {string} name
+   * @prop {string} color
+   */
 </script>
 
-<script lang="ts">
-  export var entries: ChartEntry[];
+<script>
+  /**
+   * @type {ChartEntry[]}
+   */
+  export var entries;
   export var sort = true;
 
   if (sort) {
@@ -33,13 +36,25 @@
   export var background = "#fff";
   export var round = true;
   export var width = 12;
-  export var entryWidth: number | null = null;
+  /**
+   * @type {number | null}
+   */
+  export var entryWidth = null;
   export var spacing = 4;
   export var startAngle = 0;
   export var borderWidth = 1;
-  export var borderColor: string | null = null;
-  export var shadowColor: string | null = "rgba(0, 0, 0, 0.2)";
-  export var onSelect: (selection: EntrySelection) => void = () => {
+  /**
+   * @type {string | null}
+   */
+  export var borderColor = null;
+  /**
+   * @type {string | null}
+   */
+  export var shadowColor = "rgba(0, 0, 0, 0.2)";
+  /**
+   * @type {(selection: EntrySelection) => void}
+   */
+  export var onSelect = () => {
     return;
   };
 
@@ -55,17 +70,20 @@
   const circumferenceWaste =
     entries.length * (spacing + borderWidth * 2 + (round ? segWidth : 0));
 
-  function weightedLength(weight: number) {
+  function weightedLength(weight) {
     return (circumference - circumferenceWaste) * (weight / weightTotal);
   }
 
-  function weightedBorder(weight: number) {
+  function weightedBorder(weight) {
     return weightedLength(weight) + (round ? 0 : borderWidth * 2);
   }
 
   var selected = -1;
 
-  var segments: Entry[] = [];
+  /**
+   * @type {Entry[]}
+   */
+  var segments = [];
 
   let currRot = -90 + startAngle;
 
@@ -74,7 +92,7 @@
       circumference) *
     180;
 
-  let active = null as Entry | null;
+  let active = null;
   for (let i = 0; i < entries.length; i++) {
     const e = entries[i];
     const seg = {
@@ -86,7 +104,7 @@
       length: weightedLength(e.weight),
       borderLength: weightedBorder(e.weight),
       rotation: currRot,
-    } as Entry;
+    };
 
     if (selected != i) {
       segments.push(seg);
@@ -108,7 +126,7 @@
     selected = -1;
   }
 
-  function enter(entry: Entry) {
+  function enter(entry) {
     return () => {
       selected = entry.id;
       onSelect(entry);

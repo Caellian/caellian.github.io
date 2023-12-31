@@ -1,11 +1,16 @@
-<script lang="ts">
-  import type Project from "$lib/project";
+<script>
   import Icon from "./Icon.svelte";
   import RepoLink from "./RepoLink.svelte";
 
-  export let project: Project;
+  /**
+   * @type {import("../lib/project".Project}
+   */
+  export let project;
 
-  function merge_color(project: Project) {
+  /**
+   * @param {import("../lib/project".Project} project
+   */
+  function merge_color(project) {
     if (project.fork) {
       return "var(--blue)";
     } else if (project.contribution) {

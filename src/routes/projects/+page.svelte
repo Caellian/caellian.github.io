@@ -1,24 +1,26 @@
-<script lang="ts">
+<script>
   import { browser } from "$app/environment";
   import Icon from "$components/Icon.svelte";
   import ProjectResult from "$components/ProjectResult.svelte";
-  import type Project from "$lib/project";
   import projects from "$data/projects.json";
-  import { deboundce } from "$lib/util";
+  import { debounce } from "$lib/util";
   import { onMount } from "svelte";
 
-  let tags: string[] = [];
+  let tags = [];
 
-  let results: Project[] = projects;
-  let shown_langs: string[] = show_languages();
-  let shown_tags: string[] = show_tags();
+  let results = projects;
+  let shown_langs = show_languages();
+  let shown_tags = show_tags();
 
   let show_filters = true;
   let search_query = "";
 
   const MAX_TAGS = 12;
 
-  function toggle_tag(tag: string) {
+  /**
+   * @param tag {string} tag to toggle
+   */
+  function toggle_tag(tag) {
     return () => {
       if (tags.find((it) => it == tag) != undefined) {
         tags = tags.filter((it) => it != tag);
@@ -31,7 +33,10 @@
   }
 
   let scroll_value = 0;
-  let result_list_el: HTMLUListElement;
+  /**
+   * @type HTMLUListElement
+   */
+  let result_list_el;
 
   function update_results() {
     results = get_results();
@@ -43,7 +48,7 @@
   }
 
   function show_languages() {
-    const s: Set<string> = new Set();
+    const s = new Set();
 
     for (const proj of results) {
       s.add(proj.lang);
@@ -58,7 +63,7 @@
   }
 
   function show_tags() {
-    const s: Map<string, number> = new Map();
+    const s = new Map();
 
     for (const proj of results) {
       for (const tag of proj.tags) {
@@ -74,18 +79,18 @@
     return result;
   }
 
-  function get_tag_langs(): string[] {
+  function get_tag_langs() {
     return Array.from(
       tags.filter((it) => it.startsWith("lang:")).map((it) => it.substring(5))
     );
   }
-  function get_tags(): string[] {
+  function get_tags() {
     return Array.from(
       tags.filter((it) => it.startsWith("tag:")).map((it) => it.substring(4))
     ).sort((a, b) => b.localeCompare(a));
   }
 
-  function find_words(words: string[], text: string | string[]) {
+  function find_words(words, text) {
     if (Array.isArray(text)) {
       const joined = text.join(" ").toLowerCase();
       return words.filter((word) => joined.includes(word)).length > 0;
@@ -95,7 +100,7 @@
     }
   }
 
-  function get_results(): Project[] {
+  function get_results() {
     const words = search_query
       .toLowerCase()
       .trim()
@@ -106,7 +111,7 @@
       return projects;
     }
 
-    let result: Project[] = [];
+    let result = [];
 
     const active = tags.includes("active");
     const project = tags.includes("project");
@@ -159,6 +164,8 @@
 
   onMount(() => {
     window.addEventListener("scroll", () => {
+      if (result_list_el == null) return;
+
       const nav = document.querySelector("nav#navbar");
 
       let content_bounds = result_list_el.getBoundingClientRect();
@@ -182,7 +189,7 @@
           <input
             type="text"
             bind:value={search_query}
-            on:keyup={deboundce(update_results)}
+            on:keyup={debounce(update_results)}
           />
           {#if search_query.trim().length > 0}
             <div
@@ -206,69 +213,69 @@
       {#if show_filters}
         <section>
           <p>Category:</p>
-          <ul class="choices">
-            <li
+          <div class="choices">
+            <div
               on:mouseup={toggle_tag("active")}
               class:active={tags.includes("active")}
             >
               <Icon name="remove" size="1.4rem" color="var(--accent)" />
               <p>Current</p>
-            </li>
-            <li
+            </div>
+            <div
               on:mouseup={toggle_tag("project")}
               class:active={tags.includes("project")}
             >
               <Icon name="remove" size="1.4rem" color="var(--accent)" />
               <p>Project</p>
-            </li>
-            <li
+            </div>
+            <div
               on:mouseup={toggle_tag("contrib")}
               class:active={tags.includes("contrib")}
             >
               <Icon name="remove" size="1.4rem" color="var(--accent)" />
               <p>Contribution</p>
-            </li>
-            <li
+            </div>
+            <div
               on:mouseup={toggle_tag("fork")}
               class:active={tags.includes("fork")}
             >
               <Icon name="remove" size="1.4rem" color="var(--accent)" />
               <p>Fork</p>
-            </li>
-          </ul>
+            </div>
+          </div>
         </section>
         {#if shown_langs.length > 0}
           <section>
             <p>Language:</p>
-            <ul class="choices">
+            <div class="choices">
               {#each shown_langs as lang (lang)}
-                <li
+                <div
                   on:mouseup={toggle_tag(`lang:${lang}`)}
                   class:active={tags.find((it) => it == `lang:${lang}`) !=
                     undefined}
                 >
                   <Icon name="remove" size="1.4rem" color="var(--accent)" />
                   <p>{lang}</p>
-                </li>
+                </div>
               {/each}
-            </ul>
+            </div>
           </section>
         {/if}
         {#if shown_tags.length > 0}
           <section>
             <p>Tags:</p>
-            <ul class="tags choices">
+            <div class="tags choices">
               {#each shown_tags as tag (tag)}
-                <li
+                <div
                   on:mouseup={toggle_tag(`tag:${tag}`)}
                   class:active={tags.find((it) => it == `tag:${tag}`) !=
                     undefined}
                 >
                   <Icon name="remove" size="1.4rem" color="var(--accent)" />
                   <p>{tag}</p>
-                </li>
+                </div>
               {/each}
-            </ul>
+            </div>
           </section>
         {/if}
       {:else}
@@ -368,7 +375,7 @@ aside.filters
     @media screen and (max-height 720px)
       scrollbar-color var(--accent) transparent
 
-    li
+    div
       display flex
 
       padding 0.1rem 0.75rem

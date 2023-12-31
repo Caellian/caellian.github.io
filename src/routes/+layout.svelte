@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   import { browser } from "$app/environment";
   import { page } from "$app/stores";
   import { RGB } from "$lib/color";
@@ -8,8 +8,7 @@
 
   var navigate = $page.url.pathname === "/navigation";
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const theme = new Theme(RGB.parse("#00a4ba")!, Mode.Dark);
+  const theme = new Theme(RGB.parse("#00a4ba"), Mode.Dark);
 </script>
 
 <svelte:head>

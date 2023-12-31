@@ -1,13 +1,26 @@
 import { filter_split } from "./util";
 
 export class Params {
-  flags: string[] | undefined;
+  /**
+   * @type {string[]}
+   */
+  flags;
+
+  /**
+   * @param {string[]} [flags=[]]
+   */
+  constructor(flags = []) {
+    this.flags = flags;
+  }
 }
 
-export class DualFilter<T> {
-  constructor(public blacklist: T[], public whitelist: T[]) {}
+export class DualFilter {
+  constructor(blacklist, whitelist) {
+    this.blacklist = blacklist;
+    this.whitelist = whitelist;
+  }
 
-  check(value: T) {
+  check(value) {
     if (this.blacklist.includes(value)) {
       return false;
     }
@@ -19,11 +32,20 @@ export class DualFilter<T> {
 }
 
 export class Query {
-  words: string[];
+  /**
+   * @type {string[]}
+   */
+  words;
 
-  flags: DualFilter<string>;
+  /**
+   * @type {DualFilter}
+   */
+  flags;
 
-  constructor(query: string) {
+  /**
+   * @param {string} query 
+   */
+  constructor(query) {
     this.words = query
       .trim()
       .replace(/\s{2,}/, " ")

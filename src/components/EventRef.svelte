@@ -1,11 +1,11 @@
-<script lang="ts">
+<script>
   import MouseShine from "./MouseShine.svelte";
   import Spinner from "./Spinner.svelte";
 
-  export var name: string;
-  export var description: string;
-  export var url: string | null | undefined = undefined;
-  export var time: string | null;
+  export var name;
+  export var description;
+  export var url = undefined;
+  export var time;
 </script>
 
 <MouseShine>

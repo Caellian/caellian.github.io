@@ -1,16 +1,20 @@
-<script lang="ts">
+<script>
   import { browser } from "$app/environment";
   import toPX from "to-px";
 
-  interface Icon {
-    dim: number;
-    content: string;
-  }
+  /**
+   * @typedef {Object} Icon
+   * @prop {number} dim
+   * @prop {string} content
+   */
 
   import icon_list from "$data/icons.json";
-  const icons: { [key: string]: Icon } = icon_list;
+  /**
+   * @type {{ [key: string]: Icon }}
+   */
+  const icons = icon_list;
 
-  export let name: string;
+  export let name;
   export let size = "1em";
   export let width = toPX(size || "1em");
   export let height = toPX(size || "1em");

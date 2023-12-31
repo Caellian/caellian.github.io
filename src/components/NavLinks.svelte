@@ -1,14 +1,16 @@
-<script lang="ts">
+<script>
   import { page } from "$app/stores";
   import { createEventDispatcher } from "svelte";
 
   const clickDispatch = createEventDispatcher();
 
-  interface NavLink {
-    link: string;
-    name: string;
-  }
-
+  /**
+   * @typedef {Object} NavLink
+   * @prop {string} link
+   * @prop {string} name
+   *
+   * @type {NavLink[]}
+   */
   const links = [
     {
       link: "/",
@@ -26,9 +28,9 @@
       link: "/contact",
       name: "Contact",
     },
-  ] as NavLink[];
+  ];
 
-  function on_click(target: string) {
+  function on_click(target) {
     return () => {
       clickDispatch("click", { target });
     };

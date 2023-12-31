@@ -1,23 +1,30 @@
-<script context="module" lang="ts">
-  export interface Entry {
-    name: string;
-    icon: string;
-    url: string;
-  }
-
-  export type Data = Map<string, Array<Entry>>;
+<script context="module">
+  /**
+   * @typedef {Object} Entry
+   * @prop {string} name
+   * @prop {string} icon
+   * @prop {string} url
+   *
+   * @typedef {Object.<string, Entry[]>} Data
+   */
 </script>
 
-<script lang="ts">
+<script>
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
   import Icon from "./Icon.svelte";
   import LINKS from "$data/social.json";
   import { LIMITS } from "$lib/util";
 
-  export const data: Data = new Map(Object.entries(LINKS));
+  /**
+   * @type {Data}
+   */
+  export const data = new Map(Object.entries(LINKS));
 
-  let links: HTMLUListElement | null = null;
+  /**
+   * @type {HTMLUListElement}
+   */
+  let links = null;
 
   let display_width = 600;
   let max_width = 540;

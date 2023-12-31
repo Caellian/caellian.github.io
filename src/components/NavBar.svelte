@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
   import Compass from "./Compass.svelte";
@@ -6,7 +6,10 @@
 
   export let navigate = false;
 
-  function toggleNavigate(force: boolean | undefined = undefined) {
+  /**
+   * @param {boolean} [force]
+   */
+  function toggleNavigate(force = undefined) {
     return () => {
       if (force != null) {
         navigate = force;
@@ -16,7 +19,10 @@
     };
   }
 
-  let compact_layout_query: MediaQueryList | null = null;
+  /**
+   * @type {MediaQueryList}
+   */
+  let compact_layout_query = null;
   let compact_layout = false;
 
   function handleQueryChange() {

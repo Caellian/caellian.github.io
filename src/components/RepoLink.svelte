@@ -1,7 +1,7 @@
-<script lang="ts">
+<script>
   import Icon from "./Icon.svelte";
 
-  export let link: string;
+  export let link;
 
   function icon() {
     if (link.toLowerCase().includes("github")) {
