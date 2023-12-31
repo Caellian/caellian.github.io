@@ -192,16 +192,19 @@
             on:keyup={debounce(update_results)}
           />
           {#if search_query.trim().length > 0}
-            <div
+            <button
               class="clear-query-button"
               on:click={clear_query}
               on:keyup={clear_query}
             >
               <Icon name="remove" size="2rem" />
-            </div>
+            </button>
           {/if}
         </div>
-        <button on:click={() => (show_filters = !show_filters)}>
+        <button
+          class="info-toggle"
+          on:click={() => (show_filters = !show_filters)}
+        >
           {#if show_filters}
             <p>i</p>
           {:else}
@@ -214,34 +217,42 @@
         <section>
           <p>Category:</p>
           <div class="choices">
-            <div
+            <button
               on:mouseup={toggle_tag("active")}
               class:active={tags.includes("active")}
+              aria-checked={tags.includes("active")}
+              role="checkbox"
             >
               <Icon name="remove" size="1.4rem" color="var(--accent)" />
               <p>Current</p>
-            </div>
-            <div
+            </button>
+            <button
               on:mouseup={toggle_tag("project")}
               class:active={tags.includes("project")}
+              aria-checked={tags.includes("project")}
+              role="checkbox"
             >
               <Icon name="remove" size="1.4rem" color="var(--accent)" />
               <p>Project</p>
-            </div>
-            <div
+            </button>
+            <button
               on:mouseup={toggle_tag("contrib")}
               class:active={tags.includes("contrib")}
+              aria-checked={tags.includes("contrib")}
+              role="checkbox"
             >
               <Icon name="remove" size="1.4rem" color="var(--accent)" />
               <p>Contribution</p>
-            </div>
-            <div
+            </button>
+            <button
               on:mouseup={toggle_tag("fork")}
               class:active={tags.includes("fork")}
+              aria-checked={tags.includes("fork")}
+              role="checkbox"
             >
               <Icon name="remove" size="1.4rem" color="var(--accent)" />
               <p>Fork</p>
-            </div>
+            </button>
           </div>
         </section>
         {#if shown_langs.length > 0}
@@ -249,14 +260,16 @@
             <p>Language:</p>
             <div class="choices">
               {#each shown_langs as lang (lang)}
-                <div
+                <button
                   on:mouseup={toggle_tag(`lang:${lang}`)}
                   class:active={tags.find((it) => it == `lang:${lang}`) !=
                     undefined}
+                  aria-checked={tags.find((it) => it == `lang:${lang}`)}
+                  role="checkbox"
                 >
                   <Icon name="remove" size="1.4rem" color="var(--accent)" />
                   <p>{lang}</p>
-                </div>
+                </button>
               {/each}
             </div>
           </section>
@@ -266,14 +279,16 @@
             <p>Tags:</p>
             <div class="tags choices">
               {#each shown_tags as tag (tag)}
-                <div
+                <button
                   on:mouseup={toggle_tag(`tag:${tag}`)}
                   class:active={tags.find((it) => it == `tag:${tag}`) !=
                     undefined}
+                  aria-checked={tags.find((it) => it == `tag:${tag}`)}
+                  role="checkbox"
                 >
                   <Icon name="remove" size="1.4rem" color="var(--accent)" />
                   <p>{tag}</p>
-                </div>
+                </button>
               {/each}
             </div>
           </section>
@@ -356,7 +371,6 @@ aside.filters
 
     transition margin-top ease-out 200ms
 
-
   .choices
     display flex
     align-items center
@@ -375,7 +389,7 @@ aside.filters
     @media screen and (max-height 720px)
       scrollbar-color var(--accent) transparent
 
-    div
+    button
       display flex
 
       padding 0.1rem 0.75rem
@@ -437,14 +451,6 @@ aside.filters>.search.row
       flex-grow 1
       font-size 1.2rem
 
-    .clear-query-button
-      border 0.15rem solid var(--accent)
-      border-radius 100vw
-      margin auto -0.25rem
-      width 2.25rem
-      height 2.25rem
-      cursor pointer
-
     :global(.icon-search)
       width 2.25rem
       border-radius 1rem
@@ -452,7 +458,17 @@ aside.filters>.search.row
     :global(.icon-search>path)
       transform translateX(-5%)
 
-  button
+  button.clear-query-button
+    display flex
+    align-items center
+    border 0.15rem solid var(--accent)
+    border-radius 100vw
+    padding initial
+    margin auto
+    width 2rem
+    height 2rem
+
+  button.info-toggle
     min-width 3rem
     min-height 3rem
     max-height 3rem

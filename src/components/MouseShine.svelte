@@ -22,6 +22,7 @@
   on:mouseenter|stopPropagation={on_enter}
   class:visible={shine_on}
   style="--pos-x:{pos[0]}px;--pos-y:{pos[1]}px;"
+  role="none"
 >
   <slot />
 </div>

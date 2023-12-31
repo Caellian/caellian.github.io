@@ -142,6 +142,7 @@
   viewBox="0 0 100 100"
   style="stroke-linecap:{round ? 'round' : 'butt'}"
   on:mouseleave={leave}
+  role="figure"
 >
   <circle
     class="donut-background"
@@ -187,6 +188,7 @@
               : 'brightness(150%)'};"
             on:focus
             on:mouseover={enter(entry)}
+            role="listitem"
           />
         {/if}
         <circle
@@ -198,6 +200,7 @@
           style="stroke:{entry.color};stroke-width:{segWidth};"
           on:focus
           on:mouseover={enter(entry)}
+          role="listitem"
         />
       </g>
     </g>

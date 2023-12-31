@@ -16,6 +16,8 @@
   {width}
   {height}
   on:mouseup
+  role="button"
+  tabindex="0"
 >
   <ellipse class="outer-rim" cx="256" cy="256" rx="234" ry="234" />
   {#if spin}

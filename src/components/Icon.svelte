@@ -24,14 +24,18 @@
 </script>
 
 {#if icon != null && browser}
+  <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
   <svg
     on:mouseup
     style="--color:{color};fill:var(--color);"
     class="{$$props.class || `icon-${name}`} icon"
     {width}
     {height}
-    viewBox="-2 -2 {icon?.dim + 2} {icon?.dim + 2}">{@html icon?.content}</svg
+    viewBox="-2 -2 {icon?.dim + 2} {icon?.dim + 2}"
+    role="img"
   >
+    {@html icon?.content}
+  </svg>
 {/if}
 
 <style lang="stylus">
