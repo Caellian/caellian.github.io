@@ -92,16 +92,18 @@
     border-color var(--accent)
 
     h4
-      color var(--accent-7)
+      color var(--accent-4)
+    p
+      color var(--accent-3)
 
     &:before
       opacity 1
 
   &:active
     h4
-      color var(--accent)
+      color var(--accent-3)
 
     p
-      color var(--accent-7)
+      color var(--accent-2)
 
 </style>

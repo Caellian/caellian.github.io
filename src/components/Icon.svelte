@@ -31,7 +31,7 @@
     class="{$$props.class || `icon-${name}`} icon"
     {width}
     {height}
-    viewBox="-2 -2 {icon?.dim + 2} {icon?.dim + 2}"
+    viewBox="-2 -2 {icon.dim + 2} {icon.dim + 2}"
     role="img"
   >
     {@html icon?.content}

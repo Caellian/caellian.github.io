@@ -44,8 +44,8 @@
 
   const project_style = cssVars({
     bg_deg: `${deg}deg`,
-    bg_from: `hsl(${from},50%,var(--accent-l))`,
-    bg_to: `hsl(${from + 40},50%,var(--accent-l))`,
+    bg_from_h: `${from}deg`,
+    bg_to_h: `${(from + 40) % 360}deg`,
   });
 
   /**
@@ -111,7 +111,11 @@
 </div>
 
 <style lang="stylus">
-shaded = #0004
+
+:global([data-scheme="dark"]) .project-inner
+  --shaded #0004
+:global([data-scheme="light"]) .project-inner
+  --shaded #fff4
 
 .project
   padding 0.25rem
@@ -121,8 +125,8 @@ shaded = #0004
   aspect-ratio 2.25/3.5
   margin auto
 
-  background var(--bg-from)
-  background linear-gradient(var(--bg-deg), var(--bg-from), var(--bg-to))
+  background @css { hsl(var(--bg-from-h), var(--color-s), var(--accent-l)) }
+  background @css { linear-gradient(var(--bg-deg), hsl(var(--bg-from-h), var(--color-s), var(--accent-l)), hsl(var(--bg-to-h), var(--color-s), var(--accent-l))) }
   border-radius 0.75rem
 
   transition transform ease-out transition-short
@@ -150,7 +154,7 @@ shaded = #0004
     background var(--bg-accent)
 
     @media (min-width: tablet-size)
-      background shaded
+      background var(--shaded)
 
     font-size 0.8rem
     text-align right
@@ -183,7 +187,7 @@ shaded = #0004
     background var(--bg-accent)
 
     @media (min-width: tablet-size)
-      background shaded
+      background var(--shaded)
 
     p
       margin 0
@@ -211,10 +215,10 @@ shaded = #0004
       padding 0 0.1rem
       margin-right 0.2rem
 
-      border 1px solid var(--bg-from)
+      border @css { 1px solid hsl(var(--bg-from-h), var(--color-s), var(--accent-l)) }
       border-radius 0.25rem
 
-      background shaded
+      background var(--shaded)
 
   &:hover
     background var(--bg)

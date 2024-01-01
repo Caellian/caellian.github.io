@@ -1,14 +1,24 @@
 <script>
   import { browser } from "$app/environment";
   import { page } from "$app/stores";
-  import { RGB } from "$lib/color";
 
   import NavBar from "$components/NavBar.svelte";
-  import { Mode, Theme } from "$lib/theme";
+  import { onMount } from "svelte";
 
   var navigate = $page.url.pathname === "/navigation";
 
-  const theme = new Theme(RGB.parse("#00a4ba"), Mode.Dark);
+  var root;
+
+  onMount(() => {
+    root = document.querySelector("body");
+
+    root.setAttribute(
+      "data-scheme",
+      localStorage.getItem("scheme-preference") ||
+        (window.matchMedia("(prefers-color-scheme: light)") && "light") ||
+        "dark"
+    );
+  });
 </script>
 
 <svelte:head>
@@ -21,10 +31,7 @@
   <slot />
 </div>
 
-{#if browser}
-  {@html theme.styleTag()}
-{/if}
-
 <style global lang="stylus">
+  @import "../style/scheme";
   @import "../style/global";
 </style>

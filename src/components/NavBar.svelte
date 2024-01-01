@@ -3,6 +3,7 @@
   import { onMount } from "svelte";
   import Compass from "./Compass.svelte";
   import NavLinks from "./NavLinks.svelte";
+  import SchemeSwitch from "./SchemeSwitch.svelte";
 
   export let navigate = false;
 
@@ -37,8 +38,9 @@
   });
 </script>
 
-<nav id="navbar" class:fixed={navigate}>
+<nav id="navbar" class:fixed={navigate} class:compact={compact_layout}>
   <a href="/" class="name"><h1>tinsvagelj<span>::</span>net</h1></a>
+  <div class="spacer" />
 
   {#if !compact_layout}
     <ul id="nav-links">
@@ -53,6 +55,7 @@
       spin={navigate}
     />
   {/if}
+  <SchemeSwitch />
 </nav>
 
 {#if browser && compact_layout}
@@ -77,7 +80,6 @@
 <style lang="stylus">
 #navbar
   display flex
-  justify-content space-between
   align-items flex-end
 
   width 100vw
@@ -87,17 +89,16 @@
   border-bottom solid 0.15rem var(--bg-accent)
   z-index 1000
 
+  padding 0.2rem 1rem
+
   &.fixed
     position fixed
     top 0
     left 0
 
   a.name
-    padding 0.2rem 1rem
     height min-content
     width max-content
-    flex-shrink 1
-    flex-basis 0
 
     h1
       padding 0
@@ -119,27 +120,28 @@
         span
           color var(--fg)
 
-:global(#navbar>.compass)
-  min-width var(--nav-height)
+#navbar :global(.compass)
+  position absolute
+  top 0
+  right 0
+
+  width var(--nav-height)
   height var(--nav-height)
 
   padding 0.6rem 0.5rem 0.4rem 0.5rem
 
   border-left solid 0.2rem var(--bg-accent)
-  cursor pointer // Not really needed, but hey, it's here
 
 #nav-links
   display flex
   justify-content space-around
   align-items flex-start
-
-  margin-top 2rem
+  margin-bottom 0.5rem
 
   height calc(100% - 2rem)
 
-:global(#nav-links>li>a)
+  :global(li>a)
     padding-right 1rem
-    margin-bottom 0.5rem
 
     font-family 'Quicksand', sans-serif
     font-size 1.5rem
@@ -169,6 +171,16 @@
     to
         visibility hidden
 
+#navbar.compact :global(#scheme-toggle)
+  display none
+  position absolute
+  top calc(var(--nav-height) + 1rem)
+  right 1rem
+  z-index 200
+
+#navbar.compact.fixed :global(#scheme-toggle)
+  display block
+
 #mobile-links
   visibility collapse
   opacity 0
@@ -180,17 +192,17 @@
 
   font-family Quicksand
   background var(--bg)
+  text-align center
 
   position fixed
   top var(--nav-height)
   left 0
   width 100vw
+  width 100svw
   height 100vh
   height calc(100vh - var(--nav-height))
   height calc(100svh - var(--nav-height))
   z-index -100
-
-  text-align center
 
   :global(li)
     display block
@@ -212,6 +224,6 @@
 
   &.navigate
     visibility visible
-    z-index 1000
+    z-index 100
     opacity 1
 </style>

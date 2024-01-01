@@ -1,0 +1,50 @@
+lightness-steps-dark = 5% 10% 15% 20% 45% 50% 60% 70% 75% 80% 95%
+lightness-steps-light = 10% 15% 18% 23% 27% 40% 50% 60% 70% 80% 90%
+
+body
+    --bg-l 10%
+    --bg s("hsl(0,0%,var(--bg-l))")
+    --bg-light-l 15%
+    --bg-light s("hsl(0,0%,var(--bg-light-l))")
+    --bg-accent-l 20%
+    --bg-accent s("hsl(0,0%,var(--bg-accent-l))")
+    --fg-l 80%
+    --fg s("hsl(0,0%,var(--fg-l))")
+    --fg-accent-l 90%
+    --fg-accent s("hsl(0,0%,var(--fg-accent-l))")
+
+    --accent-h 187
+    --color-s 60%
+    --color-l 60%
+
+    for value, i in lightness-steps-dark
+        --accent-{i}-l: 100% - value
+        --accent-{i}: s("hsl(var(--accent-h), var(--color-s), var(--accent-%s-l))", i)
+    
+    --accent-l var(--accent-5-l)
+    --accent var(--accent-5)
+
+
+    --red @css { hsl(0,var(--color-s),var(--color-l)) }
+    --orange @css { hsl(30,var(--color-s),var(--color-l)) }
+    --yellow @css { hsl(60,var(--color-s),var(--color-l)) }
+    --green @css { hsl(120,var(--color-s),var(--color-l)) }
+    --aqua @css { hsl(150,var(--color-s),var(--color-l)) }
+    --cyan @css { hsl(180,var(--color-s),var(--color-l)) }
+    --blue @css { hsl(180,var(--color-s),var(--color-l)) }
+    --purple @css { hsl(270,var(--color-s),var(--color-l)) }
+    --pink @css { hsl(300,var(--color-s),var(--color-l)) }
+    --magenta @css { hsl(330,var(--color-s),var(--color-l)) }
+
+body[data-scheme="light"]
+    --bg-l 95%
+    --bg-light-l 90%
+    --bg-accent-l 87%
+    --fg-l 20%
+    --fg-accent-l 10%
+
+    --color-s 60%
+    --color-l 70%
+
+    for value, i in lightness-steps-light
+        --accent-{i}-l: value

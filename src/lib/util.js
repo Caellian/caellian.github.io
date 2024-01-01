@@ -108,7 +108,7 @@ export function css_style_constructor(
 
   for (const key in variables) {
     const value = variables[key];
-    builder += "--" + prefix + key.replace("_", "-") + ":" + value + ";";
+    builder += "--" + prefix + key.replaceAll("_", "-") + ":" + value + ";";
   }
 
   return builder;

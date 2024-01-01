@@ -50,17 +50,17 @@
   </section>
 
   {#if active_projects.length > 0}
-  <section class="pagewide current">
-    <h1 class="title">Personal Projects</h1>
+    <section class="pagewide current">
+      <h1 class="title">Personal Projects</h1>
 
-    <div class="cards">
-      {#each projects.filter((it) => it && it.active) as p}
-        <ProjectCard project={p} />
-      {/each}
-    </div>
+      <div class="cards">
+        {#each projects.filter((it) => it && it.active) as p}
+          <ProjectCard project={p} />
+        {/each}
+      </div>
 
-    <a class="button" href="/projects">See More</a>
-  </section>
+      <a class="button" href="/projects">See More</a>
+    </section>
   {/if}
 
   <!--<section class="pagewide">
@@ -163,7 +163,7 @@ section
       height 100vh
       z-index -100
 
-      --dots-color var(--bg-light) 
+      --dots-color var(--accent) 
       background-image radial-gradient(var(--dots-color) 0.12rem, transparent 0)
       background-position 50% 50%
       background-attachment fixed
@@ -191,7 +191,8 @@ section
     @media screen and (min-width: tablet-size)
       padding 1.5rem
     @media screen and (min-width: desktop-size)
-      background-color hsla(0, 0%, 0%, 0.2)
+      backdrop-filter blur(1px)
+      background-color @css { hsla(0, 0%, var(--bg-light-l), 0.3) }
 
     h1
       margin-bottom 2rem
@@ -222,30 +223,30 @@ section
     grid-column 1 / -1
 
   @media screen and (min-width: tablet-size)
-    // :nth-child(1 of .bg-layer)
-    // waiting for https://bugzilla.mozilla.org/show_bug.cgi?id=854148
-    >div:nth-of-type(2).bg-layer
-      --dots-color var(--accent-1)
-    >div:nth-of-type(3).bg-layer
-      --dots-color var(--accent-2)
-    >div:nth-of-type(4).bg-layer
+    >div:nth-child(1 of .bg-layer)
       --dots-color var(--accent-3)
+    >div:nth-child(2 of .bg-layer)
+      --dots-color var(--accent-4)
+    >div:nth-child(3 of .bg-layer)
+      --dots-color var(--accent-5)
 
     .wrapper
-      transition background-color transition-medium ease-in-out
+      transition background-color transition-medium ease-in-out, backdrop-filter transition-medium ease-in-out
 
     &:hover
-      >div:nth-of-type(2).bg-layer
+      >div:nth-child(1 of .bg-layer)
         background-size 3.25rem 3.25rem
-      >div:nth-of-type(3).bg-layer
+      >div:nth-child(2 of .bg-layer)
         background-size 3.5rem 3.5rem
-      >div:nth-of-type(4).bg-layer
+      >div:nth-child(3 of .bg-layer)
         background-size 3.75rem 3.75rem
 
     @media screen and (min-width: desktop-size)
       &:hover
         .wrapper
-          background-color hsla(0, 0%, 0%, 0.4)
+          backdrop-filter blur(4px)
+          background-color @css { hsla(0, 0%, var(--bg-light-l), 0.5) }
+
 section.current a
   margin 1rem auto
 

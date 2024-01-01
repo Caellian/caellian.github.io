@@ -86,12 +86,12 @@ p
 
 a
   text-decoration none
-  color var(--accent-7)
+  color var(--accent)
 
   transition color transition-short ease-in-out
 
   &:hover
-    color var(--accent)
+    color var(--accent-4)
 
   &:active
     color var(--fg)
@@ -105,6 +105,9 @@ li
 
   p
     width initial
+
+.spacer
+  flex-grow: 100
 
 button,
 .button
@@ -129,14 +132,14 @@ button,
   cursor pointer
 
   &:hover
-    background-color var(--accent-1)
+    background-color var(--accent-7)
     border-color var(--accent)
 
-    color var(--accent-7)
+    color var(--accent-1)
 
   &:active
-    background-color var(--accent-2)
-    color var(--accent)
+    background-color var(--accent-8)
+    color var(--accent-2)
 
   @media screen and (min-width: tablet-size)
     padding 0.7rem 2.5rem
