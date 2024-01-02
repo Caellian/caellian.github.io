@@ -14,7 +14,7 @@
   <ul class="post-list">
     {#each data.posts as post}
       <li>
-        <a href={`blog/${post.slug}`}>{post.title}</a> -- {formatDate(
+        <a href={`/blog/${post.slug}`}>{post.title}</a> -- {formatDate(
           post.update || post.date
         )}
       </li>
