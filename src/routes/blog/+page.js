@@ -1,9 +1,6 @@
 export const prerender = true;
 
-export async function load({ params, fetch }) {
-    /**
-     * @type {Response}
-     */
+export async function load({ fetch }) {
     const posts = await fetch("/blog/posts.json");
 
     return {

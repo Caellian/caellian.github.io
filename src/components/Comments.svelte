@@ -20,7 +20,7 @@
   let comments = null;
 
   async function locateAuthorToot() {
-    let postUrl = `${BASE_URL}/blog/${slug}`;
+    let postUrl = `${BASE_URL}/blog/p/${slug}`;
 
     let response = await fetch(
       `https://${host}/api/v1/accounts/${ownerId}/statuses?exclude_replies=true&exclude_reblogs=true&tagged=blog&tagged=post`
@@ -114,9 +114,9 @@
     <button class="leave-comment" on:click={addComent}>Leave a Comment</button>
   {/if}
   {#if comments != null}
-    {#each comments as c}
-      {#if c.in_reply_to_id == rootToot}
-        <Comment {comments} current={c} />
+    {#each comments as current}
+      {#if current.in_reply_to_id == rootToot}
+        <Comment {comments} {current} />
       {/if}
     {/each}
   {:else}

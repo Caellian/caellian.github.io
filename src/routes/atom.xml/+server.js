@@ -1,7 +1,7 @@
 import { json } from "@sveltejs/kit";
 import { processPostData } from "$lib/posts";
-import { orderPosts } from "../../lib/posts";
-import { BASE_URL } from "../../lib/store";
+import { orderPosts } from "$lib/posts";
+import { BASE_URL } from "$lib/store";
 
 export const prerender = true;
 
@@ -30,7 +30,7 @@ function postAtom(post) {
     return `<entry>
     <title>${post.title}</title>
     <link href="${BASE_URL}/blog/${post.slug}" />
-    <id>${BASE_URL}/blog/${post.slug}</id>
+    <id>${BASE_URL}/blog/p/${post.slug}</id>
     <updated>${updated}</updated>
     <content type="html"><![CDATA[${post.content}]]></content>${post.summary && `\n<summary>${post.summary}</summary>` || ''}
 </entry > `;
@@ -53,7 +53,7 @@ export async function GET() {
 
     return new Response(content, {
         headers: {
-            "cache-control": "public, max-age=0, s-maxage=3600",
+            "cache-control": "max-age=0, s-maxage=3600",
             "content-type": "application/atom+xml"
         }
     });

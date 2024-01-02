@@ -30,15 +30,20 @@
     },
   ];
 
-  function on_click(target) {
+  function onClick(target) {
     return () => {
       clickDispatch("click", { target });
     };
   }
+
+  function checkMatch(page, link) {
+    if (link === "/") return page === link;
+    return page.startsWith(link);
+  }
 </script>
 
 {#each links as l}
-  <li class:current={$page.url.pathname === l.link}>
-    <a href={l.link} on:click={on_click(l.link)}>{l.name}</a>
+  <li class:current={checkMatch($page.url.pathname, l.link)}>
+    <a href={l.link} on:click={onClick(l.link)}>{l.name}</a>
   </li>
 {/each}

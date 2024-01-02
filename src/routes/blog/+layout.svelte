@@ -8,7 +8,13 @@
 </div>
 
 <style lang="stylus">
-    #blog-layout
-        width: @css { clamp(30ch, 90vw, 80ch) }
-        margin: 1rem auto
+#blog-layout
+  width: @css { clamp(30ch, 90vw, 80ch) }
+  margin: 1rem auto
+
+:global(aside.blog-sidebar)
+  margin-top 1rem
+  :global(a)
+    display flex
+    align-items center
 </style>

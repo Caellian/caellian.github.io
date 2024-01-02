@@ -4,6 +4,7 @@
   import Icon from "$components/Icon.svelte";
   import Comments from "$components/Comments.svelte";
   import CopyButton from "$components/CopyButton.svelte";
+  import TagList from "../../../../components/TagList.svelte";
 
   export let data;
 
@@ -62,7 +63,6 @@
           navigator.clipboard.writeText(content);
         };
       });
-      // This is so stupid... not even onMount works
     }
   }
 
@@ -111,6 +111,7 @@
     <p class="date">✏️ Updated: {formatDate(data.update)}</p>
   {/if}
   <p class="date">📌 Published: {formatDate(data.date)}</p>
+  <TagList tags={data.tags} />
   <hr />
   <svelte:component this={data.content} />
 </article>
@@ -133,7 +134,8 @@ aside
   border-radius: 0.2rem
   background-color: var(--bg-light)
   border: 2px solid var(--bg-accent)
-
+  
+article
   .title
     padding-bottom 0.2rem
   
