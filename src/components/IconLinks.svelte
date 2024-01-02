@@ -118,9 +118,9 @@ ul.links
       .icons>li
         :global(svg path),
         :global(svg text)
-          fill var(--fg)
-          stroke-opacity 0
-          transition fill ease-in-out transition-short
+          --icon-fill var(--fg)
+          --icon-stroke var(--fg)
+          transition fill ease-in-out transition-short, stroke ease-in-out transition-short
 
 .icons
   display flex
@@ -131,10 +131,10 @@ li.link
     margin 1rem
   :global(svg path),
   :global(svg text)
-    fill var(--bg-light)
-    stroke #fff5
+    --icon-fill var(--bg-light)
+    --icon-stroke var(--bg-light)
     stroke-weight 0.15rem
-    transition fill ease-in-out transition-medium, stroke-opacity ease-in-out transition-medium
+    transition fill ease-in-out transition-medium, stroke ease-in-out transition-medium
 
   a
     display flex
@@ -158,14 +158,13 @@ li.link
       margin-top -0.5rem
     :global(.icon path),
     :global(.icon text)
-      fill var(--accent-7) !important
-      stroke var(--accent-7) !important
-      stroke-opacity 0
+      --icon-fill var(--accent-7) !important
+      --icon-stroke var(--accent-7) !important
       transition fill ease-in-out transition-short
   a:active
     :global(.icon:active path),
     :global(.icon:active text)
-      fill var(--accent-6) !important
-      stroke var(--accent-6) !important
+      --icon-fill var(--accent-6) !important
+      --icon-stroke var(--accent-6) !important
 
 </style>

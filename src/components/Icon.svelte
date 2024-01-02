@@ -18,7 +18,8 @@
   export let size = "1em";
   export let width = toPX(size || "1em");
   export let height = toPX(size || "1em");
-  export let color = "var(--icon-color, #fff)";
+  export let stroke = "var(--icon-color, #fff)";
+  export let fill = "var(--icon-color, #fff)";
 
   const icon = icons[name] || null;
 </script>
@@ -27,14 +28,14 @@
   <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
   <svg
     on:mouseup
-    style="--color:{color};fill:var(--color);"
+    style="--icon-stroke:{stroke};--icon-fill:{fill}"
     class="{$$props.class || `icon-${name}`} icon"
     {width}
     {height}
     viewBox="-2 -2 {icon.dim + 2} {icon.dim + 2}"
     role="img"
   >
-    {@html icon?.content}
+    {@html icon.content}
   </svg>
 {/if}
 

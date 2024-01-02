@@ -13,7 +13,7 @@ const config = {
     }),
   ],
 
-  extensions: [".svelte", ".svx"],
+  extensions: [".svelte", ".svx", ".md"],
 
   kit: {
     adapter: adapter({

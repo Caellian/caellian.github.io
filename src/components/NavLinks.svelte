@@ -20,10 +20,10 @@
       link: "/projects",
       name: "Projects",
     },
-    // {
-    //     link: "/blog",
-    //     name: "Blog"
-    // },
+    {
+      link: "/blog",
+      name: "Blog",
+    },
     {
       link: "/contact",
       name: "Contact",

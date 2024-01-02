@@ -11,4 +11,5 @@ export default defineConfig({
       $components: fileURLToPath(new URL("./src/components", import.meta.url)),
     },
   },
+  assetsInclude: ["**/*.html"],
 });

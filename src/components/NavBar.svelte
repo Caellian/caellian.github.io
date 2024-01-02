@@ -32,7 +32,7 @@
   }
 
   onMount(() => {
-    compact_layout_query = window.matchMedia("(max-width: 690px)");
+    compact_layout_query = window.matchMedia("(max-width: 770px)");
     compact_layout = compact_layout_query.matches;
     compact_layout_query.addEventListener("change", handleQueryChange);
   });
