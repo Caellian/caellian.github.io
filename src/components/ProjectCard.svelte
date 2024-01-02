@@ -1,6 +1,7 @@
 <script>
   import { cssVars, LIMITS } from "$lib/util";
   import { onMount } from "svelte";
+  import { getLocaleHighlights, DEFAULT_LOCALE } from "../lib/project";
 
   /**
    * @type {import("../lib/project").Project}
@@ -9,12 +10,19 @@
     id: "none",
     name: "None",
     tags: [],
-    lang: "No lang",
-    url: ".",
-    description: [],
+    language: "No lang",
+    url: "#",
     active: false,
     contribution: false,
     fork: false,
+    startDate: null,
+    endDate: null,
+    highlights: [
+      {
+        locale: DEFAULT_LOCALE,
+        value: [],
+      },
+    ],
   };
 
   /**
@@ -94,10 +102,10 @@
 <div bind:this={container} class="container">
   <div class="project" style={project_style}>
     <a href={project.url || "."} class="project-inner">
-      <span class="lang">{project.lang}</span>
+      <span class="lang">{project.language}</span>
       <h1>{project.name}</h1>
       <div class="desc">
-        {#each project.description as d}
+        {#each getLocaleHighlights(project, DEFAULT_LOCALE) as d}
           <p>{d}</p>
         {/each}
       </div>

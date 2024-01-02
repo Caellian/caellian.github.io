@@ -22,7 +22,12 @@
   });
 </script>
 
-<button id="scheme-toggle" class={current} on:click={toggle_scheme}>
+<button
+  id="scheme-toggle"
+  class={current}
+  on:click={toggle_scheme}
+  aria-label="scheme toggle button"
+>
   <svg viewBox="0 0 24 24" class="sun">
     <circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"
     ></line><line x1="12" y1="21" x2="12" y2="23"></line><line

@@ -2,13 +2,15 @@
   import { browser } from "$app/environment";
   import Icon from "$components/Icon.svelte";
   import ProjectResult from "$components/ProjectResult.svelte";
-  import projects from "$data/projects.json";
   import { debounce } from "$lib/util";
   import { onMount } from "svelte";
+  import { fetchProjectData } from "$lib/project";
+
+  export let data;
 
   let tags = [];
 
-  let results = projects;
+  let results = data.projects;
   let shown_langs = show_languages();
   let shown_tags = show_tags();
 
@@ -51,7 +53,9 @@
     const s = new Set();
 
     for (const proj of results) {
-      s.add(proj.lang);
+      if (proj.language) {
+        s.add(proj.language);
+      }
     }
     for (const lang of get_tag_langs()) {
       s.add(lang);
@@ -108,7 +112,7 @@
       .split(" ");
 
     if (tags.length == 0 && words.length == 0) {
-      return projects;
+      return data.projects;
     }
 
     let result = [];
@@ -122,7 +126,7 @@
     const langs = get_tag_langs();
     const clean_tags = get_tags();
 
-    for (const proj of projects) {
+    for (const proj of data.projects) {
       const active_ = !active || proj.active;
       const contrib_ = contrib && proj.contribution;
       const fork_ = fork && proj.fork;
@@ -162,7 +166,10 @@
     update_results();
   }
 
-  onMount(() => {
+  onMount(async () => {
+    data.projects = await fetchProjectData();
+    update_results();
+
     window.addEventListener("scroll", () => {
       if (result_list_el == null) return;
 
@@ -326,8 +333,8 @@
 
   <main class="results">
     <ul bind:this={result_list_el}>
-      {#each results as pr}
-        <ProjectResult project={pr} />
+      {#each results as project}
+        <ProjectResult {project} />
       {/each}
     </ul>
   </main>

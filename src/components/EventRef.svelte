@@ -9,29 +9,17 @@
 </script>
 
 <MouseShine>
-  {#if url}
-    <a class="container" href={url}>
-      {#if time != null}
-        <h4 style="grid-area: 1/1/2/2">{name}</h4>
-        <p style="grid-area: 1/2/3/3" class="time">{time}</p>
-      {:else}
-        <h4 style="grid-area: 1/1/2/3">{name}</h4>
-        <Spinner clazz="time" size="2rem" />
-      {/if}
-      <p style="grid-area: 2/1/3/3">{description}</p>
-    </a>
-  {:else}
-    <div class="container">
-      {#if time != null}
-        <h4 style="grid-area: 1/1/2/2">{name}</h4>
-        <p style="grid-area: 1/2/3/3" class="time">{time}</p>
-      {:else}
-        <h4 style="grid-area: 1/1/2/3">{name}</h4>
-        <Spinner clazz="time" size="2rem" />
-      {/if}
-      <p style="grid-area: 2/1/3/3">{description}</p>
-    </div>
-  {/if}
+  <svelte:element this={url ? "a" : "div"} href={url} class="container">
+    <p style="grid-area: 1/1/2/2" aria-label="event title">
+      {name}
+    </p>
+    {#if time != null}
+      <p style="grid-area: 1/2/3/3" aria-label="end time">{time}</p>
+    {:else}
+      <Spinner clazz="time" size="2rem" />
+    {/if}
+    <p style="grid-area: 2/1/3/3" aria-label="description">{description}</p>
+  </svelte:element>
 </MouseShine>
 
 <style lang="stylus">
@@ -54,21 +42,20 @@
 
   @media screen and (min-width mobile-size)
     padding 1rem 2.5rem
-  .time,
+  [aria-label="end time"],
   :global(.spinner)
     grid-area: 1/2/3/3
 
   :global(*)
     pointer-events none
 
-  h4
+  [aria-label="event title"]
     font-family 'Quicksand', sans-serif
     font-size 1.4rem
     color var(--fg)
-
     padding 0
 
-  p
+  [aria-label="description"]
     font-size 1rem
     padding 0
     width max-content
@@ -91,19 +78,18 @@
   &:hover
     border-color var(--accent)
 
-    h4
+    [aria-label="event title"]
       color var(--accent-4)
-    p
+    [aria-label="description"]
       color var(--accent-3)
 
     &:before
       opacity 1
 
   &:active
-    h4
+    [aria-label="event title"]
       color var(--accent-3)
-
-    p
+    [aria-label="description"]
       color var(--accent-2)
 
 </style>

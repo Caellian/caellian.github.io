@@ -1,6 +1,8 @@
 <script>
+  import { DEFAULT_LOCALE, getLocaleHighlights } from "../lib/project";
   import Icon from "./Icon.svelte";
   import RepoLink from "./RepoLink.svelte";
+  import Spinner from "./Spinner.svelte";
 
   /**
    * @type {import("../lib/project".Project}
@@ -21,6 +23,10 @@
       }
     }
   }
+
+  async function getDescription() {
+    return getLocaleHighlights(project, DEFAULT_LOCALE).join("<br>");
+  }
 </script>
 
 {#if project != null}
@@ -33,7 +39,15 @@
         <Icon size="2rem" name="merge" color={merge_color(project)} />
       </div>
     {/if}
-    <p class="description">{@html project.description.join("<br>")}</p>
+    <p class="description">
+      {#await getDescription()}
+        <Spinner size="2rem" />
+      {:then description}
+        {@html description}
+      {:catch error}
+        <p>Failed to load description.</p>
+      {/await}
+    </p>
     <div class="bg" />
     {#if project.url}
       <RepoLink link={project.url} />

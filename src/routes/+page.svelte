@@ -1,18 +1,20 @@
 <script>
   import LanguageDonut from "$components/LanguageUsage.svelte";
   import ProjectCard from "$components/ProjectCard.svelte";
-
-  import projects from "$data/projects.json";
-  //import jobs from "$data/job_history.json";
   import education from "$data/official_education.json";
   import languages from "$data/used_languages.json";
   import EventRef from "$components/EventRef.svelte";
   import About from "$content/About.svx";
   import { BUILD_DATE, LIMITS } from "$lib/util";
+  import { fetchProjectData } from "../lib/project";
+  import { onMount } from "svelte";
 
-  const active_projects = projects.filter((it) => it && it.active);
+  export let data;
+  $: active_projects = data.projects.filter((it) => it.active);
 
-  import "../style/global.styl";
+  onMount(async () => {
+    data.projects = await fetchProjectData();
+  });
 </script>
 
 <svelte:head>
@@ -58,8 +60,8 @@
       <h1 class="title">Personal Projects</h1>
 
       <div class="cards">
-        {#each projects.filter((it) => it && it.active) as p}
-          <ProjectCard project={p} />
+        {#each active_projects as project}
+          <ProjectCard {project} />
         {/each}
       </div>
 

@@ -1,7 +1,15 @@
 const GITHUB_TOKEN = "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";
 
+export const DEFAULT_LOCALE = "en";
+export const PROJECTS_REMOTE = "https://gist.githubusercontent.com/Caellian/46d7b19ea62202ef377324fd8390bd10/raw/projects.json";
+
+let cachedProjectData = null;
 /**
- * @typedef Project
+ * @typedef {Object} Highlights
+ * @property {string} locale
+ * @property {string[]} value
+ * 
+ * @typedef {Object} Project
  * @property {string} id
  * @property {string} name
  * 
@@ -9,11 +17,42 @@ const GITHUB_TOKEN = "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";
  * @property {boolean} [active]
  * @property {boolean} [contribution]
  * @property {boolean} [fork]
- * @property {string} lang
+ * @property {string} language
  * @property {string} [url]
- * @property {string[]} description
+ * @property {Date} [startDate]
+ * @property {Date} [endDate]
+ * @property {Highlights[]} [highlights]
  * 
-*/
+ * @returns {Promise<Project[]>}
+ */
+export async function fetchProjectData() {
+  if (cachedProjectData) return cachedProjectData;
+  cachedProjectData = (await fetch(PROJECTS_REMOTE).then((res) => res.json())).map((data) => {
+    return {
+      ...data,
+      startDate: data.startDate ? new Date(data.startDate) : undefined,
+      endDate: data.endDate ? new Date(data.endDate) : undefined,
+    }
+  });
+  return cachedProjectData;
+}
+
+export function getLocaleHighlights(project, locale = DEFAULT_LOCALE) {
+  const DEFAULT_RESULT = {
+    locale: DEFAULT_LOCALE,
+    value: [],
+  };
+
+  if (project.highlights) {
+    return (
+      project.highlights.find((h) => h.locale === locale).value ||
+      (locale != DEFAULT_LOCALE && project.highlights.find((h) => h.locale === DEFAULT_LOCALE).value) ||
+      project.highlights[0] || DEFAULT_RESULT
+    );
+  } else {
+    return DEFAULT_RESULT;
+  }
+}
 
 /**
  * @param {string} query
