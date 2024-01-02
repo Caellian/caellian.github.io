@@ -126,11 +126,11 @@
 
 <style lang="stylus">
 h2
-    margin-top: 1rem
+  margin-top: 1rem
 
 .comment-section
-    margin: 0 auto
-    --comment-indent: 1rem
+  margin: 0 auto
+  --comment-indent: 1rem
 
 button.leave-comment
   margin: auto
