@@ -42,6 +42,14 @@
   }
 </script>
 
+<svelte:head>
+  <meta
+    name="description"
+    content="Tin Švagelj's contact information and social links."
+  />
+  <title>tinsvagelj::net - contact</title>
+</svelte:head>
+
 <main class="v-fit">
   <section class="center">
     {#if browser && emailStatus == null}
@@ -160,7 +168,7 @@ main
   &.ok>svg
     stroke lime
   &.error>svg
-    stroke var(--red)
+    stroke var(--clr-red)
 
   p
     padding 0

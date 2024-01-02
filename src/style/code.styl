@@ -1,0 +1,106 @@
+code[class*="language-"],
+pre[class*="language-"]
+  color var(--fg)
+  direction ltr
+  text-align left
+  white-space pre
+  word-spacing normal
+  word-break normal
+  line-height 1.5
+  -moz-tab-size 4
+  -o-tab-size 4
+  tab-size 4
+  -webkit-hyphens none
+  -moz-hyphens none
+  -ms-hyphens none
+  hyphens none
+
+pre[class*="language-"] ::selection,
+code[class*="language-"] ::selection
+  color var(--fg)
+  background var(--accent-9)
+
+pre[class*="language-"]
+  padding 1rem
+  margin 0.5rem 0
+  overflow auto
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"],
+code
+  background var(--bg-accent)
+  border-radius: 0.25rem
+
+:not(pre) > code
+    border-radius 0.3rem
+
+    &[class*="language-"]
+        padding 0.1rem
+    &:not([class*="language-"])
+        padding 0.1ch 0.4ch
+
+body[data-scheme="dark"] pre[class*="language-"]
+    box-shadow inset 1px 1px 2px var(--bg)
+body[data-scheme="light"] pre[class*="language-"]
+    box-shadow inset 1px 1px 2px var(--fg-hint)
+body[data-scheme="dark"] :not(pre) > code:not([class*="language-"])
+    box-shadow 1px 1px 2px var(--bg)
+body[data-scheme="light"] :not(pre) > code:not([class*="language-"])
+    box-shadow 1px 1px 2px var(--fg-hint)
+
+body
+    --clr-code-comment var(--fg-hint)
+    --clr-code-keyword var(--clr-choral)
+    --clr-code-variable var(--clr-cyan)
+    --clr-code-number var(--clr-teal)
+    --clr-code-string var(--clr-green)
+    --clr-code-op var(--fg-muted)
+
+.token.comment,
+.token.prolog,
+.token.cdata
+  color var(--clr-code-comment)
+
+.token.delimiter,
+.token.boolean,
+.token.keyword,
+.token.selector,
+.token.important,
+.token.symbol,
+.token.atrule
+  color var(--clr-code-keyword)
+
+.token.property,
+.token.constant,
+.token.variable
+  color var(--clr-code-variable)
+
+.token.operator,
+.token.punctuation,
+.token.attr-name
+  color var(--clr-code-op)
+
+.token.tag,
+.token.tag .punctuation,
+.token.doctype,
+.token.builtin
+  color var(--clr-code-keyword)
+
+.token.entity,
+.token.number
+  color var(--clr-code-number)
+
+.token.string,
+.token.char
+  color var(--clr-code-string)
+
+.token.attr-value,
+.token.attr-value .punctuation
+  color var(--clr-code-op)
+
+.token
+  &.url
+    color var(--accent)
+    text-decoration wavy underline
+  &.function
+    color var(--clr-orange)

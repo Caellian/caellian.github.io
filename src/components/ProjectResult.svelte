@@ -12,12 +12,12 @@
    */
   function merge_color(project) {
     if (project.fork) {
-      return "var(--blue)";
+      return "var(--clr-blue)";
     } else if (project.contribution) {
       if (!project.active) {
-        return "var(--green)";
+        return "var(--clr-green)";
       } else {
-        return "var(--yellow)";
+        return "var(--clr-yellow)";
       }
     }
   }
@@ -60,12 +60,16 @@ li
     .title
         grid-column-start 1
         grid-column-end 3
+        font-size 1.25rem
 
         width 100%
 
     .description
         grid-column-start 1
         grid-column-end 4
+        background-color var(--bg)
+        padding 0.5rem
+        border-radius 0.5rem
 
     .bg
         position absolute

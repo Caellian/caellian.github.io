@@ -21,6 +21,7 @@ export function processPostData(post) {
         date: new Date(post.date),
         content: post.content && post.content.render().html,
         summary: post.summary,
+        tags: post.tags && Array.isArray(post.tags) && post.tags || [],
         slug: post.slug
     };
 }

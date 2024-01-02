@@ -45,12 +45,25 @@
   });
 </script>
 
+<svelte:head>
+  {#if data.summary}
+    <meta name="description" content={data.summary} />
+  {:else}
+    <meta
+      name="description"
+      content="Tin Švagelj's '{data.title}' blog post."
+    />
+  {/if}
+  <title>{data.title} - tinsvagelj::net</title>
+</svelte:head>
+
 <article>
-  <h1>{data.title}</h1>
+  <h1 class="title">{data.title}</h1>
   {#if data.update}
     <p class="date">✏️ Updated: {formatDate(data.update)}</p>
   {/if}
   <p class="date">📌 Published: {formatDate(data.date)}</p>
+  <hr />
   <svelte:component this={data.content} />
 </article>
 
@@ -72,6 +85,13 @@
     border-radius: 0.2rem
     background-color: var(--bg-light)
     border: 2px solid var(--bg-accent)
+
+    .title
+      padding-bottom 0.2rem
+    
+    hr
+      margin-top 0.5rem
+      margin-bottom 1rem
 
   .date
     font-size: 0.8rem

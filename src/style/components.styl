@@ -1,0 +1,118 @@
+li
+  list-style none
+
+article li
+  margin-left 1rem
+  margin-top 0.5rem
+  
+  +li
+    margin-top 0.25rem
+
+  &:before
+    content '>'
+    margin-right 0.75rem
+    transition margin-left transition-short ease-in-out, margin-right transition-short ease-in-out
+  
+  &:hover:before
+    margin-right 0.5rem
+    margin-left 0.25rem
+
+hr
+  border solid 1px var(--bg-accent)
+
+button,
+.button
+  display block
+
+  background-color var(--bg)
+  padding 0.5rem 1.5rem
+
+  width max-content
+  height min-content
+
+  border solid 0.15rem var(--bg-accent)
+  border-radius 100vh
+  outline inherit
+
+  transition background-color ease-in-out transition-short, border-color ease-in-out transition-short
+
+  font-family var(--fnt-rounded)
+  font-size 1rem
+  color var(--fg)
+
+  cursor pointer
+
+  &:hover
+    background-color var(--accent-7)
+    border-color var(--accent)
+
+    color var(--accent-1)
+
+  &:active
+    background-color var(--accent-8)
+    color var(--accent-2)
+
+  @media screen and (min-width: tablet-size)
+    padding 0.7rem 2.5rem
+
+.checkbox
+  display inline-block
+
+  width 0.8rem
+  height 0.8rem
+
+  border-radius 0.1rem
+  border var(--accent) solid 0.15rem
+
+  &:hover
+    border var(--accent-7) solid 0.2rem
+
+  &.checked
+    background var(--accent)
+    clip-path polygon(0 0, 100% 0, 50% 50%, 30% 30%, 15% 45%, 50% 80%, 100% 30%, 100% 100%, 0 100%)
+
+    &:hover
+      background var(--accent-7)
+
+
+input[type="text"],
+input[type="email"],
+textarea
+  box-sizing border-box
+  width 100%
+  padding 0.5vh
+  margin-bottom 2vh
+  resize vertical
+
+  background none
+  color var(--fg)
+
+  border none
+  border-bottom solid 0.15rem var(--accent)
+
+  transition border-bottom ease-in-out 200ms
+
+  &:focus
+    outline none
+    border-bottom solid 0.15rem var(--accent-7)
+
+  &:invalid
+    outline none
+    box-shadow none
+    border-bottom solid 0.15rem var(--red)
+
+blockquote
+  border-left 2px solid var(--fg-hint)
+  padding 0.5rem 0.75rem
+  margin 1rem 0.2rem 1rem 0.75rem
+  background-color hsla(0, 0%, 0%, 0.1)
+  border-radius 0 0.2rem 0.2rem 0
+
+  >:nth-child(1)
+    padding-top 0
+    margin-top 0
+  
+  &:has(span[data-paraphrased])
+    border-left 2px dashed var(--fg-hint)
+  
+@import 'code'

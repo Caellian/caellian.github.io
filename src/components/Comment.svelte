@@ -192,16 +192,16 @@
             margin-right: 15px
 
         .replies.active a
-            color: var(--blue)
-            --icon-color: var(--blue)
+            color: var(--clr-blue)
+            --icon-color: var(--clr-blue)
 
         .reblogs.active a
-            color: var(--green)
-            --icon-color: var(--green)
+            color: var(--clr-green)
+            --icon-color: var(--clr-green)
 
         .favourites.active a
-            color: var(--yellow)
-            --icon-color: var(--yellow)
+            color: var(--clr-yellow)
+            --icon-color: var(--clr-yellow)
 
 .comment-replies
     display: flex

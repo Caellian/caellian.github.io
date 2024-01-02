@@ -1,0 +1,19 @@
+// Global scrollbar styles
+// These only work on WebKit and Firefox
+
+::-webkit-scrollbar
+  width 0.3rem
+  height 0.3rem
+::-webkit-scrollbar-thumb
+  background-color var(--accent)
+  border-radius 100vw
+
+body::-webkit-scrollbar
+  width 0.45rem
+  height 0.45rem
+body::-webkit-scrollbar:hover
+  width 0.75rem
+  height 0.75rem
+  background-color var(--bg-light)
+body::-webkit-scrollbar-thumb
+  border 0.15rem solid var(--bg-light)

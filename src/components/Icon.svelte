@@ -18,8 +18,8 @@
   export let size = "1em";
   export let width = toPX(size || "1em");
   export let height = toPX(size || "1em");
-  export let stroke = "var(--icon-color, #fff)";
-  export let fill = "var(--icon-color, #fff)";
+  export let stroke = "var(--icon-color, var(--fg))";
+  export let fill = "var(--icon-color, var(--fg))";
 
   const icon = icons[name] || null;
 </script>

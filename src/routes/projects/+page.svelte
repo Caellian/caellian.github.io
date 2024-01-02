@@ -178,6 +178,11 @@
   });
 </script>
 
+<svelte:head>
+  <meta name="description" content="List of Tin Švagelj's personal projects." />
+  <title>tinsvagelj::net - projects</title>
+</svelte:head>
+
 <div class="content-wrapper">
   {#if browser}
     <aside class="filters" style="--scroll-y:{Math.round(scroll_value)}px">
@@ -302,15 +307,15 @@
           </div>
           <ul>
             <li class="row">
-              <span class="color" style="background-color:var(--green)" />
+              <span class="color" style="background-color:var(--clr-green)" />
               <p>Merged</p>
             </li>
             <li class="row">
-              <span class="color" style="background-color:var(--yellow)" />
+              <span class="color" style="background-color:var(--clr-yellow)" />
               <p>Not merged</p>
             </li>
             <li class="row">
-              <span class="color" style="background-color:var(--blue)" />
+              <span class="color" style="background-color:var(--clr-blue)" />
               <p>Custom fork</p>
             </li>
           </ul>
@@ -352,7 +357,7 @@ aside.filters
   gap 0.5rem
   flex-direction column
 
-  max-height calc(100vh - var(--nav-))
+  max-height calc(100vh - var(--nav-height))
   padding 0.5rem
   margin 0.5rem
   margin-bottom 0

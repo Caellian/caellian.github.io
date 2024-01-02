@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%sveltekit.assets%/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    %sveltekit.head%
-  </head>
 
-  <body>
-    <div id="portfolio">%sveltekit.body%</div>
-  </body>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="icon" href="%sveltekit.assets%/favicon.png" />
+  <link rel="alternate" type="application/atom+xml" title="Blog Feed" href="https://tinsvagelj.net/atom.xml" />
+
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Quicksand.basic-latin.woff2">
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Quicksand.croatian.woff2">
+
+  %sveltekit.head%
+</head>
+
+<body>
+  <div id="portfolio">%sveltekit.body%</div>
+</body>
+
 </html>

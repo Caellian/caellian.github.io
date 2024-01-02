@@ -15,9 +15,13 @@
   import "../style/global.styl";
 </script>
 
+<svelte:head>
+  <meta name="description" content="Tin Švagelj's web portfolio." />
+</svelte:head>
+
 <main>
   <section id="hero">
-    <img src="/profile.png" alt="profile" />
+    <img src="/profile.webp" alt="profile" />
     <div class="wrapper">
       <span>
         <p>Hi, my name is</p>
@@ -59,7 +63,7 @@
         {/each}
       </div>
 
-      <a class="button" href="/projects">See More</a>
+      <a class="button" href="/projects" alt="show all projects">See More</a>
     </section>
   {/if}
 

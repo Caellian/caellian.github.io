@@ -1,3 +1,8 @@
+<svelte:head>
+  <meta name="description" content="Tin Švagelj's web blog." />
+  <title>tinsvagelj::net - blog</title>
+</svelte:head>
+
 <div id="blog-layout">
   <slot />
 </div>
