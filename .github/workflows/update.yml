@@ -5,6 +5,7 @@ on:
     branches: [sources]
     paths:
       - src/**
+      - .github/workflows/update.yml
 
 jobs:
   update:
@@ -12,6 +13,9 @@ jobs:
     steps:
       - name: Checkout sources branch
         uses: actions/checkout@v2
+        with:
+          submodules: true
+          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Checkout master branch
         uses: actions/checkout@v2
         with:
@@ -26,7 +30,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "19"
+          node-version: "21"
       - name: Cache node modules
         uses: actions/cache@v2
         with:
