@@ -5,7 +5,10 @@
   import { BASE_URL } from "$lib/store";
   import Comment from "./Comment.svelte";
   export let host = "mastodon.social";
+
+  export let ownerName = "caellian";
   export let ownerId = "108755498239225694";
+
   export let slug;
 
   let state = "Loading...";
@@ -20,7 +23,7 @@
     let postUrl = `${BASE_URL}/blog/${slug}`;
 
     let response = await fetch(
-      `https://mastodon.social/api/v1/accounts/${ownerId}/statuses?exclude_replies=true&exclude_reblogs=true&tagged=blog&tagged=post`
+      `https://${host}/api/v1/accounts/${ownerId}/statuses?exclude_replies=true&exclude_reblogs=true&tagged=blog&tagged=post`
     );
 
     let data = await response.json();
@@ -85,6 +88,14 @@
     observer.observe(comment_list);
   }
 
+  function addComent() {
+    open(
+      `https://${host}/@${ownerName}/${rootToot}`,
+      "blank",
+      "noopener noreferrer"
+    );
+  }
+
   onMount(() => {
     observeVisibility();
   });
@@ -99,6 +110,9 @@
 </noscript>
 
 <div bind:this={comment_list} class="comment-section">
+  {#if rootToot != null}
+    <button class="leave-comment" on:click={addComent}>Leave a Comment</button>
+  {/if}
   {#if comments != null}
     {#each comments as c}
       {#if c.in_reply_to_id == rootToot}
@@ -117,4 +131,8 @@ h2
 .comment-section
     margin: 0 auto
     --comment-indent: 1rem
+
+button.leave-comment
+  margin: auto
+  margin-bottom: 1rem
 </style>
