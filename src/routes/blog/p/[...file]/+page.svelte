@@ -105,7 +105,7 @@
   <title>{data.title} - tinsvagelj::net</title>
 </svelte:head>
 
-<article bind:this={article}>
+<article bind:this={article} class="island">
   <h1 class="title">{data.title}</h1>
   {#if data.update}
     <p class="date">✏️ Updated: {formatDate(data.update)}</p>
@@ -116,7 +116,7 @@
   <svelte:component this={data.content} />
 </article>
 
-<aside>
+<aside class="island">
   <p>Share</p>
   <div class="share-targets">
     <button on:click={shareMastodon}>
@@ -128,13 +128,6 @@
 <Comments slug={data.slug}></Comments>
 
 <style lang="stylus">
-article,
-aside
-  padding: 1rem
-  border-radius: 0.2rem
-  background-color: var(--bg-light)
-  border: 2px solid var(--bg-accent)
-  
 article
   .title
     padding-bottom 0.2rem

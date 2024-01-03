@@ -3,6 +3,7 @@
  * @property {string} title
  * @property {Date} [update]
  * @property {Date} date
+ * @property {boolean} [published=true]
  * @property {string} content html string
  * @property {string} [topic="development"]
  * @property {string} [summary]
@@ -20,8 +21,9 @@ export function processPostData(post) {
     return {
         title: post.title,
         update: post.update && new Date(post.update),
-        date: new Date(post.date),
-        content: post.content && post.content.render().html,
+        date: post.date && new Date(post.date),
+        published: post.date != null,
+        content: post.content,
         topic: post.topic || "development",
         summary: post.summary,
         tags: post.tags && Array.isArray(post.tags) && post.tags || [],

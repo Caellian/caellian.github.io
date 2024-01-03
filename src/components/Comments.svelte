@@ -2,7 +2,7 @@
   // Adapted from https://github.com/dpecos/mastodon-comments
 
   import { onMount } from "svelte";
-  import { BASE_URL } from "$lib/store";
+  import { postRelatedToot } from "$lib/mastodon";
   import Comment from "./Comment.svelte";
   export let host = "mastodon.social";
 
@@ -20,24 +20,8 @@
   let comments = null;
 
   async function locateAuthorToot() {
-    let postUrl = `${BASE_URL}/blog/p/${slug}`;
-
-    let response = await fetch(
-      `https://${host}/api/v1/accounts/${ownerId}/statuses?exclude_replies=true&exclude_reblogs=true&tagged=blog&tagged=post`
-    );
-
-    let data = await response.json();
-
-    if (Array.isArray(data) && data.length > 0) {
-      data = data
-        .filter((it) => it["content"].includes(postUrl))
-        .sort((a, b) => a.created_at.localeCompare(b.created_at));
-      if (data.length == 0) {
-        return null;
-      }
-      rootToot = data[0]["id"];
-    }
-
+    let found = await postRelatedToot(host, ownerId, slug);
+    rootToot = found?.id;
     return rootToot;
   }
 

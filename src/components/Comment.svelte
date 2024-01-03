@@ -1,8 +1,15 @@
 <script>
   import { onMount } from "svelte";
+  import { escapeHtml } from "$lib/util";
   import Icon from "./Icon.svelte";
 
+  /**
+   * @type {import("../lib/mastodon").Status[]}
+   */
   export let comments;
+  /**
+   * @type {import("../lib/mastodon").Status}
+   */
   export let current;
   export let depth = 0;
 
@@ -10,15 +17,6 @@
 
   let accountName = current.account.display_name;
   let attachments = [];
-
-  function escapeHtml(unsafe) {
-    return (unsafe || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
 
   function user_account(account) {
     var result = `@${account.acct}`;

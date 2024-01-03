@@ -167,12 +167,13 @@ export function chainFn(
 /**
  * Separate an iterable into two arrays based on a filter function.
  * 
- * @param {any[]} iter iterable
+ * @typedef {any} T
+ * @param {Iterable<T> | ArrayLike<T>} iter iterable
  * @param {(el: any) => boolean} f filter function
  * 
- * @returns {[any[], any[]]} [matches, rest]
+ * @returns {[T[], T[]]} [matches, rest]
  */
-export function filter_split(iter, f) {
+export function filterSplit(iter, f) {
   const matches = [];
   const rest = [];
 
@@ -185,4 +186,17 @@ export function filter_split(iter, f) {
   }
 
   return [matches, rest];
+}
+
+/**
+ * @param {string} str
+ * @returns {string}
+ */
+export function escapeHtml(unsafe) {
+  return (unsafe || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }

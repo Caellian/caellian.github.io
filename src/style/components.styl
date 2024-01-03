@@ -74,6 +74,32 @@ button,
     &:hover
       background var(--accent-7)
 
+.tag
+  background-color var(--bg-accent)
+  padding 0.25rem 0.5rem
+  border-radius 0.5rem
+  font-size 0.75rem
+  color var(--fg-light)
+  --icon-color var(--fg-light)
+  
+  &.hash:before
+    content "#"
+  
+  &:hover,
+  &:focus
+    background-color var(--fg-hint)
+    --icon-color: var(--bg)
+    color var(--bg)
+  &:active
+    background-color var(--fg-muted)
+    --icon-color: var(--bg)
+    color var(--bg)
+
+.island
+  padding: 1rem
+  border-radius: 0.2rem
+  background-color: var(--bg-light)
+  border: 2px solid var(--bg-accent)
 
 input[type="text"],
 input[type="email"],

@@ -9,7 +9,7 @@
   }
 </script>
 
-<div class="post-list">
+<div class="post-list island">
   {#each posts as post}
     <a href="/blog/p/{post.slug}" class="post">
       <div class="date center">
@@ -25,34 +25,28 @@
 </div>
 
 <style lang="stylus">
-.post-list
-  background-color var(--bg-light)
-  border 2px solid var(--bg-accent)
-  padding 1rem
-  border-radius 1rem
+.post-list .post
+  display flex
+  align-items stretch
+  gap 0.5rem
+  margin-left 1ch
 
-  .post
+  +.post
+    margin-top 1rem
+  
+  .details
     display flex
-    align-items stretch
+    flex-direction column
     gap 0.5rem
-    margin-left 1ch
+    color: var(--fg)
 
-    +.post
-      margin-top 1rem
-    
-    .details
-      display flex
-      flex-direction column
-      gap 0.5rem
-      color: var(--fg)
+    .title
+      padding 0
+      font-size 1.25rem
 
-      .title
-        padding 0
-        font-size 1.25rem
-
-    .date
-      padding-right 1rem
-      border-right 2px solid var(--bg)
-      font-family var(--fnt-mono)
-      color: var(--fg)
+  .date
+    padding-right 1rem
+    border-right 2px solid var(--bg)
+    font-family var(--fnt-mono)
+    color: var(--fg)
 </style>

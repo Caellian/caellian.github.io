@@ -1,10 +1,10 @@
 export const prerender = true;
 
 export async function load({ params, fetch }) {
-    let posts = await fetch("/blog/posts.json");
+    let posts = await fetch("/blog/posts.json").then(res => res.json());
 
-    const tag = params.slug;
-    posts = (await posts.json()).filter(post => {
+    const tag = params.tag;
+    posts = posts.filter(post => {
         return post.tags.includes(tag);
     });
 
