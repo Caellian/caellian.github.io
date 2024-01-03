@@ -1,10 +1,12 @@
 /**
  * @typedef {Object} Post
  * @property {string} title
- * @property {Date} update
+ * @property {Date} [update]
  * @property {Date} date
  * @property {string} content html string
- * @property {string} summary
+ * @property {string} [topic="development"]
+ * @property {string} [summary]
+ * @property {string[]} tags
  * @property {string} slug
  */
 
@@ -20,6 +22,7 @@ export function processPostData(post) {
         update: post.update && new Date(post.update),
         date: new Date(post.date),
         content: post.content && post.content.render().html,
+        topic: post.topic || "development",
         summary: post.summary,
         tags: post.tags && Array.isArray(post.tags) && post.tags || [],
         slug: post.slug

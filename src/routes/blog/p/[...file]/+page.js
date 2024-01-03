@@ -1,7 +1,8 @@
 import { processPostData } from "$lib/posts";
 
 export async function load({ params }) {
-    const post = await import(`../../posts/${params.slug}.svx`);
+    const posts = import.meta.glob(`../../posts/**/*.svx`);
+    const post = await import(/* @vite-ignore */ posts[`../../posts/${params.file}.svx`].name);
     const content = post.default;
 
     return {
