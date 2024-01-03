@@ -8,7 +8,7 @@ export async function load({ params }) {
     return {
         ...processPostData({
             ...post.metadata,
-            slug: params.slug
+            slug: params.file
         }),
         content,
     };

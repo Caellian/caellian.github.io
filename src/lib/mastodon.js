@@ -184,7 +184,6 @@ export async function blogPostToots(instance, userId, tags = ["blog", "post"]) {
         cache.set({ instance, userId, tags }, { toots: data, lastUpdate: Date.now() });
         return cache;
     });
-    console.log("state", get(postCache));
 
     return data;
 }
