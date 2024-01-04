@@ -1,21 +1,26 @@
 li
   list-style none
 
-article li
-  margin-left 1rem
-  margin-top 0.5rem
-  
-  +li
-    margin-top 0.25rem
+article
+  ul,
+  ol
+    padding-bottom 0.6rem
 
-  &:before
-    content '>'
-    margin-right 0.75rem
-    transition margin-left transition-short ease-in-out, margin-right transition-short ease-in-out
-  
-  &:hover:before
-    margin-right 0.5rem
-    margin-left 0.25rem
+  ul>li
+    margin-left 1rem
+    margin-top 0.5rem
+    
+    +li
+      margin-top 0.25rem
+
+    &:before
+      content '>'
+      margin-right 0.75rem
+      transition margin-left transition-short ease-in-out, margin-right transition-short ease-in-out
+    
+    &:hover:before
+      margin-right 0.5rem
+      margin-left 0.25rem
 
 hr
   border solid 1px var(--bg-accent)

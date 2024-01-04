@@ -43,25 +43,45 @@
     );
   }
 
-  async function addCopy() {
-    let marked = article.querySelectorAll(
-      'div[data-copy]+pre:has(code[class*="language-"])'
-    );
-    for (const pre of marked) {
-      pre.previousElementSibling.remove();
-      let content = pre.querySelector('code[class*="language-"]').innerText;
-      new CopyButton({
-        target: pre,
-        props: {
-          content,
-        },
-      });
-      // Wait for the DOM to update
+  async function addBlockTitle() {
+    let blocks = article.querySelectorAll('pre:has(code[class*="language-"])');
+
+    for (const block of blocks) {
+      let title = Array.from(block.classList).find((c) =>
+        c.startsWith("language-")
+      );
+      if (title) {
+        title = title.split("-")[1];
+      } else {
+        title = "code";
+      }
+
+      let before = block.previousElementSibling;
+
+      // insert element before pre
+      let title_element = document.createElement("div");
+      title_element.classList.add("block-title");
+      title_element.innerHTML = `<span class="title">${title}</span>`;
+      block.insertAdjacentElement("beforebegin", title_element);
+
+      let content = block.querySelector('code[class*="language-"]').innerText;
       requestAnimationFrame(() => {
-        let button = pre.querySelector("button.copy");
-        button.onclick = () => {
-          navigator.clipboard.writeText(content);
-        };
+        if (before.tagName === "DIV" && before?.hasAttribute("data-copy")) {
+          let title_element = block.previousElementSibling;
+          new CopyButton({
+            target: title_element,
+            props: {
+              content,
+            },
+          });
+
+          requestAnimationFrame(() => {
+            let button = title_element.querySelector("button.copy");
+            button.onclick = () => {
+              navigator.clipboard.writeText(content);
+            };
+          });
+        }
       });
     }
   }
@@ -88,7 +108,7 @@
     mastodon_instance =
       localStorage.getItem(MASTODON_INSTANCE_KEY) || undefined;
 
-    addCopy();
+    addBlockTitle();
     addLineNumbers();
   });
 </script>
@@ -172,13 +192,22 @@ aside
 
 :global(pre:has(code[class*="language-"]))
   display: flex
-  position: relative
   gap: 0.5rem
 
+:global(div.block-title)
+  display flex
+  justify-content space-between
+  background-color: var(--bg)
+  border-radius 0.2rem
+  padding 0.2rem 0.2rem 0.7rem 0.5rem
+  margin-bottom -1rem
+
   :global(button.copy)
-    position: absolute
-    top: 0.5rem
-    right: 0.5rem
+    padding 0
+    padding-right 0.25rem
+    border none
+    font-size 0.9rem
+    
 
 :global(span.line-numbers)
   display: flex

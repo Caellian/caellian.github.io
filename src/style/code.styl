@@ -26,9 +26,8 @@ pre[class*="language-"]
   margin 0.5rem 0
   overflow auto
 
-:not(pre) > code[class*="language-"],
-pre[class*="language-"],
-code
+:not(pre) > code,
+pre[class*="language-"]
   background var(--bg-accent)
   border-radius: 0.25rem
 
@@ -61,6 +60,9 @@ body
 .token.prolog,
 .token.cdata
   color var(--clr-code-comment)
+
+.token.class-name
+  color var(--clr-yellow)
 
 .token.delimiter,
 .token.boolean,

@@ -10,7 +10,7 @@
 </script>
 
 <button class="copy" on:click={copyContent}>
-  <Icon size="1.5rem" name={"copy"} />
+  <Icon name={"copy"} />
   <span>Copy</span>
 </button>
 
@@ -20,6 +20,9 @@ button.copy
   gap 0.2rem
   align-items center
   border-radius: 0.2rem
-  padding: 0.2rem
-  padding-right 0.5rem
+  padding: 0.2rem 0.5rem
+
+  :global(svg)
+    width 1.5em
+    height 1.5em
 </style>
