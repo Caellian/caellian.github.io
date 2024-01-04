@@ -16,6 +16,7 @@
 #blog-layout:has(.post-list)
   display flex
   gap 0.5rem
+  width @css { clamp(30ch, 90vw, 100ch) }
   --side-width 30ch
 
   :global(.post-list)

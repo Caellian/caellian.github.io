@@ -150,11 +150,14 @@
 <style lang="stylus">
 article
   .title
+    padding-top 0
     padding-bottom 0.2rem
   
   hr
-    margin-top 0.5rem
-    margin-bottom 1rem
+    margin 1rem 0
+
+  :global(p)
+    text-align justify
 
 .date
   font-size: 0.8rem
