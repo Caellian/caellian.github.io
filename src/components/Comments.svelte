@@ -102,7 +102,7 @@
       <button class="leave-comment" on:click={addComent}>Leave a Comment</button
       >
     {/if}
-    {#if LIMITS.is_mobile}
+    {#if !LIMITS.is_mobile}
       {#if comments != null}
         {#each comments as current}
           {#if current.in_reply_to_id == rootToot}
