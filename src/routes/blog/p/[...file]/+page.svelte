@@ -145,7 +145,7 @@
   </div>
 </aside>
 
-<Comments slug={data.slug}></Comments>
+<Comments slug={data.slug} rootToot={data.toot}></Comments>
 
 <style lang="stylus">
 article
@@ -223,5 +223,16 @@ aside
   margin-left: -0.2rem
   margin-top: -1px
   opacity: 0.5
+
+:global(#blog-layout)
+  padding-bottom 2rem
+
+  :global(>h1),
+  :global(>h2),
+  :global(>h3),
+  :global(>h4),
+  :global(>h5),
+  :global(>h6)
+    margin-left: 1rem
 
 </style>

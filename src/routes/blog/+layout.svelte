@@ -10,13 +10,12 @@
 <style lang="stylus">
 @media (min-width: 770px)
   #blog-layout
-    width @css { clamp(30ch, 90vw, 80ch) }
+    width @css { clamp(30ch, 90vw, 100ch) }
     margin 1rem auto
 
 #blog-layout:has(.post-list)
   display flex
   gap 0.5rem
-  width @css { clamp(30ch, 90vw, 100ch) }
   --side-width 30ch
 
   :global(.post-list)

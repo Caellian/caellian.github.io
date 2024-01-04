@@ -108,7 +108,7 @@
       <div>
         <p>
           You can contact me by sending an email to: <a
-            href="mailto:tin.svagelj@gmail.com">tin.svagelj@live.com</a
+            href="mailto:tin.svagelj@live.com">tin.svagelj@live.com</a
           >
         </p>
       </div>
@@ -117,7 +117,7 @@
 
   {#if browser}
     <p class="mail-desc">
-      (the form will send an e-mail to: <a href="mailto:tin.svagelj@gmail.com"
+      (the form will send an e-mail to: <a href="mailto:tin.svagelj@live.com"
         >tin.svagelj@live.com</a
       >)
     </p>

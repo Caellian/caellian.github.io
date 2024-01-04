@@ -1,6 +1,8 @@
 <script>
   // Adapted from https://github.com/dpecos/mastodon-comments
 
+  import { browser } from "$app/environment";
+  import { LIMITS } from "$lib/util";
   import { onMount } from "svelte";
   import { postRelatedToot } from "$lib/mastodon";
   import Comment from "./Comment.svelte";
@@ -13,13 +15,14 @@
 
   let state = "Loading...";
 
-  let rootToot;
+  export let rootToot = undefined;
   let comment_list;
 
   let loadStarted = false;
   let comments = null;
 
   async function locateAuthorToot() {
+    if (rootToot != null) return rootToot;
     let found = await postRelatedToot(host, ownerId, slug);
     rootToot = found?.id;
     return rootToot;
@@ -93,20 +96,25 @@
   </div>
 </noscript>
 
-<div bind:this={comment_list} class="comment-section">
-  {#if rootToot != null}
-    <button class="leave-comment" on:click={addComent}>Leave a Comment</button>
-  {/if}
-  {#if comments != null}
-    {#each comments as current}
-      {#if current.in_reply_to_id == rootToot}
-        <Comment {comments} {current} />
+{#if browser}
+  <div bind:this={comment_list} class="comment-section">
+    {#if rootToot != null}
+      <button class="leave-comment" on:click={addComent}>Leave a Comment</button
+      >
+    {/if}
+    {#if LIMITS.is_mobile}
+      {#if comments != null}
+        {#each comments as current}
+          {#if current.in_reply_to_id == rootToot}
+            <Comment {comments} {current} />
+          {/if}
+        {/each}
+      {:else}
+        <p>{state}</p>
       {/if}
-    {/each}
-  {:else}
-    <p>{state}</p>
-  {/if}
-</div>
+    {/if}
+  </div>
+{/if}
 
 <style lang="stylus">
 h2

@@ -31,6 +31,9 @@ const config = {
     prerender: {
       origin: "https://tinsvagelj.net",
     },
+    paths: {
+      relative: false,
+    },
   },
 };
 

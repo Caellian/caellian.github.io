@@ -27,6 +27,7 @@ export function processPostData(post) {
         topic: post.topic || "development",
         summary: post.summary,
         tags: post.tags && Array.isArray(post.tags) && post.tags || [],
+        root: post.toot,
         slug: post.slug
     };
 }
