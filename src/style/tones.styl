@@ -1,0 +1,56 @@
+tones = {
+  "joke": {short: "/j", desc: "joking"},
+  "half-joke": {short: "/hj", desc: "half-joking"},
+  "sarcasm": {short: "/s", desc: "sarcastic"},
+  "genuine": {short: "/g", desc: "genuine"},
+  "serious": {short: "/srs", desc: "serious"},
+  "non-serious": {short: "/nsrs", desc: "non-serious"},
+  "positive": {short: "/pos", desc: "positive connotation"},
+  "neutral": {short: "/neu", desc: "neutral connotation"},
+  "negative": {short: "/neg", desc: "negative connotation"},
+  "copypasta": {short: "/c", desc: "copypasta"},
+  "lyrics": {short: "/ly", desc: "lyrics"},
+  "light-hearted": {short: "/lh", desc: "light-hearted"},
+  "not-mad": {short: "/nm", desc: "not mad"},
+  "nobody-here": {short: "/nbh", desc: "nobody here"},
+  "rhetorical": {short: "/rh", desc: "rhetorical question"},
+  "teasing": {short: "/t", desc: "teasing"},
+  "metaphore": {short: "/m", desc: "metaphorically"},
+  "literal": {short: "/li", desc: "literally"},
+  "hyperbole": {short: "/hyp", desc: "hyperbole"},
+  "fake": {short: "/f", desc: "fake"},
+}
+
+article span[data-tone]
+  display: inline
+  position: relative
+  &:before
+    display: inline-block
+    width: min-content
+    padding: 0 1ch
+    background: var(--bg-accent)
+    border-radius: 100vw
+  &:after
+    position: absolute
+    top: -1ch
+    left: 50%
+    transform: translate(-50%, calc(-100%))
+
+    display: inline-block
+    white-space: nowrap
+    background: var(--fg-muted)
+    color: var(--bg)
+    padding: 0.2ch 1ch
+    border-radius: 0.2rem
+
+    opacity: 0
+    transition: 200ms ease-in-out opacity
+  &:hover:after
+    opacity: 1
+
+  for id in tones
+    data = tones[id]
+    &[data-tone={id}]:before
+      content: data.short
+    &[data-tone={id}]:after
+      content: data.desc

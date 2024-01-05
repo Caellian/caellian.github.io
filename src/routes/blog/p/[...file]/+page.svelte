@@ -235,4 +235,14 @@ aside
   :global(>h6)
     margin-left: 1rem
 
+:global(span[data-paraphrase]:after)
+  display block
+  float inline-end
+  content "~paraphrased"
+  font-style italic
+  font-size small
+  color var(--fg-muted)
+  border-radius 0.2rem
+
+@import "../../../../style/tones.styl"
 </style>

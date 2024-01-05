@@ -34,4 +34,5 @@
 <style global lang="stylus">
   @import "../style/scheme";
   @import "../style/global";
+  @import "../style/tones";
 </style>
