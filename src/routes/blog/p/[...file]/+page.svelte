@@ -136,11 +136,34 @@
   <svelte:component this={data.content} />
 </article>
 
-<aside class="island">
+{#if data.prevTitle || data.nextTitle}
+  <aside class="island related">
+    {#if data.prevTitle}
+      <div class="prev">
+        <a href="/blog/p/{data.prev}">
+          <Icon size="1.5rem" name="arrow-left" />
+          <span>Previous</span>
+          <span class="title">{data.prevTitle}</span>
+        </a>
+      </div>
+    {/if}
+    {#if data.nextTitle}
+      <div class="next">
+        <a href="/blog/p/{data.next}">
+          <span>Next</span>
+          <Icon size="2rem" name="arrow-right" />
+          <span class="title">{data.nextTitle}</span>
+        </a>
+      </div>
+    {/if}
+  </aside>
+{/if}
+
+<aside class="share island">
   <p>Share</p>
   <div class="share-targets">
     <button on:click={shareMastodon}>
-      <Icon size="1.5rem" name={"mastodon"}></Icon>
+      <Icon size="2rem" name={"mastodon"}></Icon>
     </button>
   </div>
 </aside>
@@ -164,9 +187,71 @@ article
   color: var(--fg-muted)
 
 aside
+  margin-top: 0.5rem
+
+aside.related
+  display: grid
+  grid-template-columns: 1fr 1fr
+  padding: 0
+
+  >div
+    background-color: var(--bg-accent)
+
+    a
+      display: grid
+      align-items: center
+      padding: 0.5rem 1rem
+
+    p,
+    span
+      color: var(--fg-muted)
+
+    .title
+      font-weight: bold
+      font-size: 1.2rem
+
+    :global(.icon)
+      margin-inline: 0.25rem
+      transition: margin-left ease-in-out transition-medium, margin-right ease-in-out transition-medium
+      --icon-color var(--fg-muted)
+    
+
+  :global(.icon)
+      grid-row: 1 / span 2
+
+  .prev
+    grid-column: 1 / 2
+    text-align: left
+
+    a
+      grid-template-columns: auto 1fr
+
+      :global(.icon)
+        grid-column: 1 / 2
+        margin-left: 0.5rem
+
+      &:hover
+        :global(.icon)
+          margin-left: 0rem
+
+  .next
+    grid-column: 2 / 3
+    text-align: right
+
+    a
+      grid-template-columns: 1fr auto
+
+      :global(.icon)
+        grid-column: 2 / 3
+        margin-right: 0.5rem
+
+      &:hover
+        :global(.icon)
+          margin-right: 0rem
+
+aside.share
   display: flex
   align-items: center
-  margin-top: 0.5rem
 
   p
       width: max-content

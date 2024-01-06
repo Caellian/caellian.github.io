@@ -5,7 +5,9 @@ import { mdsvex } from "mdsvex";
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   preprocess: [
-    mdsvex(),
+    mdsvex({
+      smartypants: true
+    }),
     preprocess({
       stylus: {
         prependData: "@import 'src/style/constants';\n",

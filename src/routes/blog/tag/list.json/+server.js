@@ -23,5 +23,9 @@ export async function GET({ fetch }) {
 
     tags.set(cached);
 
-    return json(cached);
+    return json(cached, {
+        headers: {
+            "cache-control": "max-age=3600, s-maxage=3600",
+        }
+    });
 }

@@ -28,5 +28,9 @@ export async function GET() {
     cached = orderPosts(cached);
     postResults.set(cached);
 
-    return json(cached);
+    return json(cached, {
+        headers: {
+            "cache-control": "max-age=3600, s-maxage=3600",
+        }
+    });
 }
