@@ -1,8 +1,11 @@
 .DS_Store
 node_modules
+
+/src/data/icons.json
 /build
 /.svelte-kit
 /package
+
 .env
 .env.*
 !.env.example

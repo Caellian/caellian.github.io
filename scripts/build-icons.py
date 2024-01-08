@@ -35,7 +35,13 @@ def cleanup_colors(root):
             node.attrib['stroke'] = 'none'
 
 def main():
-    # iterate over all svg files in the icons folder and process it 
+    if not os.path.exists(ICONS):
+        print("Icons directory does not exist!")
+        return
+
+    if os.path.exists(DEST):
+        print("Icons already built!")
+        return
 
     icons = os.listdir(ICONS)
 

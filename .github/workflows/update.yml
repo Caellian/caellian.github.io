@@ -35,20 +35,30 @@ jobs:
         uses: actions/cache@v2
         with:
           path: "node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}s
+          key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
       - name: Cache blog node modules
         uses: actions/cache@v2
         with:
           path: "blog-builder/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('blog-builder/package-lock.json') }}s
+          key: ${{ runner.os }}-modules-${{ hashFiles('blog-builder/package-lock.json') }}
       - name: Cache highlight node modules
         uses: actions/cache@v2
         with:
           path: "highlight/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('highlight/package-lock.json') }}s
+          key: ${{ runner.os }}-modules-${{ hashFiles('highlight/package-lock.json') }}
+      - name: Cache icon data
+        uses: actions/cache@v2
+        with:
+          path: "src/data/icons.json"
+          key: ${{ runner.os }}-modules-${{ hashFiles('art/icons/**') }}
       - name: Install dependencies
         run: |
           npm clean-install
           npm run build:pre
       - name: Build sources head
         run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-cloudflare
+          path: .svelte-kit/cloudflare
+          retention-days: 7
