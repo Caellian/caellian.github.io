@@ -51,6 +51,18 @@ jobs:
         with:
           path: "src/data/icons.json"
           key: ${{ runner.os }}-modules-${{ hashFiles('art/icons/**') }}
+      - name: Cache highlight binary
+        uses: actions/cache@v2
+        with:
+          path: |
+            highlight/highlight*
+            highlight/index.js
+          key: ${{ runner.os }}-highlight-${{ hashFiles('highlight/src/**') }}-${{ hashFiles('highlight/extensions/**') }}
+      - name: Cache post content
+        uses: actions/cache@v2
+        with:
+          path: "blog-builder/out"
+          key: ${{ runner.os }}-posts-${{ hashFiles('blog-builder/posts/**/*.md') }}
       - name: Install dependencies
         run: |
           npm clean-install

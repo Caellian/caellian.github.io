@@ -1,7 +1,9 @@
 import { glob } from 'glob';
 import { dirname, join, relative } from 'path';
-import { mkdir, writeFile, stat } from 'fs/promises';
+import { mkdir, readFile, writeFile, stat } from 'fs/promises';
+import { watch as watchFs } from 'fs';
 
+import parseArguments from 'args-parser';
 import simpleGit from 'simple-git';
 
 import remarkGfm from 'remark-gfm'
@@ -45,6 +47,8 @@ const PARSER = unified()
 
 const IN_DIR = "./posts";
 const OUT_DIR = "out";
+
+const INDEX_PATH = join(OUT_DIR, "index.json");
 
 /**
  * Returns create and modify dates for a given file.
@@ -93,6 +97,7 @@ async function processFile(slug) {
 
     console.log(`- Processing '${slug}'`)
     const parsed = await PARSER.process(file);
+    console.log(`  - '${slug}' done!'`)
 
     let {
         create,
@@ -108,45 +113,194 @@ async function processFile(slug) {
     }
 }
 
-export async function main() {
+function filterIndexData(post) {
+    return {
+        title: post?.title || "",
+        summary: post?.summary || "",
+        create: post?.create,
+        update: post?.update,
+        topic: post?.topic || "development",
+        tags: post?.tags || [],
+    }
+}
+
+function fileSlug(path, prefix = IN_DIR) {
+    let p = path;
+    if (prefix) {
+        p = relative(prefix, p);
+    }
+    return p.replace(/\.md$/, "");
+}
+
+function readIndex() {
+    return readFile(INDEX_PATH, {
+        encoding: "utf-8"
+    }).then(it => JSON.parse(it)).catch(() => ({}));
+}
+
+export async function buildFile(slug) {
+    let result = null;
+    try {
+        result = await processFile(slug);
+    } catch (e) {
+        console.error(`Failed to process '${slug}'.\nError:`, e);
+    }
+    if (result == null) {
+        return;
+    }
+
+    let outPath = join(OUT_DIR, slug + ".json");
+    await mkdir(dirname(outPath), { recursive: true });
+    await writeFile(outPath, JSON.stringify(result), {
+        encoding: "utf-8"
+    });
+
+    return result;
+}
+
+export async function build(options = {}) {
     const sources = await glob(join(IN_DIR, "**/*.md"), {
         cwd: process.cwd(),
     })
 
-    console.log("Processing", sources.length, "files...")
+    let prevIndex = await readIndex();
 
-    let results = await Promise.allSettled(sources.map(async file => {
-        let slug = relative(IN_DIR, file).replace(/\.md$/, "");
+    let updated = sources;
+    if (!options.force) {
+        updated = (await Promise.all(updated.map(async file => {
+            let slug = fileSlug(file);
+            let prev = prevIndex[slug];
+            let status = await getGitInfo(slug);
 
-        const result = await processFile(slug);
+            if (prev == null || prev.update <= status.update) {
+                return file;
+            }
+        }))).filter(it => it != null);
+        console.log("Found", updated.length, "updated markdown files.")
+    } else {
+        console.log("Found", updated.length, "markdown files.")
+    }
+
+    if (updated.length == 0) {
+        console.log("Nothing to do; done.")
+        return;
+    }
+
+    let results = await Promise.allSettled(updated.map(async file => {
+        let slug = fileSlug(file);
+        let result = await buildFile(slug);
         if (result == null) {
             return null;
         }
-
-        let outPath = join(OUT_DIR, slug + ".json");
-        await mkdir(dirname(outPath), { recursive: true });
-        await writeFile(outPath, JSON.stringify(result), {
-            encoding: "utf-8"
-        });
-
-        return [slug, {
-            title: result?.title || "",
-            summary: result?.summary || "",
-            create: result?.create,
-            update: result?.update,
-            topic: result?.topic || "development",
-            tags: result?.tags || [],
-        }];
+        return [slug, filterIndexData(result)];
     }));
 
-    const slugs = results.filter(it => it.status == "fulfilled" && it.value != null).map(it => it.value);
-    console.log("Processed", slugs.length, "posts!")
+    let builtFiles = results.filter(it => it.status == "fulfilled" && it.value != null).map(it => it.value);
+    console.log("Built", builtFiles.length, "posts!")
+    builtFiles = Object.fromEntries(builtFiles);
 
-    await writeFile(join(OUT_DIR, "index.json"), JSON.stringify(Object.fromEntries(slugs)), {
+    // update index
+    let index = {
+        ...prevIndex,
+        ...builtFiles
+    };
+
+    console.log("Writing index...")
+
+    await writeFile(INDEX_PATH, JSON.stringify(index), {
         encoding: "utf-8"
     });
 
     console.log("Done!")
+}
+
+export async function watch(options = {}) {
+    let index = await readIndex();
+
+    let indexUpdate = Promise.resolve();
+    async function updateIndex(mutation) {
+        if (indexUpdate) {
+            await indexUpdate;
+        }
+        let newIndex = {
+            ...index,
+            ...mutation
+        };
+        indexUpdate = writeFile(INDEX_PATH, JSON.stringify(newIndex), {
+            encoding: "utf-8"
+        }).then(() => {
+            index = newIndex;
+        });
+    }
+
+    const ac = new AbortController();
+    const { signal } = ac;
+
+    process.once("SIGINT", () => ac.abort());
+    process.once("SIGTERM", () => ac.abort());
+
+
+    console.log("Watching for changes...")
+    const watcher = watchFs(IN_DIR, { recursive: true });
+
+    watcher.on("error", (err) => {
+        console.error(`Watcher error: ${err}`);
+    });
+    watcher.on("change", async (event, file) => {
+        if (event == "change") {
+            console.log(`- '${file}' updated.`)
+            let slug = fileSlug(file, null);
+            let result = await buildFile(slug);
+
+            updateIndex({
+                [slug]: filterIndexData(result)
+            });
+        }
+    });
+    watcher.on("filename", async (event, file) => {
+        if (event == "rename") {
+            let slug = fileSlug(file, null);
+            console.log(`- '${file}' deleted.`)
+
+            updateIndex({
+                [slug]: null,
+            })
+        } else if (event == "add") {
+            let slug = fileSlug(file, null);
+            console.log(`- '${file}' created.`)
+            let result = await buildFile(slug);
+
+            updateIndex({
+                [slug]: filterIndexData(result)
+            });
+        }
+    });
+
+    signal.addEventListener("abort", async () => {
+        watcher.close();
+        console.log("Exiting...");
+        await indexUpdate;
+    })
+}
+
+export async function main() {
+    let args = parseArguments(process.argv);
+
+    let action = "build";
+    if (args.build) {
+        delete args["build"];
+    } if (args.watch) {
+        action = "watch";
+        delete args["watch"];
+    }
+
+    if (action == "build") {
+        return await build(args);
+    } else if (action == "watch") {
+        return await watch(args);
+    } else {
+        throw new Error(`Unknown action '${action}'`);
+    }
 }
 
 export default main;

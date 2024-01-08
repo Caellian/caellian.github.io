@@ -1,0 +1,5 @@
+#!/usr/bin/sh
+## also check for highlight.*.node files
+no_prefix=$([ $(ls -1 highlight-* 2>/dev/null | wc -l) -gt 0 ])
+with_prefix=$([ $(ls -1 highlight.*.node 2>/dev/null | wc -l) -gt 0 ])
+exit $($no_prefix || $with_prefix)
