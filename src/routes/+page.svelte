@@ -5,7 +5,7 @@
   import languages from "$data/used_languages.json";
   import EventRef from "$components/EventRef.svelte";
   import { BUILD_DATE, LIMITS } from "$lib/util";
-  import { fetchProjectData } from "../lib/project";
+  import { fetchProjectData } from "$lib/project";
   import { onMount } from "svelte";
 
   export let data;
