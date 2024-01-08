@@ -5,6 +5,7 @@ on:
     branches: [trunk]
     paths:
       - src/**
+      - blog-builder/posts/**/*.md
       - blog-builder/*.js
       - blog-builder/*.json
       - highlight/index.js
@@ -63,11 +64,11 @@ jobs:
         with:
           path: "blog-builder/out"
           key: ${{ runner.os }}-posts-${{ hashFiles('blog-builder/posts/**/*.md') }}
-      - name: Install dependencies
+      - name: Install and build dependencies
         run: |
           npm clean-install
           npm run build:pre
-      - name: Build sources head
+      - name: Build
         run: npm run build
       - name: Upload generated files artifact
         uses: actions/upload-artifact@v4
