@@ -44,11 +44,8 @@ a.button
   p
     padding 0
     padding-left 0.5rem
-    font-family 'Quicksand', sans-serif
+    font-family var(--fnt-rounded)
     font-weight bold
-
-  :global(.svg)
-    transition fill ease-in-out 200ms
 
   &:hover
     --icon-color var(--accent)

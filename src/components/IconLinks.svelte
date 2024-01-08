@@ -102,7 +102,7 @@ ul.links
       transition border-color ease-in-out transition-long
 
     p
-      font-family "Quicksand", sans-serif
+      font-family var(--fnt-rounded)
       font-weight bold
       color var(--fg)
       transition color ease-in-out transition-medium
@@ -144,7 +144,7 @@ li.link
 
     p
       display block
-      background var(--bg-accent)
+      background-color var(--bg-accent)
       padding 0.2rem
       border-radius 0.25rem
 

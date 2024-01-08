@@ -96,7 +96,7 @@
   display flex
   flex-direction column
 
-  background var(--bg-accent)
+  background-color var(--bg-accent)
   border solid 0.2rem var(--bg-light)
   border-radius 0.2rem
 

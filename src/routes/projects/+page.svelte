@@ -369,7 +369,7 @@ aside.filters
   margin 0.5rem
   margin-bottom 0
 
-  background var(--bg-light)
+  background-color var(--bg-light)
   border-radius 1rem
 
   overflow-x hidden
@@ -390,7 +390,7 @@ aside.filters
     overflow-x scroll
     scrollbar-color transparent transparent
 
-    background var(--bg)
+    background-color var(--bg)
     border-radius 1rem
     padding 0.5rem
 
@@ -422,7 +422,7 @@ aside.filters
 
       p
         padding 0
-        font-family monospace
+        font-family var(--fnt-mono)
         width max-content
 
       &:hover
@@ -513,21 +513,26 @@ aside.filters>.search.row
         color var(--bg)
 
 aside.filters>.info
-  ul
-    margin-left 1rem
-    .row
-      align-items center
-      background var(--bg-accent)
-      border-radius 0.25rem
-      padding 0.15rem
-      margin 0.25rem
-      p
-        padding 0
+  .row
+    align-items center
+    padding 0.15rem
+    margin 0.25rem
+    p
+      padding 0
+    h4
+      padding 0
+  h3
+    padding-top 0.5rem
   .color
     min-width 1.25rem
     min-height 1.25rem
     border-radius 0.5rem
     border 0.3rem solid var(--bg)
+  ul
+    margin-left 1rem
+    .row
+      background-color: var(--bg-accent)
+      border-radius 0.25rem
 
 
 main.results

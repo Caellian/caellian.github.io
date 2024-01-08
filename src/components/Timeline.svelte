@@ -72,7 +72,7 @@ section-padding = 1rem
 	grid-row-gap 2vh
 
 	.point
-		background var(--accent)
+		background-color var(--accent)
 
 		width 0.6rem
 		height 0.6rem
@@ -151,7 +151,7 @@ section-padding = 1rem
 	.line
 		display block
 
-		background var(--bg-light)
+		background-color var(--bg-light)
 		background linear-gradient(
 			to bottom,
 			var(--bg) 0%,

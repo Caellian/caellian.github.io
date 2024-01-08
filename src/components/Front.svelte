@@ -24,7 +24,7 @@ a
   transition border-color ease-in-out transition-short
 
   h3
-    font-family 'Quicksand', sans-serif
+    font-family var(--fnt-rounded)
     font-size 1.4rem
     color var(--fg)
 

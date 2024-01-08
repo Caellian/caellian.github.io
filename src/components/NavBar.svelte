@@ -84,7 +84,7 @@
 
   width 100vw
   height var(--nav-height)
-  background var(--bg)
+  background-color var(--bg)
 
   border-bottom solid 0.15rem var(--bg-accent)
   z-index 1000
@@ -143,7 +143,7 @@
   :global(li>a)
     padding-right 1rem
 
-    font-family 'Quicksand', sans-serif
+    font-family var(--fnt-rounded)
     font-size 1.5rem
     color var(--fg)
 
@@ -190,8 +190,8 @@
   justify-content space-around
   align-items center
 
-  font-family Quicksand
-  background var(--bg)
+  font-family var(--fnt-rounded)
+  background-color var(--bg)
   text-align center
 
   position fixed
@@ -209,7 +209,7 @@
     width max-content
 
   :global(li>a)
-    font-family 'Quicksand', sans-serif
+    font-family var(--fnt-rounded)
     color var(--fg)
     font-size 1.3rem
 

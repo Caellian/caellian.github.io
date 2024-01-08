@@ -159,10 +159,10 @@
   .lang
     grid-area 1 / 1 / 2 / 2
 
-    background var(--bg-accent)
+    background-color var(--bg-accent)
 
     @media (min-width: tablet-size)
-      background var(--shaded)
+      background-color var(--shaded)
 
     font-size 0.8rem
     text-align right
@@ -192,10 +192,10 @@
     padding 0.2rem 0.5rem
     overflow-y scroll
 
-    background var(--bg-accent)
+    background-color var(--bg-accent)
 
     @media (min-width: tablet-size)
-      background var(--shaded)
+      background-color var(--shaded)
 
     p
       margin 0
@@ -208,10 +208,10 @@
 
     border-top 1px dashed var(--fg)
 
-    background var(--bg-accent)
+    background-color var(--bg-accent)
 
     @media (min-width: tablet-size)
-      background none
+      background-color none
 
     &::before
       content "tags:"
@@ -226,10 +226,10 @@
       border @css { 1px solid hsl(var(--bg-from-h), var(--color-s), var(--accent-l)) }
       border-radius 0.25rem
 
-      background var(--shaded)
+      background-color var(--shaded)
 
   &:hover
-    background var(--bg)
+    background-color var(--bg)
 
     h1
       color var(--accent)

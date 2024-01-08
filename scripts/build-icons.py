@@ -22,6 +22,8 @@ def cleanup_colors(root):
     for node in root.iter():
         if 'style' in node.attrib:
             del node.attrib['style']
+        if 'id' in node.attrib:
+            del node.attrib['id']
 
         if 'fill' in node.attrib:
             if node.attrib['fill'] != 'none':

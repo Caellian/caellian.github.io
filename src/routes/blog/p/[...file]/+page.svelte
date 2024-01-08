@@ -2,9 +2,9 @@
   import { onMount } from "svelte";
   import { BASE_URL } from "$lib/store";
   import { postDateISO } from "$lib/posts";
+  import { debounce } from "$lib/util";
   import Icon from "$components/Icon.svelte";
   import Comments from "$components/Comments.svelte";
-  import CopyButton from "$components/CopyButton.svelte";
   import TagList from "$components/TagList.svelte";
 
   export let data;
@@ -44,10 +44,52 @@
     );
   }
 
+  function reanimateButtons() {
+    let codeBlocks = article.querySelectorAll("div.code-block");
+    for (let block of codeBlocks) {
+      let button = block.querySelector("button.copy");
+      if (!button) {
+        continue;
+      }
+
+      button.innerHTML = "";
+      new Icon({
+        target: button,
+        props: {
+          name: "copy",
+        },
+      });
+
+      let code = block.querySelector("code");
+      let resetLabel = debounce(() => {
+        button.innerHTML = "";
+        new Icon({
+          target: button,
+          props: {
+            name: "copy",
+          },
+        });
+      }, 3000);
+      button.onclick = () => {
+        navigator.clipboard.writeText(code.innerText);
+        button.innerHTML = "";
+        new Icon({
+          target: button,
+          props: {
+            name: "copied",
+          },
+        });
+        resetLabel();
+      };
+    }
+  }
+
   onMount(() => {
     SHARE_CONTENT = `Check out Tin's post "${data.title}": ${BASE_URL}/blog/${data.slug}`;
     mastodon_instance =
       localStorage.getItem(MASTODON_INSTANCE_KEY) || undefined;
+
+    reanimateButtons();
   });
 </script>
 
@@ -221,9 +263,21 @@ aside.share
         background-color: var(--bg-accent-2)
         border-color: var(--bg-accent-2)
 
-:global(pre:has(code[class*="language-"]))
-  display: flex
-  gap: 0.5rem
+:global(div.code-block button.copy)
+  border: none
+  border-radius: 0.2rem
+  padding: 0.2rem
+  aspect-ratio: 1/1
+
+  &:hover
+    background-color: var(--bg-accent)
+
+  :global(.icon)
+    --icon-color var(--fg-hint)
+    font-size: 1.25rem
+    stroke-width: 2px
+    padding: 0
+    margin: 0
 
 :global(#blog-layout)
   padding-bottom 2rem

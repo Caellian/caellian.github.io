@@ -63,7 +63,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: "blog-builder/out"
-          key: ${{ runner.os }}-posts-${{ hashFiles('blog-builder/posts/**/*.md') }}
+          key: posts
       - name: Install and build dependencies
         run: |
           npm clean-install

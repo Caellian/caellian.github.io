@@ -15,5 +15,10 @@
    <path
       stroke="#fff"
       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-      d="M 5.1274027,2.3507165 H 21.649281 V 18.872602" />
+      d="M 5.1274027,2.3507165 H 21.649281 V 18.872602"
+   />
+   <path
+      stroke="#fff"
+      style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+      d="M 5.6413425,14.534401 9.3732189,17.979964 15.581978,8.7967464" />
 </svg>

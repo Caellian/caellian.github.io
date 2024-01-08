@@ -50,7 +50,7 @@
     pointer-events none
 
   [aria-label="event title"]
-    font-family 'Quicksand', sans-serif
+    font-family var(--fnt-rounded)
     font-size 1.4rem
     color var(--fg)
     padding 0

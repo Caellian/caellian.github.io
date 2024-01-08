@@ -125,16 +125,30 @@ export function cssVars(variables) {
 /**
  * Calls a function after a timeout, resetting the timeout if called again.
  * 
- * @param {(...params: any[]) => any} f function to debounce
+ * @param {(params: ...any) => any} f function to debounce
  * @param {number} [timeout=300] timeout in milliseconds
+ * @param {boolean} [tailDelay=false] call right away and prevent subsequent calls until timeout
  * 
- * @returns {(...params: any[]) => any} debounced function
+ * @returns {(params: ...any) => any} debounced function
  */
 export function debounce(
   f,
-  timeout = 300
+  timeout = 300,
+  tailDelay = false
 ) {
   let timer;
+  if (tailDelay) {
+    let canCall = true;
+    return (...args) => {
+      if (canCall) {
+        f(...args);
+        canCall = false;
+        setTimeout(() => {
+          canCall = true;
+        }, timeout);
+      }
+    };
+  }
   return (...args) => {
     clearTimeout(timer);
     timer = setTimeout(() => {

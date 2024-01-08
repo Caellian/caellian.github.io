@@ -189,7 +189,7 @@ form
 
   label
     float left
-    font-family "Quicksand", sans-serif
+    font-family var(--fnt-rounded)
 
   #message
     font-size 1.5em
