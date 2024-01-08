@@ -1,11 +1,19 @@
-name: build
+name: Build sources and publish
 
 on:
   push:
     branches: [trunk]
     paths:
       - src/**
+      - blog-builder/*.js
+      - blog-builder/*.json
+      - highlight/index.js
+      - highlight/*.json
+      - highlight/build.rs
+      - highlight/Cargo.toml
+      - highlight/src/**
       - .github/workflows/update.yml
+      - package.json
 
 jobs:
   update:
@@ -28,8 +36,19 @@ jobs:
         with:
           path: "node_modules"
           key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}s
+      - name: Cache blog node modules
+        uses: actions/cache@v2
+        with:
+          path: "blog-builder/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('blog-builder/package-lock.json') }}s
+      - name: Cache highlight node modules
+        uses: actions/cache@v2
+        with:
+          path: "highlight/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('highlight/package-lock.json') }}s
       - name: Install dependencies
         run: |
-          npm clean-install --progress=false
+          npm clean-install
+          npm run build:pre
       - name: Build sources head
         run: npm run build

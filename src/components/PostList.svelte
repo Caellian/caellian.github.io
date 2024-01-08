@@ -1,11 +1,12 @@
 <script>
   import TagList from "./TagList.svelte";
+  import { postDateISO } from "$lib/posts";
 
   export let posts;
 
   function formatDate(date) {
-    let d = new Date(date);
-    return d.toISOString().slice(0, 10);
+    let iso = postDateISO(date);
+    return iso.slice(0, 10);
   }
 </script>
 
@@ -13,7 +14,7 @@
   {#each posts as post}
     <a href="/blog/p/{post.slug}" class="post">
       <div class="date center">
-        <span>{formatDate(post.update || post.date)}</span>
+        <span>{formatDate(post.update || post.create)}</span>
       </div>
       <div class="details">
         <h3 class="title">{post.title}</h3>

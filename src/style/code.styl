@@ -1,35 +1,90 @@
+div.code-block
+  display: grid
+  grid-template-columns: auto 1fr
+  grid-template-rows: auto 1fr
+  background: var(--bg)
+  border-radius: 0.25rem
+  overflow: hidden
+
+  .block-heading
+    grid-column: 1 / -1
+    grid-row: 1 / 2
+
+    display: flex
+    align-items: center
+    user-select: none
+
+    padding: 0.2rem
+
+    *
+      font-size: 0.8rem
+      padding: 0.25rem 0.5rem
+    
+    &.collapsed
+      height: 0
+      padding: 0
+
+    .heading.name
+      font-weight: bold
+    .heading.language
+      font-style: italic
+  
+  .line-numbers
+    grid-row: 2 / 3
+    grid-column: 1 / 2
+
+    min-width: 3ch
+    display: flex
+    flex-direction: column
+    user-select: none
+    text-align: right
+    color: var(--fg-hint)
+    border-top: 1px solid var(--fg-hint)
+    padding: 0.2rem
+    opacity: 0.5
+
+    &.collapsed
+      min-width: 0
+      padding: 0
+
+  pre
+    overflow-x: auto
+
+code,
+.line-numbers
+  font-family var(--fnt-mono)
+  font-size 0.9rem
+  font-weight: 500
+  line-height 1.5
+
 code[class*="language-"],
 pre[class*="language-"]
-  color var(--fg)
-  direction ltr
-  text-align left
-  white-space pre
-  word-spacing normal
-  word-break normal
-  font-size 0.9rem
-  line-height 1.5
-  -moz-tab-size 4
-  -o-tab-size 4
-  tab-size 4
-  -webkit-hyphens none
-  -moz-hyphens none
-  -ms-hyphens none
-  hyphens none
+  color: var(--fg)
+  direction: ltr
+  text-align: left
+  white-space: pre
+  word-spacing: normal
+  word-break: normal
+  -moz-tab-size: 4
+  -o-tab-size: 4
+  tab-size: 4
+  -webkit-hyphens: none
+  -moz-hyphens: none
+  -ms-hyphens: none
+  hyphens: none
+  font-variant-ligatures: none
 
 pre[class*="language-"] ::selection,
 code[class*="language-"] ::selection
-  color var(--fg)
-  background var(--accent-9)
+  color: var(--fg)
+  background: var(--accent-9)
 
 pre[class*="language-"]
-  padding 1rem
-  margin 0.5rem 0
-  overflow auto
+  padding: 0.2rem 0.5rem
 
 :not(pre) > code,
 pre[class*="language-"]
-  background var(--bg-accent)
-  border-radius: 0.25rem
+  background: var(--bg-accent)
 
 :not(pre) > code
     border-radius 0.3rem
@@ -40,70 +95,101 @@ pre[class*="language-"]
         padding 0.1ch 0.4ch
 
 body[data-scheme="dark"] pre[class*="language-"]
-    box-shadow inset 1px 1px 2px var(--bg)
+  box-shadow inset 1px 1px 2px var(--bg)
 body[data-scheme="light"] pre[class*="language-"]
-    box-shadow inset 1px 1px 2px var(--fg-hint)
+  background: var(--bg)
+  box-shadow inset 1px 1px 2px var(--fg-hint)
+
 body[data-scheme="dark"] :not(pre) > code:not([class*="language-"])
-    box-shadow 1px 1px 2px var(--bg)
+  box-shadow 1px 1px 2px var(--bg)
 body[data-scheme="light"] :not(pre) > code:not([class*="language-"])
-    box-shadow 1px 1px 2px var(--fg-hint)
+  background: var(--bg)
+  box-shadow 1px 1px 2px var(--fg-hint)
 
-body
-    --clr-code-comment var(--fg-hint)
-    --clr-code-keyword var(--clr-choral)
-    --clr-code-variable var(--clr-cyan)
-    --clr-code-number var(--clr-teal)
-    --clr-code-string var(--clr-green)
-    --clr-code-op var(--fg-muted)
+code[class*="language-"]
+  .tag
+    color: var(--fg)
 
-.token.comment,
-.token.prolog,
-.token.cdata
-  color var(--clr-code-comment)
+  .comment,
+  .comment.documentation
+    color: var(--fg-hint)
 
-.token.class-name
-  color var(--clr-yellow)
+  .error
+    color: var(--clr-red)
 
-.token.delimiter,
-.token.boolean,
-.token.keyword,
-.token.selector,
-.token.important,
-.token.symbol,
-.token.atrule
-  color var(--clr-code-keyword)
+  .number
+    color: var(--clr-aqua)
 
-.token.property,
-.token.constant,
-.token.variable
-  color var(--clr-code-variable)
+  .keyword,
+  .boolean
+    color: var(--clr-choral)
+  
+  .include
+    font-weight: 600
 
-.token.operator,
-.token.punctuation,
-.token.attr-name
-  color var(--clr-code-op)
+  .punctuation,
+  .punctuation.bracket,
+  .punctuation.special
+    color: var(--clr-cyan)
+    filter: saturate(0.4)
 
-.token.tag,
-.token.tag .punctuation,
-.token.doctype,
-.token.builtin
-  color var(--clr-code-keyword)
+  .punctuation.delimiter
+    color: var(--fg-hint)
+  
+  .operator
+    color: var(--clr-teal)
 
-.token.entity,
-.token.number
-  color var(--clr-code-number)
+  .type,
+  .constructor,
+  .function,
+  .module
+    color: var(--clr-yellow)
+  
+  .type
+    font-weight: 700
 
-.token.string,
-.token.char
-  color var(--clr-code-string)
+  .function
+    filter: saturate(0.6)
+  
+  .property,
+  .variable,
+  .variable.member,
+  .variable.parameter
+    color: var(--fg)
+  
+  .macro
+    color: var(--clr-orange)
 
-.token.attr-value,
-.token.attr-value .punctuation
-  color var(--clr-code-op)
+  .member
+    font-style: italic
+  
+  .embedded,
+  .constant
+    color: var(--clr-orange)
 
-.token
-  &.url
-    color var(--accent)
-    text-decoration wavy underline
-  &.function
-    color var(--clr-orange)
+  .builtin
+    font-weight: bold
+    filter: saturate(1.5)
+
+  .lifetime
+    color: var(--clr-pink)
+    
+    .label
+      font-style: italic
+
+  .string
+    color var(--clr-green)
+
+  .regexp
+    color var(--clr-purple)
+  
+  .escape,
+  .string.special,
+  .string.special.symbol
+    color var(--clr-blue)
+  
+  .attribute
+    color var(--clr-choral)
+
+    *
+      color: inherit !important

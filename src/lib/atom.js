@@ -1,5 +1,5 @@
 import { BASE_URL } from '$lib/store';
-import { processPostData } from '$lib/posts';
+import { normalizePostEntry, postDateISO } from '$lib/posts';
 
 const AUTHORS = `<author>
     <name>Tin Švagelj</name>
@@ -8,6 +8,13 @@ const AUTHORS = `<author>
 
 export function blogAtom(name, subtitle, content = [], id = BASE_URL) {
     let updated = (Array.isArray(content) && content.length > 0 && content[0].date) || new Date().toISOString();
+
+    let data = Object.entries(content)
+        .map(([slug, post]) => postAtom({
+            ...normalizePostEntry(post),
+            slug
+        }))
+        .join('\n');
 
     return `<?xml version="1.0" encoding="utf-8"?>
     <feed xmlns="http://www.w3.org/2005/Atom">
@@ -18,22 +25,19 @@ export function blogAtom(name, subtitle, content = [], id = BASE_URL) {
         <updated>${updated}</updated>
         ${AUTHORS}
         <id>${id}</id>
-        ${content.map(postAtom).filter(it => it).join('\n')}
+        ${data}
     </feed>`;
 }
 
-export function postAtom(input) {
-    if (!input.published) return null;
-    let post = processPostData(input);
-
-    let updated = post.update && post.update.toISOString() || post.date.toISOString();
-    let published = post.date.toISOString();
+export function postAtom(post) {
+    let updated = postDateISO(post.update) || postDateISO(post.create);
+    let published = postDateISO(post.create);
     return `<entry>
         <title>${post.title}</title>
         <link href="${BASE_URL}/blog/p/${post.slug}" />
         <id>${BASE_URL}/blog/p/${post.slug}</id>
         <updated>${updated}</updated>
         ${updated != published ? `<published>${published}</published>` : ""}
-        <content type="html"><![CDATA[${post.content}]]></content>${post.summary && `\n<summary>${post.summary}</summary>` || ''}
+        ${post.summary && `\n<summary>${post.summary}</summary>` || ""}
     </entry>`;
 }

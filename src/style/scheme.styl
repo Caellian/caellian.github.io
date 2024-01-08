@@ -29,16 +29,16 @@ body
     --accent var(--accent-5)
 
     --clr-red @css { hsl(0,var(--color-s),var(--color-l)) }
-    --clr-choral @css { hsl(15,var(--color-s),var(--color-l)) }
-    --clr-orange @css { hsl(30,var(--color-s),var(--color-l)) }
-    --clr-yellow @css { hsl(60,var(--color-s),var(--color-l)) }
-    --clr-green @css { hsl(120,var(--color-s),var(--color-l)) }
-    --clr-aqua @css { hsl(150,var(--color-s),var(--color-l)) }
+    --clr-choral @css { hsl(10,var(--color-s),var(--color-l)) }
+    --clr-orange @css { hsl(20,var(--color-s),var(--color-l)) }
+    --clr-yellow @css { hsl(50,calc(var(--color-s) + 20%),var(--color-l)) }
+    --clr-green @css { hsl(100,var(--color-s),var(--color-l)) }
+    --clr-aqua @css { hsl(140,var(--color-s),var(--color-l)) }
     --clr-cyan @css { hsl(180,var(--color-s),var(--color-l)) }
     --clr-teal @css { hsl(200,var(--color-s),var(--color-l)) }
     --clr-blue @css { hsl(240,var(--color-s),var(--color-l)) }
     --clr-purple @css { hsl(270,var(--color-s),var(--color-l)) }
-    --clr-pink @css { hsl(300,var(--color-s),var(--color-l)) }
+    --clr-pink @css { hsl(300,var(--color-s),calc(var(--color-l) + 20%)) }
     --clr-magenta @css { hsl(330,var(--color-s),var(--color-l)) }
 
 body[data-scheme="light"]
@@ -50,10 +50,11 @@ body[data-scheme="light"]
     --fg-muted-l 30%
     --fg-hint-l 40%
 
-    --color-s 70%
+    --color-s 80%
     --color-l 40%
 
     for value, i in lightness-steps-light
         --accent-{i}-l: value
 
-    --clr-yellow @css { hsl(60,50%,var(--color-l)) }
+    --clr-yellow @css { hsl(55, 100%, 40%) }
+    

@@ -1,5 +1,4 @@
 import { json } from "@sveltejs/kit";
-import { orderPosts, processPostData } from "$lib/posts";
 import { writable, get } from "svelte/store";
 
 export const prerender = true;
@@ -13,7 +12,7 @@ export async function GET({ fetch }) {
 
     const posts = await fetch(`/blog/posts.json`).then(res => res.json());
 
-    for (const post of posts) {
+    for (const post of Object.values(posts)) {
         if (!cached.includes(post.topic)) {
             cached.push(post.topic);
         }

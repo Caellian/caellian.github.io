@@ -4,7 +4,6 @@
   import education from "$data/official_education.json";
   import languages from "$data/used_languages.json";
   import EventRef from "$components/EventRef.svelte";
-  import About from "$content/About.svx";
   import { BUILD_DATE, LIMITS } from "$lib/util";
   import { fetchProjectData } from "../lib/project";
   import { onMount } from "svelte";
@@ -49,7 +48,29 @@
   </section>
 
   <section class="pagewide">
-    <About />
+    <h1>About Me</h1>
+    <p>
+      Hello! My name is Tin and I like developing desktop applications and
+      graphics software.
+    </p>
+
+    <p>
+      My main current area of interest is WASM+WGPU rendering, but I'm also
+      always on the lookout for new technologies and techniques that can help me
+      to better understand the field and become a more proficient developer.
+    </p>
+
+    <p>
+      My diverse skill set and history in several different programming
+      languages allow me to approach problems with a unique perspective, and my
+      willingness to try out new technologies gives me a competitive edge in the
+      field.
+    </p>
+
+    <p>
+      I have a deep appreciation for low level code and the important role it
+      plays in creating efficient and performant graphics applications.
+    </p>
     <a class="hidden" rel="me" href="https://mastodon.social/@caellian"
       >Mastodon</a
     >

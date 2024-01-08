@@ -1,0 +1,57 @@
+{
+  "name": "highlight",
+  "version": "0.0.0",
+  "type": "module",
+  "napi": {
+    "name": "highlight"
+  },
+  "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    "import": "./index.js",
+    "types": "./index.d.ts"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "highlight.android-arm64.node",
+    "highlight-android-arm64",
+    "highlight.android-android-arm-eabi.node",
+    "highlight-android-android-arm-eabi",
+    "highlight.win32-x64-msvc.node",
+    "highlight-win32-x64-msvc",
+    "highlight.win32-ia32-msvc.node",
+    "highlight-win32-ia32-msvc",
+    "highlight.win32-arm64-msvc.node",
+    "highlight-win32-arm64-msvc",
+    "highlight.darwin-universal.node",
+    "highlight-darwin-universal",
+    "highlight.darwin-x64.node",
+    "highlight-darwin-x64",
+    "highlight.darwin-arm64.node",
+    "highlight-darwin-arm64",
+    "highlight.linux-x64-gnu.node",
+    "highlight-linux-x64-gnu",
+    "highlight.linux-x64-musl.node",
+    "highlight-linux-x64-musl",
+    "highlight.linux-arm64-gnu.node",
+    "highlight-linux-arm64-gnu",
+    "highlight.linux-arm64-musl.node",
+    "highlight-linux-arm64-musl",
+    "highlight.linux-arm-gnueabihf.node",
+    "highlight-linux-arm-gnueabihf",
+    "highlight.linux-riscv64-gnu.node",
+    "highlight-linux-riscv64-gnu",
+    "highlight.linux-riscv64-musl.node",
+    "highlight-linux-riscv64-musl"
+  ],
+  "scripts": {
+    "artifacts": "napi artifacts",
+    "build": "napi build --platform --release --js false",
+    "build:debug": "napi build --platform --js false",
+    "version": "napi version"
+  },
+  "devDependencies": {
+    "@napi-rs/cli": "^2.17.0"
+  }
+}

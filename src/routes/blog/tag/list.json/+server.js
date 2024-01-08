@@ -13,7 +13,7 @@ export async function GET({ fetch }) {
 
     const posts = await fetch(`/blog/posts.json`).then(res => res.json());
 
-    for (const post of posts) {
+    for (const post of Object.values(posts)) {
         for (const tag of post.tags) {
             if (!cached.includes(tag)) {
                 cached.push(tag);

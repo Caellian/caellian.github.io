@@ -1,10 +1,12 @@
 <script>
   import Icon from "$components/Icon.svelte";
   import PostList from "$components/PostList.svelte";
-  import TagList from "../../components/TagList.svelte";
+  import TagList from "$components/TagList.svelte";
+  import { orderPosts } from "$lib/posts";
+
   export let data;
 
-  let posts = data.posts;
+  $: posts = orderPosts(data.posts);
 </script>
 
 <main class="post-list">
