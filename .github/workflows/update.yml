@@ -57,8 +57,17 @@ jobs:
           npm run build:pre
       - name: Build sources head
         run: npm run build
-      - uses: actions/upload-artifact@v4
+      - name: Upload generated files artifact
+        uses: actions/upload-artifact@v4
         with:
           name: portfolio-cloudflare
           path: .svelte-kit/cloudflare
-          retention-days: 7
+          retention-days: 2
+      - name: Publish
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 488cd81c3f29e24045082a0173c4976f
+          projectName: portfolio
+          directory: .svelte-kit/cloudflare
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
