@@ -24,9 +24,9 @@ jobs:
         with:
           submodules: true
           ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.10"
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:

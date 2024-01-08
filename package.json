@@ -7,7 +7,7 @@
     "preview": "vite preview --host",
     "install:blog": "npm install --prefix ./blog-builder",
     "preinstall": "npm run install:blog",
-    "build:icons": "npm exec python ./scripts/build-icons.py",
+    "build:icons": "npm exec /usr/bin/python ./scripts/build-icons.py",
     "build:blog": "npm run build --prefix ./blog-builder",
     "build:pre": "npm run build:icons && npm run build:blog",
     "build": "vite build",
