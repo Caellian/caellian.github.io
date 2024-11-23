@@ -333,7 +333,7 @@
 
   <main class="results">
     <ul bind:this={result_list_el}>
-      {#each results as project}
+      {#each results as project (project.id)}
         <ProjectResult {project} />
       {/each}
     </ul>

@@ -1,12 +1,9 @@
-import { stat, readFile } from "fs/promises";
+import { readFile } from "fs/promises";
 import { createRequire } from 'node:module';
-import { join } from "path";
-import url from "url";
 
 const { platform, arch } = process
 
-const BINARY_NAME = "highlight"
-let nativeBinding = null
+const BINARY_NAME = "tshighlight"
 
 async function isMusl() {
   // For Node 10
@@ -25,91 +22,71 @@ async function isMusl() {
   }
 }
 
-async function exists(name) {
-  let path = url.fileURLToPath(new URL(name, import.meta.url))
-  return stat(path).then(() => true).catch(() => false)
+const require = createRequire(import.meta.url);
+async function loadTarget(triple) {
+  return require(`./${BINARY_NAME}.${triple}.node`)
 }
 
-async function loadTarget(triple) {
-  let doesExist = await exists(`./${BINARY_NAME}.${triple}.node`);
-  const require = createRequire(import.meta.url);
-  if (doesExist) {
-    return require(`./${BINARY_NAME}.${triple}.node`)
-  } else {
-    return require(`${BINARY_NAME}-${triple}`)
+async function nativeBinding() {
+  switch (platform) {
+    case 'android':
+      switch (arch) {
+        case 'arm64':
+          return loadTarget("android-arm64")
+        case 'arm':
+          return loadTarget("android-android-arm-eabi")
+        default:
+          throw new Error(`Unsupported architecture on Android ${arch}`)
+      }
+    case 'win32':
+      switch (arch) {
+        case 'x64':
+          return loadTarget("win32-x64-msvc")
+        case 'ia32':
+          return loadTarget("win32-ia32-msvc")
+        case 'arm64':
+          return loadTarget("win32-arm64-msvc")
+        default:
+          throw new Error(`Unsupported architecture on Windows: ${arch}`)
+      }
+      break
+    case 'darwin':
+      try {
+        let universal = await loadTarget("darwin-universal")
+        return universal
+      } catch (e) { }
+      switch (arch) {
+        case 'x64':
+          return loadTarget("darwin-x64")
+        case 'arm64':
+          return loadTarget("darwin-arm64")
+        default:
+          throw new Error(`Unsupported architecture on macOS: ${arch}`)
+      }
+    case 'freebsd':
+      if (arch !== 'x64') {
+        throw new Error(`Unsupported architecture on FreeBSD: ${arch}`)
+      }
+      return loadTarget("freebsd-x64")
+    case 'linux':
+      let toolkit = await isMusl() ? "musl" : "gnu";
+      switch (arch) {
+        case 'x64':
+          return loadTarget(`linux-x64-${toolkit}`)
+        case 'arm64':
+          return loadTarget(`linux-arm64-${toolkit}`)
+        case 'arm':
+          return loadTarget(`linux-arm-gnueabihf`)
+        case 'riscv64':
+          return loadTarget(`linux-riscv64-${toolkit}`)
+        default:
+          throw new Error(`Unsupported architecture on Linux: ${arch}`)
+      }
+    default:
+      throw new Error(`Unsupported OS: ${platform}, architecture: ${arch}`)
   }
 }
 
-switch (platform) {
-  case 'android':
-    switch (arch) {
-      case 'arm64':
-        nativeBinding = loadTarget("android-arm64")
-        break
-      case 'arm':
-        nativeBinding = loadTarget("android-android-arm-eabi")
-        break
-      default:
-        throw new Error(`Unsupported architecture on Android ${arch}`)
-    }
-    break
-  case 'win32':
-    switch (arch) {
-      case 'x64':
-        nativeBinding = loadTarget("win32-x64-msvc")
-        break
-      case 'ia32':
-        nativeBinding = loadTarget("win32-ia32-msvc")
-        break
-      case 'arm64':
-        nativeBinding = loadTarget("win32-arm64-msvc")
-        break
-      default:
-        throw new Error(`Unsupported architecture on Windows: ${arch}`)
-    }
-    break
-  case 'darwin':
-    nativeBinding = loadTarget("darwin-universal")
-    switch (arch) {
-      case 'x64':
-        nativeBinding = loadTarget("darwin-x64")
-        break
-      case 'arm64':
-        nativeBinding = loadTarget("darwin-arm64")
-        break
-      default:
-        throw new Error(`Unsupported architecture on macOS: ${arch}`)
-    }
-    break
-  case 'freebsd':
-    if (arch !== 'x64') {
-      throw new Error(`Unsupported architecture on FreeBSD: ${arch}`)
-    }
-    nativeBinding = loadTarget("freebsd-x64")
-    break
-  case 'linux':
-    let toolkit = await isMusl() ? "musl" : "gnu";
-    switch (arch) {
-      case 'x64':
-        nativeBinding = loadTarget(`linux-x64-${toolkit}`)
-        break
-      case 'arm64':
-        nativeBinding = loadTarget(`linux-arm64-${toolkit}`)
-        break
-      case 'arm':
-        nativeBinding = loadTarget(`linux-arm-gnueabihf`)
-        break
-      case 'riscv64':
-        nativeBinding = loadTarget(`linux-riscv64-${toolkit}`)
-        break
-      default:
-        throw new Error(`Unsupported architecture on Linux: ${arch}`)
-    }
-    break
-  default:
-    throw new Error(`Unsupported OS: ${platform}, architecture: ${arch}`)
-}
-
-const { Highlighter } = await nativeBinding;
+const { Highlighter } = await nativeBinding();
 
 export default Highlighter;

@@ -6,20 +6,35 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
-[dependencies]
-tree-sitter-highlight = "0.20"
-tree-sitter-javascript = "0.20"
-tree-sitter-typescript = "0.20"
-tree-sitter-rust = "0.20"
-tree-sitter-css = "0.20"
-tree-sitter-regex = "0.20"
-napi = "2"
-napi-derive = "2"
+[features]
+default = ["napi"]
+napi = ["dep:napi", "dep:napi-derive", "dep:napi-build"]
 
+[dependencies]
+tree-sitter = { path = "./tree-sitter/lib" }
+tree-sitter-highlight = { path = "./tree-sitter/highlight" }
+
+libloading = "0.8"
+
+napi = { version = "2", optional = true, features = ["serde-json"] }
+napi-derive = { version = "2", default-features = false, optional = true }
+
+indoc = "2.0"
 thiserror = "1.0"
 
+regex = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_with = "3.4"
+serde_json = "1.0"
+rust-embed = "8.2"
+
+reqwest = { version = "0.11", features = ["blocking", "json"] }
+which = "5.0"
+once_cell = "1.19"
+temp-dir = "0.1"
+
 [build-dependencies]
-napi-build = { version = "2" }
+napi-build = { version = "2", optional = true }
 
 [profile.release]
 opt-level = 3

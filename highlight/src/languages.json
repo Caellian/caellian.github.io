@@ -1,0 +1,1245 @@
+{
+    "ada": {
+        "name": "Ada",
+        "repo": "https://github.com/briot/tree-sitter-ada.git",
+        "entries": [
+            {
+                "match_block": "ada",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "init_function": "tree_sitter_ada"
+            }
+        ]
+    },
+    "agda": {
+        "name": "Agda",
+        "repo": "https://github.com/tree-sitter/tree-sitter-agda.git",
+        "entries": [
+            {
+                "match_block": "agda",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_agda"
+            }
+        ]
+    },
+    "apex": {
+        "name": "Apex",
+        "repo": "https://github.com/aheber/tree-sitter-sfapex.git",
+        "entries": [
+            {
+                "match_block": "apex",
+                "path": "apex",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "init_function": "tree_sitter_apex"
+            },
+            {
+                "match_block": "soql",
+                "path": "soql",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_soql"
+            },
+            {
+                "match_block": "sosl",
+                "path": "sosl",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_sosl"
+            }
+        ]
+    },
+    "bash": {
+        "name": "Bash",
+        "repo": "https://github.com/tree-sitter/tree-sitter-bash.git",
+        "entries": [
+            {
+                "match_block": "bash",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_bash"
+            }
+        ]
+    },
+    "capnp": {
+        "name": "Cap'n Proto",
+        "repo": "https://github.com/amaanq/tree-sitter-capnp.git",
+        "entries": [
+            {
+                "match_block": "capnp",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_capnp"
+            }
+        ]
+    },
+    "c": {
+        "name": "C",
+        "repo": "https://github.com/tree-sitter/tree-sitter-c.git",
+        "entries": [
+            {
+                "match_block": "c",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_c"
+            }
+        ]
+    },
+    "cpp": {
+        "name": "C++",
+        "repo": "https://github.com/tree-sitter/tree-sitter-cpp.git",
+        "entries": [
+            {
+                "match_block": [
+                    "c++",
+                    "cpp",
+                    "hpp"
+                ],
+                "highlights": "queries/highlights.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_cpp"
+            }
+        ]
+    },
+    "csharp": {
+        "name": "C#",
+        "repo": "https://github.com/tree-sitter/tree-sitter-c-sharp.git",
+        "entries": [
+            {
+                "match_block": [
+                    "c-sharp",
+                    "csharp",
+                    "c#",
+                    "cs"
+                ],
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_c_sharp"
+            }
+        ]
+    },
+    "clojure": {
+        "name": "Clojure",
+        "repo": "https://github.com/sogaiu/tree-sitter-clojure.git",
+        "entries": [
+            {
+                "match_block": [
+                    "clojure",
+                    "clj"
+                ],
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_clojure"
+            }
+        ]
+    },
+    "cmake": {
+        "name": "CMake",
+        "repo": "https://github.com/uyha/tree-sitter-cmake.git",
+        "entries": [
+            {
+                "match_block": [
+                    "cmake",
+                    "cmakelists"
+                ],
+                "init_function": "tree_sitter_cmake"
+            }
+        ]
+    },
+    "css": {
+        "name": "CSS",
+        "repo": "https://github.com/tree-sitter/tree-sitter-css.git",
+        "entries": [
+            {
+                "match_block": "css",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_css"
+            }
+        ]
+    },
+    "cuda": {
+        "name": "CUDA",
+        "repo": "https://github.com/theHamsta/tree-sitter-cuda.git",
+        "entries": [
+            {
+                "match_block": [
+                    "cuda"
+                ],
+                "highlights": "cpp:queries/highlights.scm",
+                "injections": "cpp:queries/injections.scm",
+                "init_function": "tree_sitter_cuda"
+            }
+        ]
+    },
+    "dart": {
+        "name": "Dart",
+        "repo": "https://github.com/UserNobody14/tree-sitter-dart.git",
+        "entries": [
+            {
+                "match_block": "dart",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_dart"
+            }
+        ]
+    },
+    "d": {
+        "name": "D",
+        "repo": "https://github.com/gdamore/tree-sitter-d.git",
+        "entries": [
+            {
+                "match_block": "d",
+                "highlights": "queries/highlights.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_d"
+            }
+        ]
+    },
+    "docker": {
+        "name": "Dockerfile",
+        "repo": "https://github.com/camdencheek/tree-sitter-dockerfile.git",
+        "entries": [
+            {
+                "match_block": [
+                    "docker",
+                    "dockerfile"
+                ],
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_dockerfile"
+            }
+        ]
+    },
+    "dot": {
+        "name": "DOT",
+        "repo": "https://github.com/rydesun/tree-sitter-dot.git",
+        "entries": [
+            {
+                "match_block": "dot",
+                "highlights": "queries/highlights.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_dot"
+            }
+        ]
+    },
+    "elixir": {
+        "name": "Elixir",
+        "repo": "https://github.com/elixir-lang/tree-sitter-elixir.git",
+        "entries": [
+            {
+                "match_block": [
+                    "elixir",
+                    "ex"
+                ],
+                "highlights": "queries/highlights.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_elixir"
+            }
+        ]
+    },
+    "elm": {
+        "name": "Elm",
+        "repo": "https://github.com/elm-tooling/tree-sitter-elm.git",
+        "entries": [
+            {
+                "match_block": "elm",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_elm"
+            }
+        ]
+    },
+    "elisp": {
+        "name": "Emacs Lisp",
+        "repo": "https://github.com/Wilfred/tree-sitter-elisp.git",
+        "entries": [
+            {
+                "match_block": [
+                    "elisp",
+                    "el",
+                    "elc",
+                    "eln"
+                ],
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_elisp"
+            }
+        ]
+    },
+    "embedded-template": {
+        "name": "ERB / EJS",
+        "repo": "https://github.com/tree-sitter/tree-sitter-embedded-template.git",
+        "entries": [
+            {
+                "match_block": [
+                    "erb"
+                ],
+                "highlights": "queries/highlights.scm",
+                "injections": "queries/injections-erb.scm",
+                "init_function": "tree_sitter_embedded_template"
+            },
+            {
+                "match_block": [
+                    "ejs"
+                ],
+                "highlights": "queries/highlights.scm",
+                "injections": "queries/injections-ejs.scm",
+                "init_function": "tree_sitter_embedded_template"
+            }
+        ]
+    },
+    "erlang": {
+        "name": "Erlang",
+        "repo": "https://github.com/WhatsApp/tree-sitter-erlang.git",
+        "entries": [
+            {
+                "match_block": [
+                    "erlang",
+                    "er"
+                ],
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_erlang"
+            }
+        ]
+    },
+    "fish": {
+        "name": "Fish",
+        "repo": "https://github.com/ram02z/tree-sitter-fish.git",
+        "entries": [
+            {
+                "match_block": "fish",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_fish"
+            }
+        ]
+    },
+    "formula": {
+        "name": "Formula",
+        "repo": "https://github.com/siraben/tree-sitter-formula.git",
+        "entries": [
+            {
+                "match_block": "formula",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_formula"
+            }
+        ]
+    },
+    "fortran": {
+        "name": "Fortran",
+        "repo": "https://github.com/stadelmanma/tree-sitter-fortran.git",
+        "entries": [
+            {
+                "match_block": "fortran",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_fortran"
+            }
+        ]
+    },
+    "gitattr": {
+        "name": "gitattributes",
+        "repo": "https://github.com/ObserverOfTime/tree-sitter-gitattributes.git",
+        "entries": [
+            {
+                "match_block": "gitattributes",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_gitattributes"
+            }
+        ]
+    },
+    "gleam": {
+        "name": "Gleam",
+        "repo": "https://github.com/gleam-lang/tree-sitter-gleam.git",
+        "entries": [
+            {
+                "match_block": "gleam",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "init_function": "tree_sitter_gleam"
+            }
+        ]
+    },
+    "glsl": {
+        "name": "OpenGL Shading Language (GLSL)",
+        "repo": "https://github.com/theHamsta/tree-sitter-glsl.git",
+        "entries": [
+            {
+                "match_block": "glsl",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_glsl"
+            }
+        ]
+    },
+    "go": {
+        "name": "Go",
+        "repo": "https://github.com/tree-sitter/tree-sitter-go.git",
+        "entries": [
+            {
+                "match_block": "go",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_go"
+            }
+        ]
+    },
+    "go-mod": {
+        "name": "Go mod file",
+        "repo": "https://github.com/camdencheek/tree-sitter-go-mod.git",
+        "entries": [
+            {
+                "match_block": [
+                    "go-mod",
+                    "go.mod"
+                ],
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_gomod"
+            }
+        ]
+    },
+    "go-work": {
+        "name": "Go work file",
+        "repo": "https://github.com/omertuc/tree-sitter-go-work.git",
+        "entries": [
+            {
+                "match_block": [
+                    "go-work",
+                    "go.work"
+                ],
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_gowork"
+            }
+        ]
+    },
+    "graphql": {
+        "name": "Graphql",
+        "repo": "https://github.com/bkegley/tree-sitter-graphql.git",
+        "entries": [
+            {
+                "match_block": "graphql",
+                "highlights": "queries/graphql/highlights.scm",
+                "init_function": "tree_sitter_graphql"
+            }
+        ]
+    },
+    "hask": {
+        "name": "Hack",
+        "repo": "https://github.com/slackhq/tree-sitter-hack.git",
+        "entries": [
+            {
+                "match_block": "hack",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_hack"
+            }
+        ]
+    },
+    "hack": {
+        "name": "Haskell",
+        "repo": "https://github.com/tree-sitter/tree-sitter-haskell.git",
+        "entries": [
+            {
+                "match_block": [
+                    "haskell",
+                    "hs"
+                ],
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "init_function": "tree_sitter_haskell"
+            }
+        ]
+    },
+    "hcl": {
+        "name": "HCL",
+        "repo": "https://github.com/MichaHoffmann/tree-sitter-hcl.git",
+        "entries": [
+            {
+                "match_block": "hcl",
+                "init_function": "tree_sitter_hcl"
+            }
+        ]
+    },
+    "html": {
+        "name": "HTML",
+        "repo": "https://github.com/tree-sitter/tree-sitter-html.git",
+        "entries": [
+            {
+                "match_block": "html",
+                "highlights": "queries/highlights.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_html"
+            }
+        ]
+    },
+    "java": {
+        "name": "Java",
+        "repo": "https://github.com/tree-sitter/tree-sitter-java.git",
+        "entries": [
+            {
+                "match_block": "java",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_java"
+            }
+        ]
+    },
+    "js": {
+        "name": "JavaScript",
+        "repo": "https://github.com/tree-sitter/tree-sitter-javascript.git",
+        "entries": [
+            {
+                "match_block": [
+                    "javascript",
+                    "js"
+                ],
+                "highlights": [
+                    "queries/highlights.scm",
+                    "queries/highlights-params.scm"
+                ],
+                "locals": "queries/locals.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_javascript"
+            },
+            {
+                "match_block": [
+                    "jsx"
+                ],
+                "highlights": [
+                    "queries/highlights.scm",
+                    "queries/highlights-params.scm",
+                    "queries/highlights-jsx.scm"
+                ],
+                "locals": "queries/locals.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_javascript"
+            }
+        ]
+    },
+    "json5": {
+        "name": "JSON5",
+        "repo": "https://github.com/Joakker/tree-sitter-json5.git",
+        "entries": [
+            {
+                "match_block": "json5",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_json5"
+            }
+        ]
+    },
+    "json": {
+        "name": "JSON",
+        "repo": "https://github.com/tree-sitter/tree-sitter-json.git",
+        "entries": [
+            {
+                "match_block": "json",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_json"
+            }
+        ]
+    },
+    "kotlin": {
+        "name": "Kotlin",
+        "repo": "https://github.com/fwcd/tree-sitter-kotlin.git",
+        "entries": [
+            {
+                "match_block": [
+                    "kotlin",
+                    "kt"
+                ],
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_kotlin"
+            }
+        ]
+    },
+    "lalrpop": {
+        "name": "LALRPOP",
+        "repo": "https://github.com/traxys/tree-sitter-lalrpop.git",
+        "entries": [
+            {
+                "match_block": "lalrpop",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "init_function": "tree_sitter_lalrpop"
+            }
+        ]
+    },
+    "latex": {
+        "name": "Latex",
+        "repo": "https://github.com/latex-lsp/tree-sitter-latex.git",
+        "entries": [
+            {
+                "match_block": [
+                    "latex",
+                    "tex"
+                ],
+                "highlights": "local:latex/highlights.scm",
+                "init_function": "tree_sitter_latex"
+            }
+        ]
+    },
+    "llvm": {
+        "name": "LLVM",
+        "repo": "https://github.com/benwilliamgraham/tree-sitter-llvm.git",
+        "entries": [
+            {
+                "match_block": "llvm",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_llvm"
+            }
+        ]
+    },
+    "llvm-ir": {
+        "name": "LLVM MachineIR",
+        "repo": "https://github.com/Flakebi/tree-sitter-llvm-mir.git",
+        "entries": [
+            {
+                "match_block": "llvm-mir",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_llvm_mir"
+            }
+        ]
+    },
+    "llvm-tg": {
+        "name": "LLVM TableGen",
+        "repo": "https://github.com/Flakebi/tree-sitter-tablegen.git",
+        "entries": [
+            {
+                "match_block": [
+                    "llvm-tg",
+                    "tablegen"
+                ],
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_tablegen"
+            }
+        ]
+    },
+    "lua": {
+        "name": "Lua",
+        "repo": "https://github.com/Azganoth/tree-sitter-lua.git",
+        "entries": [
+            {
+                "match_block": "lua",
+                "init_function": "tree_sitter_lua"
+            }
+        ]
+    },
+    "make": {
+        "name": "Make",
+        "repo": "https://github.com/alemuller/tree-sitter-make.git",
+        "entries": [
+            {
+                "match_block": [
+                    "make",
+                    "makefile"
+                ],
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_make"
+            }
+        ]
+    },
+    "markdown": {
+        "name": "Markdown",
+        "repo": "https://github.com/MDeiml/tree-sitter-markdown.git",
+        "entries": [
+            {
+                "match_block": [
+                    "markdown",
+                    "md"
+                ],
+                "init_function": "tree_sitter_markdown"
+            }
+        ]
+    },
+    "meson": {
+        "name": "Meson",
+        "repo": "https://github.com/staysail/tree-sitter-meson.git",
+        "entries": [
+            {
+                "match_block": "meson",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_meson"
+            }
+        ]
+    },
+    "m68k": {
+        "name": "Motorola 68000 Assembly",
+        "repo": "https://github.com/grahambates/tree-sitter-m68k.git",
+        "entries": [
+            {
+                "match_block": "m68k",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_m68k"
+            }
+        ]
+    },
+    "nix": {
+        "name": "Nix",
+        "repo": "https://github.com/cstrahan/tree-sitter-nix.git",
+        "entries": [
+            {
+                "match_block": "nix",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_nix"
+            }
+        ]
+    },
+    "objc": {
+        "name": "Objective-C",
+        "repo": "https://github.com/jiyee/tree-sitter-objc.git",
+        "entries": [
+            {
+                "match_block": [
+                    "objective-c",
+                    "objc"
+                ],
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_objc"
+            }
+        ]
+    },
+    "ocaml": {
+        "name": "OCaml",
+        "repo": "https://github.com/tree-sitter/tree-sitter-ocaml.git",
+        "entries": [
+            {
+                "match_block": [
+                    "ocaml",
+                    "ml",
+                    "mli"
+                ],
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "init_function": "tree_sitter_ocaml"
+            }
+        ]
+    },
+    "org": {
+        "name": "Org",
+        "repo": "https://github.com/milisims/tree-sitter-org.git",
+        "entries": [
+            {
+                "match_block": "org",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_org"
+            }
+        ]
+    },
+    "pascal": {
+        "name": "Pascal",
+        "repo": "https://github.com/Isopod/tree-sitter-pascal.git",
+        "entries": [
+            {
+                "match_block": "pascal",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "init_function": "tree_sitter_pascal"
+            }
+        ]
+    },
+    "perl": {
+        "name": "Perl",
+        "repo": "https://github.com/tree-sitter-perl/tree-sitter-perl.git",
+        "entries": [
+            {
+                "match_block": [
+                    "perl",
+                    "pl"
+                ],
+                "highlights": "queries/highlights.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_perl"
+            }
+        ]
+    },
+    "perl-pod": {
+        "name": "Perl POD",
+        "repo": "https://github.com/tree-sitter-perl/tree-sitter-pod.git",
+        "entries": [
+            {
+                "match_block": [
+                    "perl-pod",
+                    "pod"
+                ],
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_pod"
+            }
+        ]
+    },
+    "php": {
+        "name": "PHP",
+        "repo": "https://github.com/tree-sitter/tree-sitter-php.git",
+        "entries": [
+            {
+                "match_block": "php",
+                "highlights": "queries/highlights.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_php"
+            }
+        ]
+    },
+    "pgn": {
+        "name": "Portable Game Notation",
+        "repo": "https://github.com/rolandwalker/tree-sitter-pgn.git",
+        "entries": [
+            {
+                "match_block": [
+                    "portable-game-notation",
+                    "pgn"
+                ],
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_pgn"
+            }
+        ]
+    },
+    "protobuf": {
+        "name": "Protocol Buffers",
+        "repo": "https://github.com/mitchellh/tree-sitter-proto.git",
+        "entries": [
+            {
+                "match_block": [
+                    "protocol-buffers",
+                    "proto",
+                    "protobuf"
+                ],
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_proto"
+            }
+        ]
+    },
+    "py": {
+        "name": "Python",
+        "repo": "https://github.com/tree-sitter/tree-sitter-python.git",
+        "entries": [
+            {
+                "match_block": [
+                    "python",
+                    "py"
+                ],
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_python"
+            }
+        ]
+    },
+    "qml": {
+        "name": "QML",
+        "repo": "https://github.com/yuja/tree-sitter-qmljs.git",
+        "entries": [
+            {
+                "match_block": "qml",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "init_function": "tree_sitter_qmljs"
+            }
+        ]
+    },
+    "racket": {
+        "name": "Racket",
+        "repo": "https://github.com/6cdh/tree-sitter-racket.git",
+        "entries": [
+            {
+                "match_block": "racket",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "init_function": "tree_sitter_racket"
+            }
+        ]
+    },
+    "rasi": {
+        "name": "Rasi",
+        "repo": "https://github.com/Fymyte/tree-sitter-rasi.git",
+        "entries": [
+            {
+                "match_block": "rasi",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "init_function": "tree_sitter_rasi"
+            }
+        ]
+    },
+    "re2c": {
+        "name": "re2c",
+        "repo": "https://github.com/alemuller/tree-sitter-re2c.git",
+        "entries": [
+            {
+                "match_block": "re2c",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_re2c"
+            }
+        ]
+    },
+    "regex": {
+        "name": "Regex",
+        "repo": "https://github.com/tree-sitter/tree-sitter-regex.git",
+        "entries": [
+            {
+                "match_block": "regex",
+                "highlights": "queries/highlights.scm",
+                "injection": [
+                    "regex"
+                ],
+                "init_function": "tree_sitter_regex"
+            }
+        ]
+    },
+    "rego": {
+        "name": "Rego",
+        "repo": "https://github.com/FallenAngel97/tree-sitter-rego.git",
+        "entries": [
+            {
+                "match_block": "rego",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "init_function": "tree_sitter_rego"
+            }
+        ]
+    },
+    "rst": {
+        "name": "reStructuredText",
+        "repo": "https://github.com/stsewd/tree-sitter-rst.git",
+        "entries": [
+            {
+                "match_block": [
+                    "restructuredtext",
+                    "rst"
+                ],
+                "init_function": "tree_sitter_rst"
+            }
+        ]
+    },
+    "r": {
+        "name": "R",
+        "repo": "https://github.com/r-lib/tree-sitter-r.git",
+        "entries": [
+            {
+                "match_block": "r",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "init_function": "tree_sitter_r"
+            }
+        ]
+    },
+    "ruby": {
+        "name": "Ruby",
+        "repo": "https://github.com/tree-sitter/tree-sitter-ruby.git",
+        "entries": [
+            {
+                "match_block": [
+                    "ruby",
+                    "rb"
+                ],
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "init_function": "tree_sitter_ruby"
+            }
+        ]
+    },
+    "rust": {
+        "name": "Rust",
+        "repo": "https://github.com/tree-sitter/tree-sitter-rust.git",
+        "entries": [
+            {
+                "match_block": [
+                    "rust",
+                    "rs"
+                ],
+                "highlights": "local:queries/highlights.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_rust"
+            }
+        ]
+    },
+    "scala": {
+        "name": "Scala",
+        "repo": "https://github.com/tree-sitter/tree-sitter-scala.git",
+        "entries": [
+            {
+                "match_block": "scala",
+                "highlights": "queries/scala/highlights.scm",
+                "locals": "queries/scala/locals.scm",
+                "init_function": "tree_sitter_scala"
+            }
+        ]
+    },
+    "scheme": {
+        "name": "Scheme",
+        "repo": "https://github.com/6cdh/tree-sitter-scheme.git",
+        "entries": [
+            {
+                "match_block": [
+                    "scheme",
+                    "scm",
+                    "ss"
+                ],
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_scheme"
+            }
+        ]
+    },
+    "scss": {
+        "name": "Scss",
+        "repo": "https://github.com/serenadeai/tree-sitter-scss.git",
+        "entries": [
+            {
+                "match_block": "scss",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_scss"
+            }
+        ]
+    },
+    "sexp": {
+        "name": "S-expressions",
+        "repo": "https://github.com/AbstractMachinesLab/tree-sitter-sexp.git",
+        "entries": [
+            {
+                "match_block": [
+                    "s-expressions",
+                    "sexp"
+                ],
+                "init_function": "tree_sitter_sexp"
+            }
+        ]
+    },
+    "smali": {
+        "name": "Smali",
+        "repo": "https://github.com/amaanq/tree-sitter-smali.git",
+        "entries": [
+            {
+                "match_block": "smali",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_smali"
+            }
+        ]
+    },
+    "srcpawn": {
+        "name": "Sourcepawn",
+        "repo": "https://github.com/nilshelmig/tree-sitter-sourcepawn.git",
+        "entries": [
+            {
+                "match_block": "sourcepawn",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "init_function": "tree_sitter_sourcepawn"
+            }
+        ]
+    },
+    "bqsql": {
+        "name": "BigQuery",
+        "repo": "https://github.com/takegue/tree-sitter-sql-bigquery.git",
+        "entries": [
+            {
+                "match_block": "bigquery",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_sql_bigquery"
+            }
+        ]
+    },
+    "psql": {
+        "name": "PostgreSQL",
+        "repo": "https://github.com/m-novikov/tree-sitter-sql.git",
+        "entries": [
+            {
+                "match_block": "postgresql",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_sql"
+            }
+        ]
+    },
+    "sqlite": {
+        "name": "SQLite",
+        "repo": "https://github.com/dhcmrlchtdj/tree-sitter-sqlite.git",
+        "entries": [
+            {
+                "match_block": "sqlite",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_sqlite"
+            }
+        ]
+    },
+    "ssh": {
+        "name": "SSH",
+        "repo": "https://github.com/metio/tree-sitter-ssh-client-config.git",
+        "entries": [
+            {
+                "match_block": "ssh",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_ssh_client_config"
+            }
+        ]
+    },
+    "svelte": {
+        "name": "Svelte",
+        "repo": "https://github.com/Himujjal/tree-sitter-svelte.git",
+        "entries": [
+            {
+                "match_block": "svelte",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_svelte"
+            }
+        ]
+    },
+    "swift": {
+        "name": "Swift",
+        "repo": "https://github.com/alex-pinkus/tree-sitter-swift.git",
+        "entries": [
+            {
+                "match_block": "swift",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "init_function": "tree_sitter_swift"
+            }
+        ]
+    },
+    "thrift": {
+        "name": "Thrift",
+        "repo": "https://github.com/duskmoon314/tree-sitter-thrift.git",
+        "entries": [
+            {
+                "match_block": "thrift",
+                "highlights": "queries/highlights.scm",
+                "locals": "queries/locals.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_thrift"
+            }
+        ]
+    },
+    "toml": {
+        "name": "TOML",
+        "repo": "https://github.com/ikatyang/tree-sitter-toml.git",
+        "entries": [
+            {
+                "match_block": "toml",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_toml"
+            }
+        ]
+    },
+    "twig": {
+        "name": "Twig",
+        "repo": "https://github.com/gbprod/tree-sitter-twig.git",
+        "entries": [
+            {
+                "match_block": "twig",
+                "highlights": "queries/highlights.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_twig"
+            }
+        ]
+    },
+    "ts": {
+        "name": "TypeScript",
+        "repo": "https://github.com/tree-sitter/tree-sitter-typescript.git",
+        "entries": [
+            {
+                "match_block": [
+                    "typescript",
+                    "ts"
+                ],
+                "highlights": [
+                    "js:queries/highlights.scm",
+                    "queries/highlights.scm"
+                ],
+                "locals": [
+                    "js:queries/locals.scm",
+                    "queries/locals.scm"
+                ],
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_typescript"
+            },
+            {
+                "match_block": [
+                    "tsx"
+                ],
+                "highlights": [
+                    "js:queries/highlights.scm",
+                    "js:queries/highlights-jsx.scm",
+                    "queries/highlights.scm"
+                ],
+                "locals": "js:queries/locals.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_typescript"
+            }
+        ]
+    },
+    "verilog": {
+        "name": "Verilog",
+        "repo": "https://github.com/tree-sitter/tree-sitter-verilog.git",
+        "entries": [
+            {
+                "match_block": "verilog",
+                "init_function": "tree_sitter_verilog"
+            }
+        ]
+    },
+    "vhdl": {
+        "name": "VHDL",
+        "repo": "https://github.com/alemuller/tree-sitter-vhdl.git",
+        "entries": [
+            {
+                "match_block": "vhdl",
+                "highlights": "queries/highlights.scm",
+                "init_function": "tree_sitter_vhdl"
+            }
+        ]
+    },
+    "vue": {
+        "name": "Vue",
+        "repo": "https://github.com/ikatyang/tree-sitter-vue.git",
+        "entries": [
+            {
+                "match_block": "vue",
+                "init_function": "tree_sitter_vue"
+            }
+        ]
+    },
+    "wasm": {
+        "name": "WASM",
+        "repo": "https://github.com/wasm-lsp/tree-sitter-wasm.git",
+        "entries": [
+            {
+                "match_block": "wasm",
+                "init_function": "tree_sitter_wasm"
+            }
+        ]
+    },
+    "wgsl": {
+        "name": "WGSL WebGPU Shading Language",
+        "repo": "https://github.com/mehmetoguzderin/tree-sitter-wgsl.git",
+        "block": "wgsl",
+        "entries": [
+            {
+                "match_block": "wgsl",
+                "init_function": "tree_sitter_wgsl"
+            }
+        ]
+    },
+    "yaml": {
+        "name": "YAML",
+        "repo": "https://github.com/ikatyang/tree-sitter-yaml.git",
+        "entries": [
+            {
+                "match_block": "yaml",
+                "init_function": "tree_sitter_yaml"
+            }
+        ]
+    },
+    "yang": {
+        "name": "YANG",
+        "repo": "https://github.com/Hubro/tree-sitter-yang.git",
+        "entries": [
+            {
+                "match_block": "yang",
+                "highlights": "queries/highlights.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_yang"
+            }
+        ]
+    },
+    "zig": {
+        "name": "Zig",
+        "repo": "https://github.com/maxxnino/tree-sitter-zig.git",
+        "entries": [
+            {
+                "match_block": "zig",
+                "highlights": "queries/highlights.scm",
+                "injections": "queries/injections.scm",
+                "init_function": "tree_sitter_zig"
+            }
+        ]
+    }
+}

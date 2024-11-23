@@ -2,6 +2,7 @@
 node_modules
 
 /src/data/icons.json
+/src/web_components
 /build
 /.svelte-kit
 /package

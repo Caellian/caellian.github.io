@@ -1,6 +1,5 @@
 <script>
   import { browser } from "$app/environment";
-  import toPX from "to-px";
 
   /**
    * @typedef {Object} Icon

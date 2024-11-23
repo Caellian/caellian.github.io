@@ -2,6 +2,7 @@ import { CONTINUE, SKIP, visit } from "unist-util-visit";
 import { toText } from "hast-util-to-text";
 import { h } from "hastscript";
 import Highlighter from "highlight";
+import { nodeClasses } from "./utils.js";
 
 const STANDARD_CAPTURE_NAMES = [
     "attribute",
@@ -42,46 +43,6 @@ const STANDARD_CAPTURE_NAMES = [
     "variable.member",
     "variable.parameter",
 ];
-
-/**
- * @param {import("hast").Element} ast
- * @param {import("hast").Element} node
- * @returns {[import("hast").Element, number]} [parent, index_in_parent]
- */
-function findParent(ast, node) {
-    let queue = [ast];
-    while (queue.length > 0) {
-        let curr = queue.shift();
-        if (curr.children != null &&
-            typeof curr.children.indexOf == "function") {
-            let indexOf = curr.children.indexOf(node);
-            if (indexOf > -1) {
-                return [curr, indexOf];
-            }
-            queue.push(...curr.children);
-        }
-    }
-    return null;
-}
-
-/**
- * Normalizes node class names into an array of names.
- * 
- * Returns an empty array if the node is not an element.
- * 
- * @param {import("hast").Node} node
- * @returns {string[]} class names
- */
-function nodeClasses(node) {
-    if (node.type != "element") {
-        return [];
-    }
-    let classes = node.properties?.className || "";
-    if (typeof classes == "string") {
-        classes = classes.split(" ");
-    }
-    return classes.filter(it => it.length > 0);
-}
 
 const RE_ANNOTATION = /^.*?#!\s*/;
 
@@ -387,7 +348,8 @@ function buildBlockNumberLine(block, options) {
  * @typedef {Object} Options
  * @prop {any[]} [grammars]
  * @prop {string[]} [overrideCaptures=STANDARD_CAPTURE_NAMES] noncomformant capture names
- * @prop {string[]} [extraCaptures=STANDARD_CAPTURE_NAMES] noncomformant capture names
+ * @prop {string[]} [extraCaptures] noncomformant capture names
+ * @prop {string[]} [ignoreLanguages] languages to ignore
  * @prop {bool | NumberLineOptions} [lineNumbers=true] whether to insert line numbers
  * @prop {bool | HeadingOptions} [heading=true] whether to insert heading or options
  * 
@@ -436,6 +398,10 @@ export function rehypeTreeSitter(options = {}) {
                 }
 
                 let lang = classes.find(it => it.startsWith("language-"))?.substring(9) || "text";
+
+                if (options.ignoreLanguages?.includes(lang)) {
+                    return SKIP;
+                }
 
                 let annotations = [];
                 if (highlighter.isSupported(lang)) {

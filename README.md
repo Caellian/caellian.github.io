@@ -8,6 +8,9 @@ Requirements:
   - Node
   - Python 3
   - Rust
+System requirements:
+  - grep
+  - git
 
 Clone with `--recurse-submodules` to also get blog posts.
 

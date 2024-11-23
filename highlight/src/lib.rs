@@ -1,46 +1,37 @@
-use napi::Either;
-use napi_derive::napi;
-use std::collections::HashMap;
-use tree_sitter_highlight::{HighlightConfiguration, HighlightEvent, Highlighter};
+use error::{ConstructorError, HighlightError};
+use hast::{HastElement, HastNode, HastProperties};
+use language::{ClassList, RepoInfo, TreeSitterEntry};
+use libloading::Library;
+use once_cell::sync::Lazy;
+use serde::{Deserialize, Serialize};
+use tree_sitter_highlight::HighlightConfiguration;
+use std::{
+    collections::{HashMap, HashSet},
+    env::Args,
+    path::PathBuf,
+    rc::Rc,
+    sync::Arc,
+};
 
-const STANDARD_HIGHLIGHTS: &'static [&'static str] = &[
-    "attribute",
-    "boolean",
-    "carriage-return",
-    "comment",
-    "comment.documentation",
-    "constant",
-    "constant.builtin",
-    "constructor",
-    "constructor.builtin",
-    "embedded",
-    "error",
-    "escape",
-    "function",
-    "function.builtin",
-    "keyword",
-    "module",
-    "number",
-    "operator",
-    "property",
-    "property.builtin",
-    "punctuation",
-    "punctuation.bracket",
-    "punctuation.delimiter",
-    "punctuation.special",
-    "string",
-    "string.escape",
-    "string.regexp",
-    "string.special",
-    "string.special.symbol",
-    "tag",
-    "type",
-    "type.builtin",
-    "variable",
-    "variable.builtin",
-    "variable.member",
-    "variable.parameter",
-];
+#[cfg(feature = "napi")]
+use napi_derive::napi;
+
+use crate::{
+    language::{clone_repo, standard_repos},
+    util::Intersect,
+};
+
+mod error;
+mod format;
+mod hast;
+mod language;
+mod util;
+
+#[derive(rust_embed::RustEmbed)]
+#[folder = "src/queries/"]
+struct StaticQueries;
+
+/*
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Language {
@@ -163,169 +154,269 @@ impl TryFrom<&str> for Language {
         }
     }
 }
+*/
 
-#[derive(Debug, thiserror::Error)]
-pub enum HighlightError {
-    #[error("unknown language: {0}")]
-    UnknownLanguage(String),
+fn default_clone_path() -> PathBuf {
+    PathBuf::from("./repos/")
 }
 
-impl Into<napi::Error> for HighlightError {
-    fn into(self) -> napi::Error {
-        match self {
-            HighlightError::UnknownLanguage(_) => {
-                napi::Error::new(napi::Status::InvalidArg, self.to_string())
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct HighlightOptions {
+    pub languages: Vec<String>,
+    #[serde(default)]
+    pub sources: Vec<RepoInfo>,
+    #[serde(default)]
+    pub classes: ClassList,
+
+    #[serde(default = "default_clone_path")]
+    pub clone_path: PathBuf,
+}
+
+impl Default for HighlightOptions {
+    fn default() -> Self {
+        Self {
+            languages: Default::default(),
+            sources: Default::default(),
+            classes: Default::default(),
+            clone_path: default_clone_path(),
+        }
+    }
+}
+
+#[cfg_attr(feature = "napi", napi(js_name = "Highlighter"))]
+pub struct HighlightManager {
+    /// Source repositories
+    sources: Vec<RepoInfo>,
+
+    /// Loaded parser objects
+    parsers: HashMap<PathBuf, Arc<Library>>,
+
+    configurations: HashMap<String, Arc<HighlightConfiguration>>,
+}
+
+#[cfg_attr(feature = "napi", napi)]
+impl HighlightManager {
+    pub fn new(mut options: HighlightOptions) -> Result<Self, ConstructorError> {
+        let mut sources = Vec::with_capacity(options.sources.len());
+
+        // Assume these will be needed
+        sources.extend(options.sources);
+
+        for std_repo in standard_repos() {
+            if sources
+                .iter_mut()
+                .any(|source| source.repo == std_repo.repo)
+            {
+                // skip manually specified sources completely
+                continue;
+            }
+
+            let mut i = 0;
+            loop {
+                if i >= options.languages.len() {
+                    break;
+                }
+
+                let req = &options.languages[i];
+
+                if std_repo
+                    .entries
+                    .iter()
+                    .any(|entry| entry.match_block.contains(&req.to_lowercase()))
+                {
+                    sources.push(std_repo);
+                    options.languages.swap_remove(i);
+                    break;
+                }
+
+                i += 1;
+            }
+            if options.languages.is_empty() {
+                break;
             }
         }
-    }
-}
 
-#[napi(object)]
-pub struct HastProperties {
-    pub class_name: String,
-}
-
-#[napi(object)]
-pub struct HastNode {
-    #[napi(js_name = "type")]
-    pub kind: String,
-    pub tag_name: String,
-    pub properties: HastProperties,
-    pub children: Vec<Either<HastNode, HastTextNode>>,
-}
-
-#[napi(object)]
-pub struct HastTextNode {
-    #[napi(js_name = "type")]
-    pub kind: String,
-    pub value: String,
-}
-
-#[napi(js_name = "Highlighter")]
-pub struct JsHighlighter {
-    #[napi(readonly)]
-    pub highlight_names: Vec<String>,
-    configurations: HashMap<Language, HighlightConfiguration>,
-    class_names: Vec<String>,
-}
-
-#[napi]
-impl JsHighlighter {
-    #[napi(constructor)]
-    pub fn new(highlight_names: Option<Vec<String>>) -> Self {
-        let highlight_names = highlight_names.unwrap_or_else(|| {
-            STANDARD_HIGHLIGHTS
-                .iter()
-                .map(|it| it.to_string())
-                .collect()
-        });
-
+        // prepare requested parsers
         let mut configurations = HashMap::new();
-        for lang in Language::ALL {
-            let init = lang.highlight_init();
-            let mut it = init();
-            it.configure(&highlight_names);
-            configurations.insert(*lang, it);
+
+        std::fs::create_dir_all(&options.clone_path)?;
+        for mut remote in sources.into_iter() {
+            let RepoInfo {
+                repo,
+                branch,
+                entries,
+                local_path,
+                ..
+            } = &mut remote;
+
+            for entry in entries.into_iter() {
+                if !entry.match_block.has_intersection(&options.languages) {
+                    continue;
+                }
+
+                let requirements = entry.requirements();
+
+                let language_name = entry.match_block.first().unwrap().clone();
+
+                let remote_path =
+                    clone_repo(repo, branch, &options.clone_path).map_err(|inner| {
+                        ConstructorError::NotCloned {
+                            language: language_name.clone(),
+                            inner: inner.clone(),
+                        }
+                    })?;
+                *local_path = Some(remote_path.clone());
+
+                let parser_path =
+                    entry
+                        .build(remote_path)
+                        .map_err(|inner| ConstructorError::NotBuilt {
+                            language: language_name,
+                            inner,
+                        })?;
+
+                let config = entry.configure(entry, local_path, &options.classes);
+                let config = Arc::new(config);
+
+                for name in &entry.match_block {
+                    configurations.insert(name.clone(), config.clone());
+                }
+            }
         }
 
-        let class_names = highlight_names
-            .iter()
-            .map(|s| s.replace('.', " "))
-            .collect();
-
-        Self {
-            highlight_names,
+        Ok(HighlightManager {
+            sources,
+            parsers,
             configurations,
-            class_names,
-        }
+        })
+    }
+
+    #[cfg(feature = "napi")]
+    #[napi(constructor)]
+    pub fn constructor(options: serde_json::Value) -> napi::Result<Self> {
+        let options = serde_json::from_value(options).expect("invalid options");
+        Self::new(options).map_err(Into::<napi::Error>::into)
     }
 
     #[inline]
-    fn highlight_config(&self, language: Language) -> &HighlightConfiguration {
+    fn highlight_config(&self, language: impl AsRef<str>) -> Option<&HighlightConfiguration> {
         self.configurations
-            .get(&language)
-            .expect("language not configured")
+            .get(language.as_ref())
+            .map(|it| it.as_ref())
     }
 
-    #[inline]
-    fn injection_highlights(
-        &self,
-        language: Language,
-        for_language: &str,
-    ) -> Option<&HighlightConfiguration> {
-        language
-            .injections()
-            .iter()
-            .find(|it| it.name() == for_language)
-            .map(|it| self.highlight_config(*it))
-    }
-
+    /*
+    #[cfg(feature = "napi")]
     #[napi]
     pub fn supported_languages(&self) -> Vec<String> {
         Language::ALL.iter().map(|it| it.name().into()).collect()
     }
 
+    #[cfg(feature = "napi")]
     #[napi]
     pub fn is_supported(&self, language: String) -> bool {
         Language::try_from(language.as_str()).is_ok()
     }
 
-    #[napi]
-    pub fn highlight(&self, code: String, language: String) -> napi::Result<HastNode> {
-        let language = Language::try_from(language.as_str()).map_err(Into::<napi::Error>::into)?;
+    pub fn highlight(&self, code: String, language: String) -> Result<HastNode, HighlightError> {
+        let lang = Language::try_from(language.as_str())?;
 
         let mut highlighter = Highlighter::new();
-        let config = self.highlight_config(language);
+        let config = self.highlight_config(lang);
         let highlights = highlighter
             .highlight(config, code.as_bytes(), None, |other| {
-                self.injection_highlights(language, other)
+                self.injection_highlights(lang, other)
             })
             .unwrap();
 
         let mut stack = Vec::new();
-        stack.push(HastNode {
-            kind: "element".into(),
+        stack.push(HastNode::Element(HastElement {
             tag_name: "span".into(),
             properties: HastProperties {
                 class_name: "source".into(),
             },
             children: Vec::new(),
-        });
+        }));
 
         for event in highlights {
-            match event.unwrap() {
+            let event = match event {
+                Ok(ev) => ev,
+                Err(err) => {
+                    return Err(match err {
+                        tree_sitter_highlight::Error::Cancelled => unreachable!("cancelled"),
+                        tree_sitter_highlight::Error::InvalidLanguage => {
+                            HighlightError::UnknownLanguage(language)
+                        }
+                        tree_sitter_highlight::Error::Unknown => HighlightError::Unknown,
+                    })
+                }
+            };
+
+            match event {
                 HighlightEvent::HighlightStart(highlight) => {
-                    let node = HastNode {
-                        kind: "element".into(),
+                    let node = HastNode::Element(HastElement {
                         tag_name: "span".into(),
                         properties: HastProperties {
                             class_name: self.class_names[highlight.0].clone(),
                         },
                         children: Vec::new(),
-                    };
+                    });
                     stack.push(node);
                 }
                 HighlightEvent::Source { start, end } => {
                     let slice = &code[start..end];
                     let parent = stack.last_mut().unwrap();
-                    if let Some(Either::B(text_node)) = parent.children.last_mut() {
-                        text_node.value.push_str(slice);
-                    } else {
-                        let text_node = HastTextNode {
-                            kind: "text".into(),
-                            value: slice.into(),
-                        };
-                        parent.children.push(Either::B(text_node));
+                    match parent {
+                        HastNode::Element(element) => {
+                            element.children.push(HastNode::text(slice.into()));
+                        }
+                        HastNode::Text(text) => {
+                            text.value.push_str(slice);
+                        }
                     }
                 }
                 HighlightEvent::HighlightEnd => {
                     let node = stack.pop().unwrap();
-                    let parent = stack.last_mut().unwrap();
-                    parent.children.push(Either::A(node));
+                    if let Some(HastNode::Element(element)) = stack.last_mut() {
+                        element.children.push(node);
+                    } else {
+                        // at least top level "source" should be present
+                        unreachable!("stack should not be empty")
+                    }
                 }
             }
         }
 
         Ok(stack.pop().unwrap())
+    }
+
+    #[cfg(feature = "napi")]
+    #[napi(js_name = "highlight")]
+    pub fn highlight_napi(
+        &self,
+        code: String,
+        language: String,
+    ) -> napi::Result<serde_json::Value> {
+        match self.highlight(code, language) {
+            Ok(value) => {
+                napi::Result::Ok(serde_json::to_value(value).expect("unable to serialize HastNode"))
+            }
+            Err(err) => napi::Result::Err(err.into()),
+        }
+    } */
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_name() {
+        let options = HighlightOptions {
+            languages: vec!["rust".to_string()],
+            ..Default::default()
+        };
+        let manager = HighlightManager::new(options);
     }
 }

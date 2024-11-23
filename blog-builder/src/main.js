@@ -13,8 +13,8 @@ import remarkFrontmatter from 'remark-frontmatter'
 import remarkMath from 'remark-math'
 
 import rehypeMathjax from 'rehype-mathjax/chtml'
-import rehypeMermaid from 'rehype-mermaid'
 import rehypeStringify from 'rehype-stringify'
+import rehypeMinifyWhitespace from 'rehype-minify-whitespace'
 
 import { read } from 'to-vfile'
 import { matter } from 'vfile-matter'
@@ -27,6 +27,11 @@ const PARSER = unified()
     .use(remarkGfm)
     .use(remarkMath)
     .use(remarkRehype)
+    .use(rehypeMathjax, {
+        chtml: {
+            fontURL: '/mathjax/chtml/fonts/woff-v2'
+        }
+    })
     .use(rehypeTreeSitter, {
         extraCaptures: [
             "function.macro",
@@ -35,20 +40,21 @@ const PARSER = unified()
             "lifetime.label",
             "reference",
             "reference.keyword"
+        ],
+        ignoreLanguages: [
+            "latex",
+            "mermaid",
         ]
     })
-    .use(rehypeMathjax, {
-        chtml: {
-            fontURL: '/mathjax/chtml/fonts/woff-v2'
-        }
-    })
-    .use(rehypeMermaid)
+    .use(rehypeMinifyWhitespace)
     .use(rehypeStringify);
 
-const IN_DIR = "./posts";
-const OUT_DIR = "out";
+let IN_DIR = "./posts";
+let OUT_DIR = "out";
 
 const INDEX_PATH = join(OUT_DIR, "index.json");
+
+const GENERATOR_VERSION = 0;
 
 /**
  * Returns create and modify dates for a given file.
@@ -67,16 +73,28 @@ async function getGitInfo(slug) {
     let git = simpleGit(IN_DIR, {
         baseDir: join(process.cwd(), IN_DIR)
     });
-    let log = await git.log({
-        file: path
-    });
+    let log = null;
+    try {
+        await git.log({
+            file: path
+        });
+    } catch (_) { }
 
-    let create = new Date(log.all.at(-1).date);
-    let update = new Date(log.latest.date);
+    let NOW = new Date();
+
+    if (log == null || log.all == null) {
+        return {
+            create: NOW,
+            update: NOW,
+        };
+    }
+
+    let first = log.all[log.all.length - 1];
+    let latest = log?.latest ?? first;
 
     return {
-        create,
-        update
+        create: (first?.date && new Date(first?.date)) ?? NOW,
+        update: (latest?.date && new Date(latest?.date)) ?? NOW
     }
 }
 
@@ -121,6 +139,7 @@ function filterIndexData(post) {
         update: post?.update,
         topic: post?.topic || "development",
         tags: post?.tags || [],
+        generator: GENERATOR_VERSION,
     }
 }
 
@@ -170,19 +189,16 @@ export async function build(options = {}) {
         updated = (await Promise.all(updated.map(async file => {
             let slug = fileSlug(file);
             let prev = prevIndex[slug];
-            let status = await getGitInfo(slug);
 
-            if (prev == null || prev.update <= status.update) {
+            if (prev == null || prev.generator == null || prev.generator < GENERATOR_VERSION) {
                 return file;
             }
         }))).filter(it => it != null);
-        console.log("Found", updated.length, "updated markdown files.")
-    } else {
-        console.log("Found", updated.length, "markdown files.")
     }
+    console.log("Found", updated.length, "markdown files that need to be built.");
 
     if (updated.length == 0) {
-        console.log("Nothing to do; done.")
+        console.log("Nothing to do; done.");
         return;
     }
 
@@ -294,9 +310,20 @@ export async function main() {
         delete args["watch"];
     }
 
+    if (args.in) {
+        IN_DIR = args.in;
+        delete args["in"];
+    }
+    if (args.out) {
+        OUT_DIR = args.out;
+        delete args["out"];
+    }
+
     if (action == "build") {
         return await build(args);
     } else if (action == "watch") {
+        console.log("Running initial build...")
+        await build(args);
         return await watch(args);
     } else {
         throw new Error(`Unknown action '${action}'`);
