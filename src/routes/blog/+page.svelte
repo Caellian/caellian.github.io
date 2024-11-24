@@ -27,7 +27,7 @@
         <a href="/blog/topic/{topic}" aria-label="posts from {topic} topic">
           {topic}
         </a>
-        <a href="/blog/topic/{topic}/atom.xml" aria-label="rss" class="tag">
+        <a href="/blog/topic/{topic}/atom.xml" aria-label="rss" class="tag button">
           <Icon size="1rem" name={"rss"} /> Atom
         </a>
       </li>
@@ -52,9 +52,10 @@ h2
       content ">"
       color var(--fg-muted)
     
-    .tag
+    .tag.button
       height min-content
       align-self center
+      margin-left auto
 
 .blog-sidebar
   :global(.tags>*)

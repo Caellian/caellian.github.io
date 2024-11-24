@@ -14,7 +14,7 @@
   {#each posts as post}
     <a href="/blog/p/{post.slug}" class="post">
       <div class="date center">
-        <span>{formatDate(post.update || post.create)}</span>
+        <span>{formatDate(post.update || post.create || new Date())}</span>
       </div>
       <div class="details">
         <h3 class="title">{post.title}</h3>

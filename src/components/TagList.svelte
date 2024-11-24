@@ -5,7 +5,7 @@
 {#if tags.length > 0}
   <div class="tags">
     {#each tags as tag}
-      <a href="/blog/tag/{tag}" class="hash tag">{tag}</a>
+      <a href="/blog/tag/{tag}" class="hash tag button">{tag}</a>
     {/each}
   </div>
 {/if}

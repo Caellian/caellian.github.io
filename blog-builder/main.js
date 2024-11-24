@@ -12,13 +12,15 @@ import remarkRehype from 'remark-rehype'
 import remarkFrontmatter from 'remark-frontmatter'
 import remarkMath from 'remark-math'
 
-import rehypeMathjax from "rehype-mathjax/chtml";
+import rehypeRaw from "rehype-raw";
+import rehypeShowScript from "./rehype-showscript.js";
+import rehypeTreeSitter from "./rehype-codeblocks.js";
+import rehypeMathjax from "rehype-mathjax/svg";
 import rehypeStringify from "rehype-stringify";
 
 import { read } from "to-vfile";
 import { matter } from "vfile-matter";
 import { unified } from "unified";
-import rehypeTreeSitter from "./rehype-codeblocks.js";
 
 const PARSER = unified()
   .use(remarkParse)
@@ -28,6 +30,8 @@ const PARSER = unified()
   .use(remarkRehype, {
     allowDangerousHtml: true,
   })
+  .use(rehypeRaw) // Process raw HTML into Rehype nodes
+  .use(rehypeShowScript)
   .use(rehypeTreeSitter, {
     extraCaptures: [
       "function.macro",

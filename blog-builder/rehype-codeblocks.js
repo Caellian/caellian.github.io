@@ -463,6 +463,11 @@ export function rehypeTreeSitter(options = {}) {
             });
 
         for (const block of code_blocks) {
+            if (block.lang == "math") {
+                // handled by mathJax
+                continue;
+            }
+
             let { parent, i } = block.location;
 
             let code = block.pre;
