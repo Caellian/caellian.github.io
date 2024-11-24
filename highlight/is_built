@@ -1,5 +1,14 @@
 #!/usr/bin/sh
-## also check for highlight.*.node files
-no_prefix=$([ $(ls -1 highlight-* 2>/dev/null | wc -l) -gt 0 ])
-with_prefix=$([ $(ls -1 highlight.*.node 2>/dev/null | wc -l) -gt 0 ])
-exit $($no_prefix || $with_prefix)
+
+ls highlight-* >/dev/null 2>&1
+no_prefix=$?
+
+ls highlight.*.node >/dev/null 2>&1
+with_prefix=$?
+
+# Exit with 0 if either condition is true, otherwise exit with 1
+if [ "$no_prefix" -eq 0 ] || [ "$with_prefix" -eq 0 ]; then
+    exit 0
+else
+    exit 1
+fi

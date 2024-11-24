@@ -7,16 +7,17 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-tree-sitter-highlight = "0.20"
-tree-sitter-javascript = "0.20"
-tree-sitter-typescript = "0.20"
-tree-sitter-rust = "0.20"
-tree-sitter-css = "0.20"
-tree-sitter-regex = "0.20"
+tree-sitter-highlight = "0.24"
+tree-sitter-javascript = "0.23"
+tree-sitter-typescript = "0.23"
+tree-sitter-rust = "0.23"
+tree-sitter-css = "0.23"
+tree-sitter-regex = "0.24"
+tree-sitter-html = "0.23"
 napi = "2"
 napi-derive = "2"
 
-thiserror = "1.0"
+thiserror = "2.0"
 
 [build-dependencies]
 napi-build = { version = "2" }

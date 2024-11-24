@@ -49,6 +49,7 @@ pub enum Language {
     CSS,
     Rust,
     Regex,
+    HTML,
 }
 
 macro_rules! query_union {
@@ -64,22 +65,24 @@ impl Language {
         Language::CSS,
         Language::Rust,
         Language::Regex,
+        Language::HTML,
     ];
 
     fn highlight_init(&self) -> fn() -> HighlightConfiguration {
         match self {
             Language::JS => || {
                 HighlightConfiguration::new(
-                    tree_sitter_javascript::language(),
+                    tree_sitter_javascript::LANGUAGE.into(),
+                    Language::JS.name(),
                     tree_sitter_javascript::HIGHLIGHT_QUERY,
-                    tree_sitter_javascript::INJECTION_QUERY,
+                    tree_sitter_javascript::INJECTIONS_QUERY,
                     tree_sitter_javascript::LOCALS_QUERY,
                 )
                 .unwrap()
             },
             Language::TS => || {
                 let highlights = query_union![
-                    tree_sitter_typescript::HIGHLIGHT_QUERY,
+                    tree_sitter_typescript::HIGHLIGHTS_QUERY,
                     tree_sitter_javascript::HIGHLIGHT_QUERY
                 ];
 
@@ -89,16 +92,18 @@ impl Language {
                 ];
 
                 HighlightConfiguration::new(
-                    tree_sitter_typescript::language_typescript(),
+                    tree_sitter_typescript::LANGUAGE_TYPESCRIPT.into(),
+                    Language::TS.name(),
                     &highlights,
-                    tree_sitter_javascript::INJECTION_QUERY,
+                    tree_sitter_javascript::INJECTIONS_QUERY,
                     &locals,
                 )
                 .unwrap()
             },
             Language::CSS => || {
                 HighlightConfiguration::new(
-                    tree_sitter_css::language(),
+                    tree_sitter_css::LANGUAGE.into(),
+                    Language::CSS.name(),
                     tree_sitter_css::HIGHLIGHTS_QUERY,
                     "",
                     "",
@@ -106,10 +111,11 @@ impl Language {
                 .unwrap()
             },
             Language::Rust => || {
-                const RUST_HIGHLIGHT: &'static str =
+                const RUST_HIGHLIGHT: &str =
                     include_str!("../extensions/rust_highlight.scm");
                 HighlightConfiguration::new(
-                    tree_sitter_rust::language(),
+                    tree_sitter_rust::LANGUAGE.into(),
+                    Language::Rust.name(),
                     RUST_HIGHLIGHT,
                     tree_sitter_rust::INJECTIONS_QUERY,
                     "",
@@ -118,13 +124,28 @@ impl Language {
             },
             Language::Regex => || {
                 HighlightConfiguration::new(
-                    tree_sitter_regex::language(),
+                    tree_sitter_regex::LANGUAGE.into(),
+                    Language::Regex.name(),
                     tree_sitter_regex::HIGHLIGHTS_QUERY,
                     "",
                     "",
                 )
                 .unwrap()
             },
+            Language::HTML => || {
+                const HTML_HIGHLIGHT: &str =
+                    include_str!("../extensions/html_highlight.scm");
+                const HTML_INJECTION: &str =
+                    include_str!("../extensions/html_injections.scm");
+                HighlightConfiguration::new(
+                    tree_sitter_html::LANGUAGE.into(),
+                    Language::HTML.name(),
+                    HTML_HIGHLIGHT,
+                    HTML_INJECTION,
+                    ""
+                )
+                .unwrap()
+            }
         }
     }
 
@@ -135,6 +156,7 @@ impl Language {
             Language::CSS => &[],
             Language::Rust => &[],
             Language::Regex => &[],
+            Language::HTML => &[Language::JS, Language::CSS],
         }
     }
 
@@ -145,6 +167,7 @@ impl Language {
             Language::CSS => "css",
             Language::Rust => "rust",
             Language::Regex => "regex",
+            Language::HTML => "html",
         }
     }
 }
@@ -159,6 +182,7 @@ impl TryFrom<&str> for Language {
             "css" => Ok(Language::CSS),
             "rust" => Ok(Language::Rust),
             "regex" => Ok(Language::Regex),
+            "html" => Ok(Language::HTML),
             _ => Err(HighlightError::UnknownLanguage(value.to_string())),
         }
     }
