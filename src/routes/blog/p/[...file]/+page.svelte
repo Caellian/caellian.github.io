@@ -86,12 +86,20 @@
     }
   }
 
+  function reevaluateJS() {
+    let scripts = article.querySelectorAll("script");
+    for (const script of scripts) {
+      eval(script.textContent);
+    }
+  }
+
   onMount(() => {
     SHARE_CONTENT = `Check out Tin's post "${data.title}": ${BASE_URL}/blog/${data.slug}`;
     mastodon_instance =
       localStorage.getItem(MASTODON_INSTANCE_KEY) || undefined;
 
     reanimateButtons();
+    reevaluateJS();
   });
 </script>
 
