@@ -88,7 +88,7 @@
         >{user_account(current.account)}</a
       >
     </div>
-    <div class="spacer" />
+    <div class="spacer"></div>
     <p class="date" rel="nofollow">
       {formatDate(current.created_at)}
     </p>
@@ -170,9 +170,9 @@
     .attachments
         margin: 0 1rem
         
-        >*
+        >:global(*)
             margin: 0 1rem
-        img
+        :global(img)
             max-width: 100%
 
     .status

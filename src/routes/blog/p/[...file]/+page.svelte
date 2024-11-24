@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { mount, onMount } from "svelte";
   import { BASE_URL } from "$lib/store";
   import { postDateISO } from "$lib/posts";
   import { debounce } from "$lib/util";
@@ -55,7 +55,7 @@
       }
 
       button.innerHTML = "";
-      new Icon({
+      mount(Icon, {
         target: button,
         props: {
           name: "copy",
@@ -65,7 +65,7 @@
       let code = block.querySelector("code");
       let resetLabel = debounce(() => {
         button.innerHTML = "";
-        new Icon({
+        mount(Icon, {
           target: button,
           props: {
             name: "copy",
@@ -75,7 +75,7 @@
       button.onclick = () => {
         navigator.clipboard.writeText(code.innerText);
         button.innerHTML = "";
-        new Icon({
+        mount(Icon, {
           target: button,
           props: {
             name: "copied",
