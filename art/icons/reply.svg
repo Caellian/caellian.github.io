@@ -1,6 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="lucide lucide-reply">
-    <polyline stroke="#fff" points="9 17 4 12 9 7" />
-    <path stroke="#fff" d="M20 18v-2a4 4 0 0 0-4-4H4" />
+<svg width="24" height="24" viewBox="0 0 24 24"
+   xmlns="http://www.w3.org/2000/svg">
+   <path style="fill:none;stroke:#000" d="m 20,18 v -2 c 0,-2 -2,-4 -4,-4 H 4 M 9,17 4,12 9,7" />
+
 </svg>
