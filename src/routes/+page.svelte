@@ -41,9 +41,9 @@
     </div>
 
     {#if !LIMITS.is_mobile}
-      <div class="bg-layer" />
-      <div class="bg-layer" />
-      <div class="bg-layer" />
+      <div class="bg-layer"></div>
+      <div class="bg-layer"></div>
+      <div class="bg-layer"></div>
     {/if}
   </section>
 

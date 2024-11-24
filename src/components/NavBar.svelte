@@ -40,7 +40,7 @@
 
 <nav id="navbar" class:fixed={navigate} class:compact={compact_layout}>
   <a href="/" class="name"><h1>tinsvagelj<span>::</span>net</h1></a>
-  <div class="spacer" />
+  <div class="spacer"></div>
 
   {#if !compact_layout}
     <ul id="nav-links">

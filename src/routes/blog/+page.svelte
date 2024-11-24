@@ -46,10 +46,15 @@ h2
   li
     display flex
     gap 0.5rem
+    margin-bottom 0.2rem
 
     &:before
       content ">"
       color var(--fg-muted)
+    
+    .tag
+      height min-content
+      align-self center
 
 .blog-sidebar
   :global(.tags>*)

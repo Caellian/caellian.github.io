@@ -52,6 +52,6 @@
     "version": "napi version"
   },
   "devDependencies": {
-    "@napi-rs/cli": "^2.17.0"
+    "@napi-rs/cli": "^2.18.4"
   }
 }

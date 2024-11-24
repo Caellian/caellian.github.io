@@ -11,8 +11,6 @@
   let tags = [];
 
   let results = data.projects;
-  let shown_langs = show_languages();
-  let shown_tags = show_tags();
 
   let show_filters = true;
   let search_query = "";
@@ -83,6 +81,9 @@
     return result;
   }
 
+  let shown_langs = show_languages();
+  let shown_tags = show_tags();
+
   function get_tag_langs() {
     return Array.from(
       tags.filter((it) => it.startsWith("lang:")).map((it) => it.substring(5))
@@ -95,13 +96,17 @@
   }
 
   function find_words(words, text) {
+    if (text == null) {
+      return false;
+    }
+
     if (Array.isArray(text)) {
       const joined = text.join(" ").toLowerCase();
       return words.filter((word) => joined.includes(word)).length > 0;
-    } else {
-      text = text.toLowerCase();
-      return words.filter((word) => text.includes(word)).length > 0;
     }
+
+    text = text.toLowerCase();
+    return words.filter((word) => text.includes(word)).length > 0;
   }
 
   function get_results() {
@@ -314,15 +319,15 @@
           </div>
           <ul>
             <li class="row">
-              <span class="color" style="background-color:var(--clr-green)" />
+              <span class="color" style="background-color:var(--clr-green)"></span>
               <p>Merged</p>
             </li>
             <li class="row">
-              <span class="color" style="background-color:var(--clr-yellow)" />
+              <span class="color" style="background-color:var(--clr-yellow)"></span>
               <p>Not merged</p>
             </li>
             <li class="row">
-              <span class="color" style="background-color:var(--clr-blue)" />
+              <span class="color" style="background-color:var(--clr-blue)"></span>
               <p>Custom fork</p>
             </li>
           </ul>

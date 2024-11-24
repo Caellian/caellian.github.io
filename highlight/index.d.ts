@@ -17,7 +17,7 @@ export interface HastTextNode {
   value: string
 }
 export type JsHighlighter = Highlighter
-export class Highlighter {
+export declare class Highlighter {
   readonly highlightNames: Array<string>
   constructor(highlightNames?: Array<string> | undefined | null)
   supportedLanguages(): Array<string>

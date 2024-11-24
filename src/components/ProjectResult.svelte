@@ -45,10 +45,10 @@
       {:then description}
         {@html description}
       {:catch error}
-        <p>Failed to load description.</p>
+        <span>Failed to load description.</span>
       {/await}
     </p>
-    <div class="bg" />
+    <div class="bg"></div>
     {#if project.url}
       <RepoLink link={project.url} />
     {/if}

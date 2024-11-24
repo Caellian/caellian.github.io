@@ -14,6 +14,8 @@
     return iso.slice(0, 10);
   }
 
+  const BLOG_GITHUB_REPO = "https://github.com/Caellian/blog";
+
   const MASTODON_INSTANCE_KEY = "user-mastodon-instance";
   let mastodon_instance;
 
@@ -113,10 +115,20 @@
 
 <article bind:this={article} class="island">
   <h1 class="title">{data.title}</h1>
+  <div class="dates">
   {#if data.update}
-    <p class="date">✏️ Updated: {formatDate(data.update)}</p>
+    <p class="date">
+      <Icon name="history" size="1.5em" />
+      <span>Updated:</span>
+      <a href="{BLOG_GITHUB_REPO}/commits/main/{data.slug}.md">{formatDate(data.update)}</a>
+    </p>
   {/if}
-  <p class="date">📌 Published: {formatDate(data.create)}</p>
+  <p class="date">
+    <Icon name="pen" size="1.5em" />
+    <span>Published:</span>
+    <span>{formatDate(data.create)}</span>
+  </p>
+  </div>
   <TagList tags={data.tags} />
   <hr />
   {@html data.content}
@@ -168,9 +180,18 @@ article
   :global(p)
     text-align justify
 
-.date
+.dates
+  display: flex
+  justify-content: flex-start
+  gap: 1em
   font-size: 0.8rem
+
+.date
+  display: flex
+  width: max-content
+  gap: 0.2em
   color: var(--fg-muted)
+  align-items: center
 
 aside
   margin-top: 0.5rem

@@ -1,7 +1,7 @@
 import { glob } from 'glob';
 import { dirname, join, relative } from 'path';
 import { mkdir, readFile, writeFile, stat } from 'fs/promises';
-import { watch as watchFs } from 'fs';
+import { existsSync, watch as watchFs } from "fs";
 
 import parseArguments from 'args-parser';
 import simpleGit from 'simple-git';
@@ -12,38 +12,40 @@ import remarkRehype from 'remark-rehype'
 import remarkFrontmatter from 'remark-frontmatter'
 import remarkMath from 'remark-math'
 
-import rehypeMathjax from 'rehype-mathjax/chtml'
-import rehypeMermaid from 'rehype-mermaid'
-import rehypeStringify from 'rehype-stringify'
+import rehypeMathjax from "rehype-mathjax/chtml";
+import rehypeStringify from "rehype-stringify";
 
-import { read } from 'to-vfile'
-import { matter } from 'vfile-matter'
-import { unified } from 'unified'
-import rehypeTreeSitter from './rehype-codeblocks.js'
+import { read } from "to-vfile";
+import { matter } from "vfile-matter";
+import { unified } from "unified";
+import rehypeTreeSitter from "./rehype-codeblocks.js";
 
 const PARSER = unified()
-    .use(remarkParse)
-    .use(remarkFrontmatter, ["yaml"])
-    .use(remarkGfm)
-    .use(remarkMath)
-    .use(remarkRehype)
-    .use(rehypeTreeSitter, {
-        extraCaptures: [
-            "function.macro",
-            "variable.macro",
-            "lifetime",
-            "lifetime.label",
-            "reference",
-            "reference.keyword"
-        ]
-    })
-    .use(rehypeMathjax, {
-        chtml: {
-            fontURL: '/mathjax/chtml/fonts/woff-v2'
-        }
-    })
-    .use(rehypeMermaid)
-    .use(rehypeStringify);
+  .use(remarkParse)
+  .use(remarkFrontmatter, ["yaml"])
+  .use(remarkGfm)
+  .use(remarkMath)
+  .use(remarkRehype, {
+    allowDangerousHtml: true,
+  })
+  .use(rehypeTreeSitter, {
+    extraCaptures: [
+      "function.macro",
+      "variable.macro",
+      "lifetime",
+      "lifetime.label",
+      "reference",
+      "reference.keyword",
+    ],
+  })
+  .use(rehypeMathjax, {
+    chtml: {
+      fontURL: "/mathjax/chtml/fonts/woff-v2",
+    },
+  })
+  .use(rehypeStringify, {
+    allowDangerousHtml: true,
+  });
 
 const IN_DIR = "./posts";
 const OUT_DIR = "out";
@@ -51,167 +53,198 @@ const OUT_DIR = "out";
 const INDEX_PATH = join(OUT_DIR, "index.json");
 
 /**
- * Returns create and modify dates for a given file.
+ * Returns create and modify dates for a given file based on Git tree
+ * information.
  */
-async function getGitInfo(slug) {
-    let path = slug + ".md";
+async function getFileTimeInfo(slug) {
+  let path = slug + ".md";
 
-    let stats = await stat(join(IN_DIR, path));
-    if (!stats) {
-        return {
-            date: null,
-            update: null
-        }
-    }
-
-    let git = simpleGit(IN_DIR, {
-        baseDir: join(process.cwd(), IN_DIR)
-    });
-    let log = await git.log({
-        file: path
-    });
-
-    let create = new Date(log.all.at(-1).date);
-    let update = new Date(log.latest.date);
-
+  let stats = await stat(join(IN_DIR, path));
+  if (!stats) {
     return {
-        create,
-        update
-    }
+      date: null,
+      update: null,
+    };
+  }
+
+  let git = simpleGit(IN_DIR, {
+    baseDir: join(process.cwd(), IN_DIR),
+  });
+  let log = await git.log({
+    file: path,
+  });
+
+  if (log.all.at(-1) == null) {
+    return {
+      create: stats.birthtime || new Date(),
+      update: stats.mtime || new Date(),
+    };
+  }
+  let create = new Date(log.all.at(-1).date);
+  let update = new Date();
+  if (log.latest != null) {
+    update = new Date(log.latest.date);
+  }
+
+  if (update < stats.mtime) {
+    update = stats.mtime;
+  }
+
+  return {
+    create,
+    update,
+  };
 }
 
 async function processFile(slug) {
-    let path = join(IN_DIR, slug + ".md");
-    let stats = await stat(path);
-    if (!stats.isFile()) {
-        return null;
-    }
+  let path = join(IN_DIR, slug + ".md");
+  let stats = await stat(path);
+  if (!stats.isFile()) {
+    return null;
+  }
 
-    const file = await read(path);
-    matter(file, { strip: true });
-    let metadata = file.data?.matter || {};
+  const file = await read(path);
+  matter(file, { strip: true });
+  let metadata = file.data?.matter || {};
 
-    if (metadata.publish === false) {
-        return null;
-    }
+  if (metadata.publish === false) {
+    return null;
+  }
 
-    console.log(`- Processing '${slug}'`)
-    const parsed = await PARSER.process(file);
-    console.log(`  - '${slug}' done!'`)
+  console.log(`- Processing '${slug}'`);
+  const parsed = await PARSER.process(file);
+  console.log(`  - '${slug}' done!'`);
 
-    let {
-        create,
-        update
-    } = await getGitInfo(slug);
+  let { create, update } = await getFileTimeInfo(slug);
 
-    return {
-        create,
-        update,
-        publish: metadata.title != null,
-        ...metadata,
-        content: String(parsed)
-    }
+  return {
+    create,
+    update,
+    publish: metadata.title != null,
+    ...metadata,
+    content: String(parsed),
+  };
 }
 
 function filterIndexData(post) {
-    return {
-        title: post?.title || "",
-        summary: post?.summary || "",
-        create: post?.create,
-        update: post?.update,
-        topic: post?.topic || "development",
-        tags: post?.tags || [],
-    }
+  return {
+    title: post?.title || "",
+    summary: post?.summary || "",
+    create: post?.create,
+    update: post?.update,
+    topic: post?.topic || "development",
+    tags: post?.tags || [],
+  };
 }
 
 function fileSlug(path, prefix = IN_DIR) {
-    let p = path;
-    if (prefix) {
-        p = relative(prefix, p);
-    }
-    return p.replace(/\.md$/, "");
+  let p = path;
+  if (prefix) {
+    p = relative(prefix, p);
+  }
+  return p.replace(/\.md$/, "");
 }
 
 function readIndex() {
-    return readFile(INDEX_PATH, {
-        encoding: "utf-8"
-    }).then(it => JSON.parse(it)).catch(() => ({}));
+  return readFile(INDEX_PATH, {
+    encoding: "utf-8",
+  })
+    .then((it) => JSON.parse(it))
+    .catch(() => ({}));
 }
 
 export async function buildFile(slug) {
-    let result = null;
-    try {
-        result = await processFile(slug);
-    } catch (e) {
-        console.error(`Failed to process '${slug}'.\nError:`, e);
-    }
-    if (result == null) {
-        return;
-    }
+  let result = null;
+  try {
+    result = await processFile(slug);
+  } catch (e) {
+    console.error(`Failed to process '${slug}'.\nError:`, e);
+  }
+  if (result == null) {
+    return;
+  }
 
-    let outPath = join(OUT_DIR, slug + ".json");
-    await mkdir(dirname(outPath), { recursive: true });
-    await writeFile(outPath, JSON.stringify(result), {
-        encoding: "utf-8"
-    });
+  let outPath = join(OUT_DIR, slug + ".json");
+  await mkdir(dirname(outPath), { recursive: true });
+  await writeFile(outPath, JSON.stringify(result), {
+    encoding: "utf-8",
+  });
 
-    return result;
+  return result;
 }
 
 export async function build(options = {}) {
-    const sources = await glob(join(IN_DIR, "**/*.md"), {
-        cwd: process.cwd(),
+  const sources = await glob(join(IN_DIR, "**/*.md"), {
+    cwd: process.cwd(),
+  });
+
+  let prevIndex = await readIndex();
+
+  let updated = sources;
+  if (!options.force) {
+    updated = (
+      await Promise.all(
+        updated.map(async (file) => {
+          let slug = fileSlug(file);
+          let prev = prevIndex[slug]?.update;
+          prev = prev && new Date(prev);
+          let status = await getFileTimeInfo(slug);
+
+          console.log(`FOR ${slug}, prev: ${prev}, now: ${status.update}`);
+
+          if (prev == null || prev <= status.update) {
+            return file;
+          }
+        })
+      )
+    ).filter((it) => it != null);
+    console.log("Found", updated.length, "updated markdown files.");
+  } else {
+    console.log("Found", updated.length, "markdown files.");
+  }
+
+  if (updated.length == 0) {
+    console.log("Nothing to do; done.");
+    return;
+  }
+
+  let results = await Promise.allSettled(
+    updated.map(async (file) => {
+      let slug = fileSlug(file);
+      console.log(`- "${slug}"`);
+      let result = await buildFile(slug);
+      if (result == null) {
+        return null;
+      }
+      return [slug, filterIndexData(result)];
     })
+  );
 
-    let prevIndex = await readIndex();
+  let builtFiles = results
+    .filter((it) => it.status == "fulfilled" && it.value != null)
+    .map((it) => it.value);
+  console.log("Built", builtFiles.length, "posts!");
+  builtFiles = Object.fromEntries(builtFiles);
 
-    let updated = sources;
-    if (!options.force) {
-        updated = (await Promise.all(updated.map(async file => {
-            let slug = fileSlug(file);
-            let prev = prevIndex[slug];
-            let status = await getGitInfo(slug);
+  console.log(builtFiles);
 
-            if (prev == null || prev.update <= status.update) {
-                return file;
-            }
-        }))).filter(it => it != null);
-        console.log("Found", updated.length, "updated markdown files.")
-    } else {
-        console.log("Found", updated.length, "markdown files.")
-    }
+  // update index
+  let index = {
+    ...prevIndex,
+    ...builtFiles,
+  };
 
-    if (updated.length == 0) {
-        console.log("Nothing to do; done.")
-        return;
-    }
+  if (existsSync(INDEX_PATH)) {
+    console.log("Updating index...");
+  } else {
+    console.log("Writing index...");
+  }
 
-    let results = await Promise.allSettled(updated.map(async file => {
-        let slug = fileSlug(file);
-        let result = await buildFile(slug);
-        if (result == null) {
-            return null;
-        }
-        return [slug, filterIndexData(result)];
-    }));
+  await writeFile(INDEX_PATH, JSON.stringify(index), {
+    encoding: "utf-8",
+  });
 
-    let builtFiles = results.filter(it => it.status == "fulfilled" && it.value != null).map(it => it.value);
-    console.log("Built", builtFiles.length, "posts!")
-    builtFiles = Object.fromEntries(builtFiles);
-
-    // update index
-    let index = {
-        ...prevIndex,
-        ...builtFiles
-    };
-
-    console.log("Writing index...")
-
-    await writeFile(INDEX_PATH, JSON.stringify(index), {
-        encoding: "utf-8"
-    });
-
-    console.log("Done!")
+  console.log("Done!");
 }
 
 export async function watch(options = {}) {

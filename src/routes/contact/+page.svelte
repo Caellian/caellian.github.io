@@ -25,7 +25,7 @@
 
     try {
       emailjs.send(
-        "caellian-com",
+        "tinsvagelj-net",
         "job-contact-email",
         {
           name,
@@ -83,7 +83,7 @@
             rows="6"
             placeholder="Message content"
             required
-          />
+          ></textarea>
           <input class="button" type="submit" value="Send" />
         </form>
       </div>
