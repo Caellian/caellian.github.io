@@ -168,8 +168,19 @@
 
 <Comments slug={data.slug} rootToot={data.toot}></Comments>
 
-<style lang="stylus">
-article
+<style lang="stylus" global>
+#blog-layout
+  padding-bottom 2rem
+
+  >h1,
+  >h2,
+  >h3,
+  >h4,
+  >h5,
+  >h6
+    margin-left: 1rem
+
+#blog-layout article
   .title
     padding-top 0
     padding-bottom 0.2rem
@@ -177,146 +188,112 @@ article
   hr
     margin 1rem 0
 
-  :global(p)
+  p
     text-align justify
 
-.dates
-  display: flex
-  justify-content: flex-start
-  gap: 1em
-  font-size: 0.8rem
-
-.date
-  display: flex
-  width: max-content
-  gap: 0.2em
-  color: var(--fg-muted)
-  align-items: center
-
-aside
-  margin-top: 0.5rem
-
-aside.related
-  display: grid
-  grid-template-columns: 1fr 1fr
-  padding: 0
-
-  >div
-    background-color: var(--bg-accent)
-
-    a
-      display: grid
-      align-items: center
-      padding: 0.5rem 1rem
-
-    span
-      color: var(--fg-muted)
-
-    .title
-      font-weight: bold
-      font-size: 1.2rem
-
-    :global(.icon)
-      margin-inline: 0.25rem
-      transition: margin-left ease-in-out transition-medium, margin-right ease-in-out transition-medium
-      --icon-color var(--fg-muted)
-    
-
-  :global(.icon)
-      grid-row: 1 / span 2
-
-  .prev
-    grid-column: 1 / 2
-    text-align: left
-
-    a
-      grid-template-columns: auto 1fr
-
-      :global(.icon)
-        grid-column: 1 / 2
-        margin-left: 0.5rem
-
-      &:hover
-        :global(.icon)
-          margin-left: 0rem
-
-  .next
-    grid-column: 2 / 3
-    text-align: right
-
-    a
-      grid-template-columns: 1fr auto
-
-      :global(.icon)
-        grid-column: 2 / 3
-        margin-right: 0.5rem
-
-      &:hover
-        :global(.icon)
-          margin-right: 0rem
-
-aside.share
-  display: flex
-  align-items: center
-
-  p
-      width: max-content
-      padding: 0
-      padding-right: 1rem
-      font-weight: bold
-      color: var(--fg-muted)
-
-  div.share-targets
+  .dates
     display: flex
-    gap: 0.5rem
+    justify-content: flex-start
+    gap: 1em
+    font-size: 0.8rem
 
-    button
-      display: flex
-      align-items: center
-      gap: 0.5rem
-      padding: 0.5rem
-      border-radius: 0.2rem
-      background-color: var(--bg-accent)
-      color: var(--fg)
-      border: 2px solid var(--bg-accent)
+  .date
+    display: flex
+    width: max-content
+    gap: 0.2em
+    color: var(--fg-muted)
+    align-items: center
 
-      &:hover
-        background-color: var(--bg-accent-2)
-        border-color: var(--bg-accent-2)
+  aside
+    margin-top: 0.5rem
 
-:global(div.code-block button.copy)
-  border: none
-  border-radius: 0.2rem
-  padding: 0.2rem
-  aspect-ratio: 1/1
-
-  &:hover
-    background-color: var(--bg-accent)
-
-  :global(.icon)
-    --icon-color var(--fg-hint)
-    font-size: 1.25rem
-    stroke-width: 2px
+  aside.related
+    display: grid
+    grid-template-columns: 1fr 1fr
     padding: 0
-    margin: 0
 
-:global(#blog-layout)
-  padding-bottom 2rem
+    >div
+      background-color: var(--bg-accent)
 
-  :global(>h1),
-  :global(>h2),
-  :global(>h3),
-  :global(>h4),
-  :global(>h5),
-  :global(>h6)
-    margin-left: 1rem
+      a
+        display: grid
+        align-items: center
+        padding: 0.5rem 1rem
 
-:global(span[data-paraphrase]:after)
-  display block
-  float inline-end
-  content "~paraphrased"
-  font-style italic
-  font-size small
-  color var(--fg-muted)
-  border-radius 0.2rem
+      span
+        color: var(--fg-muted)
+
+      .title
+        font-weight: bold
+        font-size: 1.2rem
+
+      .icon
+        margin-inline: 0.25rem
+        transition: margin-left ease-in-out transition-medium, margin-right ease-in-out transition-medium
+        --icon-color var(--fg-muted)
+      
+
+    .icon
+        grid-row: 1 / span 2
+
+    .prev
+      grid-column: 1 / 2
+      text-align: left
+
+      a
+        grid-template-columns: auto 1fr
+
+        .icon
+          grid-column: 1 / 2
+          margin-left: 0.5rem
+
+        &:hover
+          .icon
+            margin-left: 0rem
+
+    .next
+      grid-column: 2 / 3
+      text-align: right
+
+      a
+        grid-template-columns: 1fr auto
+
+        .icon
+          grid-column: 2 / 3
+          margin-right: 0.5rem
+
+        &:hover
+          .icon
+            margin-right: 0rem
+
+  aside.share
+    display: flex
+    align-items: center
+
+    p
+        width: max-content
+        padding: 0
+        padding-right: 1rem
+        font-weight: bold
+        color: var(--fg-muted)
+
+    div.share-targets
+      display: flex
+      gap: 0.5rem
+
+      button
+        display: flex
+        align-items: center
+        gap: 0.5rem
+        padding: 0.5rem
+        border-radius: 0.2rem
+        background-color: var(--bg-accent)
+        color: var(--fg)
+        border: 2px solid var(--bg-accent)
+
+        &:hover
+          background-color: var(--bg-accent-2)
+          border-color: var(--bg-accent-2)
+
+@import "../../../../style/article";
 </style>

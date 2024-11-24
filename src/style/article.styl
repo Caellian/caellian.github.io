@@ -1,0 +1,106 @@
+#blog-layout article
+    div.code-block button.copy
+        border: none
+        border-radius: 0.2rem
+        padding: 0.2rem
+        aspect-ratio: 1/1
+    
+        &:hover
+            background-color: var(--bg-accent)
+    
+        .icon
+            --icon-color var(--fg-hint)
+            font-size: 1.25rem
+            stroke-width: 2px
+            padding: 0
+            margin: 0
+    
+    span[data-paraphrase]:after
+        display block
+        float inline-end
+        content "~paraphrased"
+        font-style italic
+        font-size small
+        color var(--fg-muted)
+        border-radius 0.2rem
+
+    dl
+        display grid
+        row-gap 1rem
+
+    dl lh
+        font-size 1.5rem
+        grid-column 1/3
+        color var(--accent)
+
+    dl dt
+        grid-column 1
+        padding-right 1ch
+
+        font-weight bold
+        color var(--accent-2)
+
+    dl dd
+        grid-column 2
+        display flex
+
+        text-align justify
+        text-justify inner-word
+    
+    table
+        border 2pt solid var(--fg-muted)
+        border-collapse collapse
+        margin 0.5rem auto
+
+        th
+            padding 0.5ch 1ch
+            border-style solid
+            border-color var(--fg-muted)
+            border-width 2pt
+        td
+            padding 0.2ch 1ch
+            border-style solid
+            border-color var(--fg-hint)
+            border-width 1pt
+    
+    div.normal-th + table
+        th
+            padding 0.2ch 1ch
+            font-weight normal
+            border-color var(--fg-hint)
+
+    div.row-titles + table
+        tr
+            th:nth-child(1),
+            td:nth-child(1)
+                font-weight bold
+                border-color var(--fg-muted)
+                border-width 2pt
+
+    div.strong-cols + table
+        td
+            border-width 1pt 2pt
+
+    div.strong-rows + table
+        th
+            border-width 2pt 1pt
+        td
+            border-width 2pt 1pt
+
+@media screen and (min-width 500px)
+    #blog-layout article
+        dl dt
+            max-width 30ch
+            text-align right
+
+@media screen and (max-width 500px)
+    #blog-layout article
+        dl
+            display flex
+            flex-direction column
+            row-gap 0.2rem
+        dl dd
+            margin-left 1em
+            margin-bottom 0.5rem
+        dl dd::before
+            display none
