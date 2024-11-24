@@ -3,7 +3,6 @@
 import re
 import os
 import json
-import subprocess
 import xml.etree.ElementTree as ET
 
 ICONS = "art/icons"
@@ -11,17 +10,11 @@ DEST = "src/data/icons.json"
 
 SVG_NS = "http://www.w3.org/2000/svg"
 
-def simplified(source):
-    result = subprocess.run(["svgo", f"./art/icons/{source}", "-o", "-"], encoding="utf-8", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    result.check_returncode()
-    return result.stdout
 
 def cleanup_colors(root):
     """Cleans up the colors in the svg file"""
-    
+
     for node in root.iter():
-        if 'style' in node.attrib:
-            del node.attrib['style']
         if 'id' in node.attrib:
             del node.attrib['id']
 
@@ -30,11 +23,31 @@ def cleanup_colors(root):
                 node.attrib['fill'] = 'var(--icon-fill, var(--icon-color))'
         else:
             node.attrib['fill'] = 'none'
+
         if 'stroke' in node.attrib:
             if node.attrib['stroke'] != 'none':
                 node.attrib['stroke'] = 'var(--icon-stroke, var(--icon-color))'
         else:
             node.attrib['stroke'] = 'none'
+
+        if "style" in node.attrib:
+            style = node.attrib["style"]
+            style_items = style.split(";")
+            new_style = []
+            for item in style_items:
+                item = item.strip()
+                name, value = item.split(":", 1)
+                name = name.strip()
+                value = value.strip()
+                if name == "fill":
+                    if value != "none":
+                        value = "var(--icon-fill, var(--icon-color))"
+                elif name == "stroke":
+                    if value != "none":
+                        value = "var(--icon-stroke, var(--icon-color))"
+                new_style.append(f"{name}:{value}")
+            node.attrib["style"] = ";".join(new_style)
+
 
 def main():
     if not os.path.exists(ICONS):
@@ -52,23 +65,21 @@ def main():
     for icon in icons:
         name = icon.split('.')[0]
         print(f"Processing '{name}' icon...")
-        icon = simplified(icon)
-        icon = re.sub(' xmlns="[^"]+"', '', icon, count=1)
-        root = ET.fromstring(icon)
-        size = int(root.attrib['width'])
-        cleanup_colors(root)
+        with open(f"./art/icons/{icon}") as icon:
+            icon = re.sub('xmlns="[^"]+"', "", icon.read())
+            root = ET.fromstring(icon)
+            size = int(root.attrib["width"])
+            cleanup_colors(root)
 
-        content = ""
-        for item in root:
-            content += ET.tostring(item, encoding='utf-8').decode('utf-8')
+            content = ""
+            for item in root:
+                content += ET.tostring(item, encoding="utf-8").decode("utf-8")
 
-        results[name] = {
-            'dim': size,
-            'content': content
-        }
+            results[name] = {"dim": size, "content": content}
 
     json.dump(results, open(DEST, 'w'))
     print("Done!")
+
 
 if __name__ == '__main__':
     main()
