@@ -13,6 +13,8 @@ import remarkFrontmatter from 'remark-frontmatter'
 import remarkMath from 'remark-math'
 
 import rehypeRaw from "rehype-raw";
+import rehypeRetarget from "./rehype-retarget.js";
+import rehypeDynamicScripts from "./rehype-dynamicScripts.js";
 import rehypeShowScript from "./rehype-showscript.js";
 import rehypeTreeSitter from "./rehype-codeblocks.js";
 import rehypeMathjax from "rehype-mathjax/svg";
@@ -22,34 +24,49 @@ import { read } from "to-vfile";
 import { matter } from "vfile-matter";
 import { unified } from "unified";
 
-const PARSER = unified()
-  .use(remarkParse)
-  .use(remarkFrontmatter, ["yaml"])
-  .use(remarkGfm)
-  .use(remarkMath)
-  .use(remarkRehype, {
-    allowDangerousHtml: true,
-  })
-  .use(rehypeRaw) // Process raw HTML into Rehype nodes
-  .use(rehypeShowScript)
-  .use(rehypeTreeSitter, {
-    extraCaptures: [
-      "function.macro",
-      "variable.macro",
-      "lifetime",
-      "lifetime.label",
-      "reference",
-      "reference.keyword",
-    ],
-  })
-  .use(rehypeMathjax, {
-    chtml: {
-      fontURL: "/mathjax/chtml/fonts/woff-v2",
-    },
-  })
-  .use(rehypeStringify, {
-    allowDangerousHtml: true,
-  });
+function parser(options = {}) {
+  let targetLocation = options.contentPath;
+
+  let parser = unified()
+    .use(remarkParse)
+    .use(remarkFrontmatter, ["yaml"])
+    .use(remarkGfm)
+    .use(remarkMath)
+    .use(remarkRehype, {
+      allowDangerousHtml: true,
+    })
+    .use(rehypeRaw); // Process raw HTML into Rehype nodes
+
+  if (targetLocation != null) {
+    parser = parser.use(rehypeRetarget, {
+      targetLocation,
+    });
+  }
+
+  parser = parser
+    .use(rehypeDynamicScripts)
+    .use(rehypeShowScript)
+    .use(rehypeTreeSitter, {
+      extraCaptures: [
+        "function.macro",
+        "variable.macro",
+        "lifetime",
+        "lifetime.label",
+        "reference",
+        "reference.keyword",
+      ],
+    })
+    .use(rehypeMathjax, {
+      chtml: {
+        fontURL: "/mathjax/chtml/fonts/woff-v2",
+      },
+    })
+    .use(rehypeStringify, {
+      allowDangerousHtml: true,
+    });
+
+  return parser;
+}
 
 const IN_DIR = "./posts";
 const OUT_DIR = "out";
@@ -116,7 +133,9 @@ async function processFile(slug) {
   }
 
   console.log(`- Processing '${slug}'`);
-  const parsed = await PARSER.process(file);
+  const parsed = await parser({
+    contentPath: "/blog/raw/" + slug,
+  }).process(file);
   console.log(`  - '${slug}' done!'`);
 
   let { create, update } = await getFileTimeInfo(slug);
@@ -285,6 +304,9 @@ export async function watch(options = {}) {
     });
     watcher.on("change", async (event, file) => {
         if (event == "change") {
+            if (!file.endsWith(".md")) {
+              return;
+            }
             console.log(`- '${file}' updated.`)
             let slug = fileSlug(file, null);
             let result = await buildFile(slug);
@@ -296,6 +318,9 @@ export async function watch(options = {}) {
     });
     watcher.on("filename", async (event, file) => {
         if (event == "rename") {
+            if (!file.endsWith(".md")) {
+              return;
+            }
             let slug = fileSlug(file, null);
             console.log(`- '${file}' deleted.`)
 
@@ -303,6 +328,9 @@ export async function watch(options = {}) {
                 [slug]: null,
             })
         } else if (event == "add") {
+            if (!file.endsWith(".md")) {
+              return;
+            }
             let slug = fileSlug(file, null);
             console.log(`- '${file}' created.`)
             let result = await buildFile(slug);

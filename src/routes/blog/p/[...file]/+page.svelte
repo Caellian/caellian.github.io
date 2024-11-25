@@ -86,20 +86,57 @@
     }
   }
 
-  function reevaluateJS() {
-    let scripts = article.querySelectorAll("script");
-    for (const script of scripts) {
-      eval(script.textContent);
+  async function reevaluateJS() {
+    const scripts = article.querySelectorAll(".dynamic-script, script");
+    const deferred = [];
+
+    for (const /** @type {HTMLElement} */ s of scripts) {
+      const dynamic = s.tag = "DIV" ? s.firstElementChild?.innerText : null;
+      let run = null;
+      if (dynamic) {
+        // Dynamically loaded script
+        run = async () => {
+          console.log("Running external script:", dynamic)
+          let exports = await import(dynamic);
+          s.remove();
+          for (const [key, value] of Object.entries(exports)) {
+            window[key] = value
+          }
+        };
+      } else {
+        // Inline script
+        run = async () => {
+          console.log("Running local script:", s);
+          eval(`(() => {${s.textContent}})()`);
+        };
+      }
+      
+      let is_deferred = false;
+      if (dynamic) {
+        is_deferred = s.classList.contains("defer");
+      } else {
+        is_deferred = s.getAttribute("defer") == true || false;
+      }
+
+      if (!is_deferred) {
+        await run();
+      } else {
+        deferred.push(run);
+      }
+    }
+
+    for (const run of deferred) {
+      await run();
     }
   }
 
-  onMount(() => {
+  onMount(async () => {
     SHARE_CONTENT = `Check out Tin's post "${data.title}": ${BASE_URL}/blog/${data.slug}`;
     mastodon_instance =
       localStorage.getItem(MASTODON_INSTANCE_KEY) || undefined;
 
     reanimateButtons();
-    reevaluateJS();
+    await reevaluateJS();
   });
 </script>
 

@@ -63,6 +63,9 @@
             border-color var(--fg-hint)
             border-width 1pt
     
+    img
+        max-width 100%
+    
     div.normal-th + table
         th
             padding 0.2ch 1ch
@@ -86,6 +89,20 @@
             border-width 2pt 1pt
         td
             border-width 2pt 1pt
+
+    div.dynamic-script
+        background-color var(--bg-accent)
+        width max-content
+        padding 0.25rem 1rem
+        margin 0.2ch
+        border-radius 100vw
+
+        .path
+            font-family var(--fnt-mono)
+            font-size 0.2rem
+            height min-content
+        .path::before
+            content: "run JS from path: "
 
 @media screen and (min-width 500px)
     #blog-layout article
