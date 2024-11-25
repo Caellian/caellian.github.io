@@ -106,7 +106,8 @@ async function getFileTimeInfo(slug) {
     update = new Date(log.latest.date);
   }
 
-  if (update < stats.mtime) {
+  let status = await git.diff([path]);
+  if (status.trim().length > 0) {
     update = stats.mtime;
   }
 
