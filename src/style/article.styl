@@ -136,6 +136,14 @@
         &.success .status::before
             content "✅ "
 
+        &[data-shown]
+            margin-bottom 0
+            border-radius 0.2rem 0.2rem 0 0
+            details
+                display none
+            .status::after
+                content ""
+
 @media screen and (min-width 500px)
     #blog-layout article
         dl dt

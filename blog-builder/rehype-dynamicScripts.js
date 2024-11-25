@@ -148,6 +148,7 @@ function handleEmbedded(source, i, parent, target, options) {
     }
     const display = h("pre", [codeEl]);
     parent.children.splice(i + 1, 0, display);
+    target.properties["data-shown"] = true;
   }
   const exec = h(
     "code",
