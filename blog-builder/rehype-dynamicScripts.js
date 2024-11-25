@@ -65,16 +65,26 @@ async function getSource(path, options = {}) {
     return await readFile(url, { encoding: "utf-8" });
   } else {
     let content = new Promise((resolve, reject) => {
-      https.get(url, (err, response) => {
-        if (err) {
-          return reject(
-            new Error(
-              `can't get '${url}'; ${err.statusCode}: ${err.statusMessage}`
-            )
-          );
-        }
-        return resolve(response.toString());
-      });
+      let buffer = "";
+      https
+        .get(url, (response) => {
+          if (response.statusCode !== 200) {
+            return reject(
+              new Error(
+                `can't get '${url}'; ${err.statusCode}: ${err.statusMessage}`
+              )
+            );
+          }
+          response.on("data", (d) => {
+            buffer += d;
+          });
+          response.on("end", (_) => {
+            return resolve(buffer);
+          });
+        })
+        .on("error", (e) => {
+          return reject(e);
+        });
     });
     return await content;
   }

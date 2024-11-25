@@ -43,6 +43,8 @@ const STANDARD_CAPTURE_NAMES = [
   "variable.parameter",
 ];
 
+const SKIP_LANGS = ["math", "console"];
+
 /**
  * @param {import("hast").Element} ast
  * @param {import("hast").Element} node
@@ -481,7 +483,11 @@ export function rehypeTreeSitter(options = {}) {
           }
         }
 
-        if (code.data?.noCodeblock) {
+        if (
+          code.data?.noCodeblock ||
+          SKIP_LANGS.includes(lang) ||
+          annotations.includes("no-codeblock")
+        ) {
           return SKIP;
         }
 
@@ -499,11 +505,6 @@ export function rehypeTreeSitter(options = {}) {
     );
 
     for (const block of code_blocks) {
-      if (block.lang == "math") {
-        // handled by mathJax
-        continue;
-      }
-
       let { parent, i } = block.location;
 
       let code = block.pre;

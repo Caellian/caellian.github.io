@@ -1,6 +1,6 @@
 # Web portfolio
 
-My personal web portfolio & blog.
+Personal web portfolio & blog ([posts](https://github.com/Caellian/blog/)).
 
 ## Build
 
