@@ -72,6 +72,8 @@ const IN_DIR = "./posts";
 const OUT_DIR = "out";
 
 const INDEX_PATH = join(OUT_DIR, "index.json");
+const GITHUB_STATIC =
+  "https://raw.githubusercontent.com/Caellian/blog/refs/heads/main/";
 
 /**
  * Returns create and modify dates for a given file based on Git tree
@@ -117,7 +119,7 @@ async function getFileTimeInfo(slug) {
   };
 }
 
-async function processFile(slug) {
+async function processFile(slug, options = {}) {
   let path = join(IN_DIR, slug + ".md");
   let stats = await stat(path);
   if (!stats.isFile()) {
@@ -133,8 +135,14 @@ async function processFile(slug) {
   }
 
   console.log(`- Processing '${slug}'`);
+
+  let contentPath = "/blog/raw/" + slug;
+  if (options.deploy) {
+    contentPath = GITHUB_STATIC + slug;
+  }
+
   const parsed = await parser({
-    contentPath: "/blog/raw/" + slug,
+    contentPath,
   }).process(file);
   console.log(`  - '${slug}' done!'`);
 
@@ -176,10 +184,10 @@ function readIndex() {
     .catch(() => ({}));
 }
 
-export async function buildFile(slug) {
+export async function buildFile(slug, options = {}) {
   let result = null;
   try {
-    result = await processFile(slug);
+    result = await processFile(slug, options);
   } catch (e) {
     console.error(`Failed to process '${slug}'.\nError:`, e);
   }
@@ -213,8 +221,6 @@ export async function build(options = {}) {
           prev = prev && new Date(prev);
           let status = await getFileTimeInfo(slug);
 
-          console.log(`FOR ${slug}, prev: ${prev}, now: ${status.update}`);
-
           if (prev == null || prev <= status.update) {
             return file;
           }
@@ -235,7 +241,7 @@ export async function build(options = {}) {
     updated.map(async (file) => {
       let slug = fileSlug(file);
       console.log(`- "${slug}"`);
-      let result = await buildFile(slug);
+      let result = await buildFile(slug, options);
       if (result == null) {
         return null;
       }
@@ -271,101 +277,109 @@ export async function build(options = {}) {
 }
 
 export async function watch(options = {}) {
-    let index = await readIndex();
+  let index = await readIndex();
 
-    let indexUpdate = Promise.resolve();
-    async function updateIndex(mutation) {
-        if (indexUpdate) {
-            await indexUpdate;
-        }
-        let newIndex = {
-            ...index,
-            ...mutation
-        };
-        indexUpdate = writeFile(INDEX_PATH, JSON.stringify(newIndex), {
-            encoding: "utf-8"
-        }).then(() => {
-            index = newIndex;
-        });
+  let indexUpdate = Promise.resolve();
+  async function updateIndex(mutation) {
+    if (indexUpdate) {
+      await indexUpdate;
     }
-
-    const ac = new AbortController();
-    const { signal } = ac;
-
-    process.once("SIGINT", () => ac.abort());
-    process.once("SIGTERM", () => ac.abort());
-
-
-    console.log("Watching for changes...")
-    const watcher = watchFs(IN_DIR, { recursive: true });
-
-    watcher.on("error", (err) => {
-        console.error(`Watcher error: ${err}`);
+    let newIndex = {
+      ...index,
+      ...mutation,
+    };
+    indexUpdate = writeFile(INDEX_PATH, JSON.stringify(newIndex), {
+      encoding: "utf-8",
+    }).then(() => {
+      index = newIndex;
     });
-    watcher.on("change", async (event, file) => {
-        if (event == "change") {
-            if (!file.endsWith(".md")) {
-              return;
-            }
-            console.log(`- '${file}' updated.`)
-            let slug = fileSlug(file, null);
-            let result = await buildFile(slug);
+  }
 
-            updateIndex({
-                [slug]: filterIndexData(result)
-            });
-        }
-    });
-    watcher.on("filename", async (event, file) => {
-        if (event == "rename") {
-            if (!file.endsWith(".md")) {
-              return;
-            }
-            let slug = fileSlug(file, null);
-            console.log(`- '${file}' deleted.`)
+  const ac = new AbortController();
+  const { signal } = ac;
 
-            updateIndex({
-                [slug]: null,
-            })
-        } else if (event == "add") {
-            if (!file.endsWith(".md")) {
-              return;
-            }
-            let slug = fileSlug(file, null);
-            console.log(`- '${file}' created.`)
-            let result = await buildFile(slug);
+  process.once("SIGINT", () => ac.abort());
+  process.once("SIGTERM", () => ac.abort());
 
-            updateIndex({
-                [slug]: filterIndexData(result)
-            });
-        }
-    });
+  console.log("Watching for changes...");
+  const watcher = watchFs(IN_DIR, { recursive: true });
 
-    signal.addEventListener("abort", async () => {
-        watcher.close();
-        console.log("Exiting...");
-        await indexUpdate;
-    })
+  watcher.on("error", (err) => {
+    console.error(`Watcher error: ${err}`);
+  });
+  watcher.on("change", async (event, file) => {
+    if (event == "change") {
+      if (!file.endsWith(".md")) {
+        return;
+      }
+      console.log(`- '${file}' updated.`);
+      let slug = fileSlug(file, null);
+      let result = await buildFile(slug, options);
+
+      updateIndex({
+        [slug]: filterIndexData(result),
+      });
+    }
+  });
+  watcher.on("filename", async (event, file) => {
+    if (event == "rename") {
+      if (!file.endsWith(".md")) {
+        return;
+      }
+      let slug = fileSlug(file, null);
+      console.log(`- '${file}' deleted.`);
+
+      updateIndex({
+        [slug]: null,
+      });
+    } else if (event == "add") {
+      if (!file.endsWith(".md")) {
+        return;
+      }
+      let slug = fileSlug(file, null);
+      console.log(`- '${file}' created.`);
+      let result = await buildFile(slug, options);
+
+      updateIndex({
+        [slug]: filterIndexData(result),
+      });
+    }
+  });
+
+  signal.addEventListener("abort", async () => {
+    watcher.close();
+    console.log("Exiting...");
+    await indexUpdate;
+  });
 }
 
 export async function main() {
-    let args = parseArguments(process.argv);
+  let args = parseArguments(process.argv);
 
-    let action = "build";
-    if (args.build) {
-        delete args["build"];
-    } if (args.watch) {
-        action = "watch";
-        delete args["watch"];
-    }
+  let action = "build";
+  if (args.build) {
+    delete args["build"];
+  }
+  if (args.watch) {
+    action = "watch";
+    delete args["watch"];
+  }
 
-    if (action == "build") {
-        return await build(args);
-    } else if (action == "watch") {
-        return await watch(args);
-    } else {
-        throw new Error(`Unknown action '${action}'`);
-    }
+  const options = {};
+  if (args.force) {
+    options.force = true;
+  }
+  if (!args.dev) {
+    options.deploy = true;
+  }
+
+  if (action == "build") {
+    return await build(options);
+  } else if (action == "watch") {
+    return await watch(options);
+  } else {
+    throw new Error(`Unknown action '${action}'`);
+  }
 }
 
 export default main;

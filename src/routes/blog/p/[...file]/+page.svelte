@@ -110,7 +110,7 @@
           eval(`(() => {${s.textContent}})()`);
         };
       }
-      
+
       let is_deferred = false;
       if (dynamic) {
         is_deferred = s.classList.contains("defer");

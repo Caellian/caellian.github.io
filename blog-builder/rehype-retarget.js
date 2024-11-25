@@ -4,7 +4,7 @@ export function rehypeRetarget(options = {}) {
   /** @type {String} */
   let targetLocation = options.targetLocation || "";
 
-  if (!targetLocation.startsWith("/")) {
+  if (!targetLocation.startsWith("/") && !targetLocation.startsWith("http")) {
     targetLocation = "/" + targetLocation;
   }
   if (targetLocation.endsWith("/")) {

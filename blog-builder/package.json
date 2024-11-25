@@ -7,7 +7,7 @@
     "preinstall": "npm install --prefix ../highlight",
     "build": "npm run build --prefix ../highlight && node index.js",
     "start": "node index.js",
-    "watch": "node index.js watch"
+    "watch": "node index.js watch --dev"
   },
   "devDependencies": {
     "@types/hast": "^3.0.4",
