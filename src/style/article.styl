@@ -90,19 +90,49 @@
         td
             border-width 2pt 1pt
 
-    div.dynamic-script
-        background-color var(--bg-accent)
-        width max-content
-        padding 0.25rem 1rem
-        margin 0.2ch
-        border-radius 100vw
+    dynamic-script
+        display flex
+        align-items baseline
+        gap 1ch
 
-        .path
+        background-color var(--bg-accent)
+        border-radius 0.2rem
+        width max-content
+        max-width 100%
+        padding 0.25rem 0.5rem
+        margin 0.4ch
+        overflow-x hidden
+
+        font-size 0.2rem
+
+        .path,
+        details
             font-family var(--fnt-mono)
-            font-size 0.2rem
+            width max-content
+            max-width 100%
             height min-content
-        .path::before
-            content: "run JS from path: "
+        
+        details summary
+            display inline-block
+            width max-content
+            color var(--accent)
+            cursor default
+        details summary::before
+            content "+"
+        details[open] summary::before
+            content "-"
+        details code
+            display block
+            background var(--bg)
+            margin-top 0.5rem
+            padding 0.2rem 0.5rem
+            overflow auto
+        .status::before
+            content "🧩 "
+        &.error .status::before
+            content "⚠️ "
+        &.success .status::before
+            content "✅ "
 
 @media screen and (min-width 500px)
     #blog-layout article

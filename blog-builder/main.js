@@ -1,21 +1,20 @@
-import { glob } from 'glob';
-import { dirname, join, relative } from 'path';
-import { mkdir, readFile, writeFile, stat } from 'fs/promises';
+import { glob } from "glob";
+import { dirname, join, relative } from "path";
+import { mkdir, readFile, writeFile, stat } from "fs/promises";
 import { existsSync, watch as watchFs } from "fs";
 
-import parseArguments from 'args-parser';
-import simpleGit from 'simple-git';
+import parseArguments from "args-parser";
+import simpleGit from "simple-git";
 
-import remarkGfm from 'remark-gfm'
-import remarkParse from 'remark-parse'
-import remarkRehype from 'remark-rehype'
-import remarkFrontmatter from 'remark-frontmatter'
-import remarkMath from 'remark-math'
+import remarkGfm from "remark-gfm";
+import remarkParse from "remark-parse";
+import remarkRehype from "remark-rehype";
+import remarkFrontmatter from "remark-frontmatter";
+import remarkMath from "remark-math";
 
 import rehypeRaw from "rehype-raw";
 import rehypeRetarget from "./rehype-retarget.js";
 import rehypeDynamicScripts from "./rehype-dynamicScripts.js";
-import rehypeShowScript from "./rehype-showscript.js";
 import rehypeTreeSitter from "./rehype-codeblocks.js";
 import rehypeMathjax from "rehype-mathjax/svg";
 import rehypeStringify from "rehype-stringify";
@@ -45,7 +44,6 @@ function parser(options = {}) {
 
   parser = parser
     .use(rehypeDynamicScripts)
-    .use(rehypeShowScript)
     .use(rehypeTreeSitter, {
       extraCaptures: [
         "function.macro",

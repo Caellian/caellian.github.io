@@ -86,42 +86,62 @@
     }
   }
 
-  async function reevaluateJS() {
-    const scripts = article.querySelectorAll(".dynamic-script, script");
+  async function runDynamicJS() {
+    const dScript = article.querySelectorAll("dynamic-script");
     const deferred = [];
 
-    for (const /** @type {HTMLElement} */ s of scripts) {
-      const dynamic = s.tag = "DIV" ? s.firstElementChild?.innerText : null;
-      let run = null;
-      if (dynamic) {
+    for (const /** @type {HTMLElement} */ el of dScript) {
+      const remote = el.querySelector(".path")?.textContent || null;
+
+      let runner = null;
+      if (remote) {
         // Dynamically loaded script
-        run = async () => {
-          console.log("Running external script:", dynamic)
-          let exports = await import(dynamic);
-          s.remove();
-          for (const [key, value] of Object.entries(exports)) {
-            window[key] = value
+        runner = async () => {
+          console.log("Running external script:", remote)
+          try {
+            let exports = await import(remote);
+            for (const [key, value] of Object.entries(exports)) {
+              window[key] = value
+            }
+          } catch (e) {
+            el.classList.add("error");
+            console.error(`Execution of '${remote}' failed:`, e);
+            return;
           }
+          el.classList.add("success");
         };
       } else {
         // Inline script
-        run = async () => {
-          console.log("Running local script:", s);
-          eval(`(() => {${s.textContent}})()`);
+        runner = async () => {
+          const codeEl = el.querySelector("code");
+          const code = codeEl.textContent || null;
+          if (!code) {
+            console.error("Invalid embedded code element:", el);
+            return;
+          }
+          console.log("Running local script:", codeEl);
+          try {
+            eval(`(() => {\n${code}\n})()`);
+          } catch (e) {
+            el.classList.add("error");
+            console.error("Execution of", el," failed:", e);
+            return;
+          }
+          el.classList.add("success");
         };
       }
 
       let is_deferred = false;
-      if (dynamic) {
-        is_deferred = s.classList.contains("defer");
+      if (remote) {
+        is_deferred = el.classList.contains("defer");
       } else {
-        is_deferred = s.getAttribute("defer") == true || false;
+        is_deferred = el.getAttribute("defer") == true || false;
       }
 
       if (!is_deferred) {
-        await run();
+        await runner();
       } else {
-        deferred.push(run);
+        deferred.push(runner);
       }
     }
 
@@ -136,7 +156,7 @@
       localStorage.getItem(MASTODON_INSTANCE_KEY) || undefined;
 
     reanimateButtons();
-    await reevaluateJS();
+    await runDynamicJS();
   });
 </script>
 
