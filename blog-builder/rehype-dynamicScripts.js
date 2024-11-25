@@ -116,7 +116,10 @@ function handleEmbedded(source, i, parent, target, options) {
     parent.children.splice(i, 1);
     return [SKIP, i];
   }
-  code = code.split("\n").filter((it) => it.trim().length > 0);
+  code = code.split("\n");
+  while (code.at(0).trim().length == 0) {
+    code.splice(0, 1);
+  }
 
   let indent = Infinity;
   for (const after of code) {
@@ -137,6 +140,18 @@ function handleEmbedded(source, i, parent, target, options) {
     options.isModule
   );
 
+  const exec = h(
+    "code",
+    {
+      className: ["language-js"],
+    },
+    code
+  );
+  exec.data = {
+    noCodeblock: true,
+  };
+  let detailsEl = h("details", [h("summary", "source"), h("pre", exec)]);
+
   if (source.properties?.className?.includes("show")) {
     let codeEl = h("code", { className: ["language-js"] }, code);
     if (options.deferred) {
@@ -149,27 +164,17 @@ function handleEmbedded(source, i, parent, target, options) {
     const display = h("pre", [codeEl]);
     parent.children.splice(i + 1, 0, display);
     target.properties["data-shown"] = true;
+    detailsEl = null;
   }
-  const exec = h(
-    "code",
-    {
-      className: ["language-js"],
-    },
-    code
-  );
-  exec.data = {
-    noCodeblock: true,
-  };
 
   let note = "embedded JS";
   if (options.isModule) {
     note = "embedded ESM";
   }
-
-  target.children.push(
-    h("span.status", note),
-    h("details", [h("summary", "source"), h("pre", exec)])
-  );
+  target.children.push(h("span.status", note));
+  if (detailsEl != null) {
+    target.children.push(detailsEl);
+  }
 }
 
 export function rehypeDynamicScripts(options = {}) {

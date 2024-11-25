@@ -102,6 +102,7 @@
 
       const isModule = el.getAttribute("data-module") != null;
       const scriptExports = (el.getAttribute("data-exports") || "").split(/\s+/);
+      const isShown = el.getAttribute("data-shown") != null;
 
       function produceError(message) {
         el.classList.add("error");
@@ -147,7 +148,12 @@
           el.classList.add("success");
         };
       } else {
-        const codeEl = el.querySelector("code");
+        let codeEl = null;
+        if (!isShown) {
+          codeEl = el.querySelector("code .source");
+        } else {
+          codeEl = el.nextElementSibling.querySelector("code .source");
+        }
         if (!codeEl) {
           produceError("invalid embedded code element");
           continue;
