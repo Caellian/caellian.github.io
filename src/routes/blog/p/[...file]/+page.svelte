@@ -91,8 +91,9 @@
     const deferred = [];
     window.ArticleScope = {};
 
-    function importArticleScope() {
+    function importArticleScope(exports) {
       let names = Object.keys(window.ArticleScope);
+      names = names.filter((it) => !exports.includes(it));
       return `let {${names.join(", ")}} = window.ArticleScope;`
     }
 
@@ -127,7 +128,7 @@
           code = await code.text();
 
           let exports = eval(
-            `(() => {${importArticleScope()}\n${code}\n
+            `(() => {${importArticleScope(scriptExports)}\n${code}\n
               return {${scriptExports.join(", ")}};
             })()`
           );
@@ -161,7 +162,7 @@
           }
         } : async (scope) => {
           let exports = eval(
-            `(() => {${importArticleScope()}\n${code}\n
+            `(() => {${importArticleScope(scriptExports)}\n${code}\n
               return {${scriptExports.join(", ")}};
             })()`
           );
