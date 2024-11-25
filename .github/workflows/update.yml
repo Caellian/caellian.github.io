@@ -53,12 +53,13 @@ jobs:
           path: |
             highlight/highlight*
             highlight/index.js
-          key: ${{ runner.os }}-highlight-${{ hashFiles('highlight/src/**') }}-${{ hashFiles('highlight/extensions/**') }}
+          key: ${{ runner.os }}-highlight-${{ hashFiles('highlight/src/**', 'highlight/extensions/**') }}
       - name: Cache post content
         uses: actions/cache@v2
         with:
-          path: "blog-builder/out"
-          key: posts
+          path: blog-builder/out
+          key: |
+            posts-${{ hashFiles('highlight/src/**', 'highlight/extensions/**', 'blog-builder/*.js', 'blog-builder/package*.json') }}
       - name: Install and build dependencies
         run: |
           npm clean-install
