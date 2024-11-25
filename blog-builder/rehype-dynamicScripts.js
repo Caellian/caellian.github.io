@@ -1,9 +1,180 @@
 import { CONTINUE, SKIP, visit } from "unist-util-visit";
-import { toText } from "hast-util-to-text";
 import { h } from "hastscript";
+import esprima from "esprima";
+import https from "https";
+import { readFile } from "fs/promises";
+
+function topLevelDeclarations(code, module = false) {
+  let ast = null;
+  try {
+    if (module) {
+      ast = esprima.parseModule(code);
+    } else {
+      ast = esprima.parseScript(code);
+    }
+  } catch (e) {
+    console.log(e.toString());
+    return [];
+  }
+
+  let exports = [];
+  function exportID(id) {
+    if (id.type === "Identifier") {
+      exports.push(id.name);
+    }
+  }
+  function handleExport(item) {
+    if (item.type === "FunctionDeclaration") {
+      exportID(item.id);
+    } else if (item.type === "VariableDeclaration") {
+      for (const variable of item.declarations) {
+        exportID(variable.id);
+      }
+    }
+  }
+  for (const item of ast.body) {
+    if (!module) {
+      handleExport(item);
+    } else if (item.type === "ExportNamedDeclaration") {
+      if (item.declaration != null) {
+        handleExport(item.declaration);
+      } else if ((item.specifiers?.length || 0) > 0) {
+        for (const specifier of item.specifiers) {
+          exportID(specifier.exported);
+        }
+      }
+    }
+  }
+  return exports;
+}
+
+function rebasePath(path, base) {
+  if (path.startsWith("/")) {
+    return base + path;
+  } else if (path.startsWith("./")) {
+    return base + path.slice(1);
+  } else {
+    return path;
+  }
+}
+
+async function getSource(path, options = {}) {
+  let url = rebasePath(path, options.locallyAccessible || ".");
+  let local = url != path;
+  if (!url.startsWith("http") && !url.startsWith("/")) {
+    return await readFile(url, { encoding: "utf-8" });
+  } else {
+    let content = new Promise((resolve, reject) => {
+      https.get(url, (err, response) => {
+        if (err) {
+          return reject(
+            new Error(
+              `can't get '${url}'; ${err.statusCode}: ${err.statusMessage}`
+            )
+          );
+        }
+        return resolve(response.toString());
+      });
+    });
+    return await content;
+  }
+}
+
+function handleInclude(source, i, parent, target, options, tasks) {
+  tasks.push(
+    (async () => {
+      console.log(options);
+      try {
+        let code = await getSource(source.properties?.src, options);
+        target.properties["data-exports"] = topLevelDeclarations(
+          code,
+          options.isModule
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    })()
+  );
+
+  let href = rebasePath(source.properties?.src, options.targetLocation || "/");
+
+  let note = "remote JS";
+  if (options.isModule) {
+    note = "remote ESM";
+  }
+
+  target.children.push(h("span.status", note), h("a.path", { href }, href));
+}
+
+function handleEmbedded(source, i, parent, target, options) {
+  let code = source.children
+    .filter((child) => child.type === "text")
+    .map((child) => child.value)
+    .join("");
+
+  if (code.trim().length === 0) {
+    parent.children.splice(i, 1);
+    return [SKIP, i];
+  }
+  code = code.split("\n").filter((it) => it.trim().length > 0);
+
+  let indent = Infinity;
+  for (const after of code) {
+    indent = Math.min(after.match(/^\s*/)[0].length, indent);
+  }
+
+  code = code
+    .map((line) => {
+      const currIndent = line.match(/^\s*/)[0].length;
+      let cutoff = Math.min(currIndent, indent);
+      return line.slice(cutoff);
+    })
+    .join("\n")
+    .trim();
+
+  target.properties["data-exports"] = topLevelDeclarations(
+    code,
+    options.isModule
+  );
+
+  if (source.properties?.className?.includes("show")) {
+    let codeEl = h("code", { className: ["language-js"] }, code);
+    if (options.deferred) {
+      codeEl.data = {
+        markers: {
+          deferred: true,
+        },
+      };
+    }
+    const display = h("pre", [codeEl]);
+    parent.children.splice(i + 1, 0, display);
+  }
+  const exec = h(
+    "code",
+    {
+      className: ["language-js"],
+    },
+    code
+  );
+  exec.data = {
+    noCodeblock: true,
+  };
+
+  let note = "embedded JS";
+  if (options.isModule) {
+    note = "embedded ESM";
+  }
+
+  target.children.push(
+    h("span.status", note),
+    h("details", [h("summary", "source"), h("pre", exec)])
+  );
+}
 
 export function rehypeDynamicScripts(options = {}) {
-  return (ast, _file) => {
+  return async (ast, _file) => {
+    const tasks = [];
+
     visit(
       ast,
       "element",
@@ -19,69 +190,38 @@ export function rehypeDynamicScripts(options = {}) {
         }
 
         let deferred = el.properties.defer == true;
-        deferred = deferred ? ["defer"] : [];
+        let isModule = el.properties.type === "module";
+        const target = h("dynamic-script", {
+          "data-deferred": deferred ? true : undefined,
+          "data-module": isModule ? true : undefined,
+        });
 
-        const content = h("dynamic-script", { className: deferred });
-
-        let scriptSource = el.properties?.src;
-        if (scriptSource != null) {
-          content.children.push(
-            h("span.status", "run JS from path:"),
-            h("a.path", { href: scriptSource }, scriptSource)
-          );
-        } else {
-          let code = el.children
-            .filter((child) => child.type === "text")
-            .map((child) => child.value)
-            .join("");
-
-          if (code.trim().length === 0) {
-            parent.children.splice(i, 1);
-            return [SKIP, i];
-          }
-          code = code.split("\n").filter((it) => it.trim().length > 0);
-
-          let indent = Infinity;
-          for (const after of code) {
-            indent = Math.min(after.match(/^\s*/)[0].length, indent);
-          }
-
-          code = code
-            .map((line) => {
-              const currIndent = line.match(/^\s*/)[0].length;
-              let cutoff = Math.min(currIndent, indent);
-              return line.slice(cutoff);
-            })
-            .join("\n")
-            .trim();
-
-          if (el.properties?.className?.includes("show")) {
-            let codeEl = h("code", { className: ["language-js"] }, code);
-            if (deferred) {
-              codeEl.data = {
-                markers: {
-                  deferred: true,
-                },
-              };
-            }
-            const display = h("pre", [codeEl]);
-            parent.children.splice(i + 1, 0, display);
-          }
-          const exec = h("code", { className: ["language-js"] }, code);
-          exec.data = {
-            noCodeblock: true,
-          };
-
-          content.children.push(
-            h("span.status", "run embedded JS: "),
-            h("details", [h("summary", "source"), h("pre", exec)])
-          );
+        let handler = handleEmbedded;
+        if (el.properties?.src != null) {
+          handler = handleInclude;
+        }
+        let earlyReturn = handler(
+          el,
+          i,
+          parent,
+          target,
+          {
+            ...options,
+            deferred,
+            isModule,
+          },
+          tasks
+        );
+        if (earlyReturn != undefined) {
+          return earlyReturn;
         }
 
-        parent.children.splice(i, 1, content);
+        parent.children.splice(i, 1, target);
         return SKIP;
       }
     );
+
+    await Promise.all(tasks);
   };
 }
 

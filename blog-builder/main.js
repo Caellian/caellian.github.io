@@ -34,7 +34,11 @@ function parser(options = {}) {
     .use(remarkRehype, {
       allowDangerousHtml: true,
     })
-    .use(rehypeRaw); // Process raw HTML into Rehype nodes
+    .use(rehypeRaw) // Process raw HTML into Rehype nodes
+    .use(rehypeDynamicScripts, {
+      locallyAccessible: options.localContentPath,
+      targetLocation,
+    });
 
   if (targetLocation != null) {
     parser = parser.use(rehypeRetarget, {
@@ -43,7 +47,6 @@ function parser(options = {}) {
   }
 
   parser = parser
-    .use(rehypeDynamicScripts)
     .use(rehypeTreeSitter, {
       extraCaptures: [
         "function.macro",
@@ -135,12 +138,15 @@ async function processFile(slug, options = {}) {
   console.log(`- Processing '${slug}'`);
 
   let contentPath = "/blog/raw/" + slug;
+  let localContentPath = "./posts/" + slug;
   if (options.deploy) {
     contentPath = GITHUB_STATIC + slug;
+    localContentPath = GITHUB_STATIC + slug;
   }
 
   const parsed = await parser({
     contentPath,
+    localContentPath,
   }).process(file);
   console.log(`  - '${slug}' done!'`);
 
@@ -374,6 +380,8 @@ export async function main() {
   if (action == "build") {
     return await build(options);
   } else if (action == "watch") {
+    console.log("Running initial build...");
+    await build({ ...options, force: true });
     return await watch(options);
   } else {
     throw new Error(`Unknown action '${action}'`);

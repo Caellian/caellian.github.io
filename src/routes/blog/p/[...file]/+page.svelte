@@ -89,55 +89,99 @@
   async function runDynamicJS() {
     const dScript = article.querySelectorAll("dynamic-script");
     const deferred = [];
+    window.ArticleScope = {};
+
+    function importArticleScope() {
+      let names = Object.keys(window.ArticleScope);
+      return `let {${names.join(", ")}} = window.ArticleScope;`
+    }
 
     for (const /** @type {HTMLElement} */ el of dScript) {
       const remote = el.querySelector(".path")?.textContent || null;
 
+      const isModule = el.getAttribute("data-module") != null;
+      const scriptExports = (el.getAttribute("data-exports") || "").split(/\s+/);
+
+      function produceError(message) {
+        el.classList.add("error");
+        console.error(`Execution of '${remote}' failed:`, message);
+        el.setAttribute("title", `ERROR: '${message}'`)
+      }
+
       let runner = null;
       if (remote) {
         // Dynamically loaded script
+        const loader = isModule ? async (scope) => {
+          let exports = await import(remote);
+          for (const [key, value] of Object.entries(exports)) {
+            scope[key] = value
+          }
+        } : async (scope) => {
+          let code = await fetch(remote, {
+            method: "GET"
+          });
+          if (!code.ok) {
+            produceError(`${code.status}: ${code.statusText}`);
+            return;
+          }
+          code = await code.text();
+
+          let exports = eval(
+            `(() => {${importArticleScope()}\n${code}\n
+              return {${scriptExports.join(", ")}};
+            })()`
+          );
+          for (const [key, value] of Object.entries(exports)) {
+            scope[key] = value;
+          }
+        };
         runner = async () => {
           console.log("Running external script:", remote)
           try {
-            let exports = await import(remote);
-            for (const [key, value] of Object.entries(exports)) {
-              window[key] = value
-            }
+            await loader(window.ArticleScope)
           } catch (e) {
-            el.classList.add("error");
-            console.error(`Execution of '${remote}' failed:`, e);
+            produceError(e);
             return;
           }
           el.classList.add("success");
         };
       } else {
+        const codeEl = el.querySelector("code");
+        if (!codeEl) {
+          produceError("invalid embedded code element");
+          continue;
+        }
+        const code = codeEl.textContent || "";
         // Inline script
-        runner = async () => {
-          const codeEl = el.querySelector("code");
-          const code = codeEl.textContent || null;
-          if (!code) {
-            console.error("Invalid embedded code element:", el);
-            return;
+        let loader = isModule ? async (scope) => {
+          let url = URL.createObjectURL(new Blob([code], {type: "application/javascript"}));
+          let exports = await import(url);
+          for (const [key, value] of Object.entries(exports)) {
+            scope[key] = value
           }
+        } : async (scope) => {
+          let exports = eval(
+            `(() => {${importArticleScope()}\n${code}\n
+              return {${scriptExports.join(", ")}};
+            })()`
+          );
+          for (const [key, value] of Object.entries(exports)) {
+            scope[key] = value;
+          }
+        };
+        runner = async () => {
           console.log("Running local script:", codeEl);
           try {
-            eval(`(() => {\n${code}\n})()`);
+            await loader(window.ArticleScope);
           } catch (e) {
-            el.classList.add("error");
-            console.error("Execution of", el," failed:", e);
+            produceError(e);
             return;
           }
           el.classList.add("success");
         };
       }
 
-      let is_deferred = false;
-      if (remote) {
-        is_deferred = el.classList.contains("defer");
-      } else {
-        is_deferred = el.getAttribute("defer") == true || false;
-      }
-
+      let is_deferred = el.getAttribute("data-deferred") == true;
       if (!is_deferred) {
         await runner();
       } else {
