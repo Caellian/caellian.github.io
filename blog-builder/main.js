@@ -72,8 +72,7 @@ const IN_DIR = "./posts";
 const OUT_DIR = "out";
 
 const INDEX_PATH = join(OUT_DIR, "index.json");
-const GITHUB_STATIC =
-  "https://raw.githubusercontent.com/Caellian/blog/refs/heads/main/";
+const GITHUB_STATIC = "https://caellian.github.io/blog/";
 
 /**
  * Returns create and modify dates for a given file based on Git tree
