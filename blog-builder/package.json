@@ -29,11 +29,11 @@
     "remark-math": "^6.0.0",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.1",
-    "simple-git": "^3.27.0",
     "to-vfile": "^8.0.0",
     "tree-sitter": "^0.22.1",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",
-    "vfile-matter": "^5.0.0"
+    "vfile-matter": "^5.0.0",
+    "yaml": "^2.0.0"
   }
 }

@@ -13,7 +13,7 @@ function topLevelDeclarations(code, module = false) {
       ast = esprima.parseScript(code);
     }
   } catch (e) {
-    console.log(e.toString());
+    console.error(e.toString());
     return [];
   }
 
@@ -93,7 +93,6 @@ async function getSource(path, options = {}) {
 function handleInclude(source, i, parent, target, options, tasks) {
   tasks.push(
     (async () => {
-      console.log(options);
       try {
         let code = await getSource(source.properties?.src, options);
         target.properties["data-exports"] = topLevelDeclarations(

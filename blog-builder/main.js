@@ -4,7 +4,7 @@ import { mkdir, readFile, writeFile, stat } from "fs/promises";
 import { existsSync, watch as watchFs } from "fs";
 
 import parseArguments from "args-parser";
-import simpleGit from "simple-git";
+import { git, parseGitStatus, GitStatus, fileHistory } from "./git.js";
 
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
@@ -22,6 +22,7 @@ import rehypeStringify from "rehype-stringify";
 import { read } from "to-vfile";
 import { matter } from "vfile-matter";
 import { unified } from "unified";
+import { parse as parseYaml } from "yaml";
 
 function parser(options = {}) {
   let targetLocation = options.contentPath;
@@ -76,48 +77,105 @@ const INDEX_PATH = join(OUT_DIR, "index.json");
 const GITHUB_STATIC = "https://caellian.github.io/blog/";
 
 /**
- * Returns create and modify dates for a given file based on Git tree
- * information.
+ * Returns publication and modification dates for argument post, based on Git
+ * tree information, and falls back to system time if file is not in tree.
+ *
+ * If file does not exist (at all), or can't be accessed, a `null` value is
+ * returned.
  */
-async function getFileTimeInfo(slug) {
+async function getPostTimeInfo(slug) {
   let path = slug + ".md";
+  let full_path = join(IN_DIR, path);
 
-  let stats = await stat(join(IN_DIR, path));
+  if (!existsSync(full_path)) {
+    return null;
+  }
+  let stats = await stat(full_path);
   if (!stats) {
-    return {
-      date: null,
-      update: null,
-    };
+    return null;
   }
-
-  let git = simpleGit(IN_DIR, {
-    baseDir: join(process.cwd(), IN_DIR),
-  });
-  let log = await git.log({
-    file: path,
-  });
-
-  if (log.all.at(-1) == null) {
-    return {
-      create: stats.birthtime || new Date(),
-      update: stats.mtime || new Date(),
-    };
-  }
-  let create = new Date(log.all.at(-1).date);
-  let update = new Date();
-  if (log.latest != null) {
-    update = new Date(log.latest.date);
-  }
-
-  let status = await git.diff([path]);
-  if (status.trim().length > 0) {
-    update = stats.mtime;
-  }
-
-  return {
-    create,
-    update,
+  let result = {
+    date: stats.birthtime || stats.mtime || new Date(),
+    update: stats.mtime || new Date(),
   };
+  let localUpdateTime = result.update;
+
+  let history = await fileHistory(path, {
+    cwd: join(process.cwd(), IN_DIR),
+  });
+  if (history.length == 0) {
+    return result;
+  }
+
+  result.update = history[0][1];
+  result.create = history.at(-1)[1];
+
+  for (let i = history.length - 1; i >= 0; i--) {
+    const [sha, date, filename] = history[i];
+
+    let content = await git("show", `${sha}:${filename}`, {
+      cwd: join(process.cwd(), IN_DIR),
+    });
+    if (content.code !== 0) {
+      console.error(content);
+      continue;
+    }
+    content = content.stdout;
+    
+    let segments = content.split("---");
+    let frontmatter = null;
+    if (segments.length === 3 && segments[0].trim().length === 0) {
+      frontmatter = segments[1];
+    } else if (segments.length === 2 && segments[0].trim().length > 0) {
+      frontmatter = segments[0];
+    } else {
+      continue;
+    }
+    try {
+      frontmatter = parseYaml(frontmatter);
+    } catch (ignore) {
+      // frontmatter not found
+      continue;
+    }
+
+    let published = frontmatter.publish || frontmatter.title != null;
+    if (published) {
+      result.create = date;
+      break;
+    }
+  }
+
+  let status = await git(
+    "status",
+    {
+      porcelain: true,
+      file: path,
+    },
+    {
+      cwd: join(process.cwd(), IN_DIR),
+    }
+  );
+
+  if (status.code != 0) {
+    return result;
+  }
+  if (status.stdout.trim().length === 0) {
+    return result;
+  }
+  let fileStatus = parseGitStatus(status.stdout)[path] || {
+    index: GitStatus.UNMODIFIED,
+    workingTree: GitStatus.UNMODIFIED,
+  };
+  if (
+    !(
+      fileStatus.index === GitStatus.UNMODIFIED &&
+      fileStatus.workingTree === GitStatus.UNMODIFIED
+    )
+  ) {
+    result.update = localUpdateTime;
+  }
+
+  return result;
 }
 
 async function processFile(slug, options = {}) {
@@ -150,7 +208,7 @@ async function processFile(slug, options = {}) {
   }).process(file);
   console.log(`  - '${slug}' done!'`);
 
-  let { create, update } = await getFileTimeInfo(slug);
+  let { create, update } = await getPostTimeInfo(slug);
 
   return {
     create,
@@ -223,7 +281,7 @@ export async function build(options = {}) {
           let slug = fileSlug(file);
           let prev = prevIndex[slug]?.update;
           prev = prev && new Date(prev);
-          let status = await getFileTimeInfo(slug);
+          let status = await getPostTimeInfo(slug);
 
           if (prev == null || prev <= status.update) {
             return file;
