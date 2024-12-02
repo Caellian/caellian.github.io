@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+      "strict": false,
+      "module": "NodeNext",
+      "moduleResolution": "nodenext",
+      "types": ["node"],
+      "lib": ["ESNext"],
+
+      "checkJs": true,
+      "allowJs": true,
+      "esModuleInterop": true,
+      "noEmit": true,
+      "allowImportingTsExtensions": true,
+      "sourceMap": true,
+
+      "typeRoots": ["./node_modules/@types", "./types"],
+      "rootDir": "./"
+    },
+    "include": ["index.js", "src/**/*.js", "types/**/*.d.ts", "src/unist/hast-utils.ts"]
+  }
+  

@@ -5,12 +5,12 @@
   import Spinner from "./Spinner.svelte";
 
   /**
-   * @type {import("../lib/project".Project}
+   * @type {import("../lib/project").Project}
    */
   export let project;
 
   /**
-   * @param {import("../lib/project".Project} project
+   * @param {import("../lib/project").Project} project
    */
   function merge_color(project) {
     if (project.fork) {

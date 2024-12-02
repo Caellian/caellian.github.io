@@ -1,145 +1,155 @@
 /**
- * @typedef {Object} Post
- * @property {string} title
- * @property {Date | string} [update]
- * @property {Date | string} date
- * @property {boolean} [published=true]
- * @property {string} content html string
- * @property {string} [topic="development"]
- * @property {string} [summary]
- * @property {string[]} tags
- * @property {string} slug
+ * @typedef {import("types/post").Post} Post
+ */
+/**
+ * @typedef {Omit<
+ *   Post,
+ *   | 'datePublished'
+ *   | 'dateModified'
+ * > & {
+ *   slug: string,
+ *   datePublished: Date,
+ *   dateModified?: Date,
+ *   toot?: string
+ * }} PostData
  */
 
 /**
  * Handles post data validation and processing
- * 
- * @param {Object} post
- * @returns {Post}
+ *
+ * @param {string} slug
+ * @param {Post} post
+ * @returns {PostData}
  */
-export function normalizePostEntry(post) {
-    return {
-        title: post.title,
-        update: post.update && new Date(post.update),
-        create: post.create && new Date(post.create),
-        publish: post.publish,
-        content: post.html || post.content,
-        topic: post.topic || "development",
-        summary: post.summary,
-        tags: post.tags && Array.isArray(post.tags) && post.tags || [],
-        toot: post.toot,
-        prev: post.prev || null,
-        next: post.next || null,
-        slug: post.slug
-    };
+export function parsePostEntry(slug, post) {
+  return {
+    slug,
+    ...post,
+    datePublished: new Date(post.datePublished),
+    dateModified:
+      (post.dateModified && new Date(post.dateModified)) || undefined,
+    articleSection: post.articleSection,
+    inLanguage: post.inLanguage,
+  };
 }
+
+/**
+ * @param {Post | PostData} a
+ * @param {Post | PostData} b
+ * @returns {number}
+ */
+function postCmp(a, b) {
+  let aDate, bDate;
+  if (
+    typeof a.datePublished === "string" &&
+    typeof b.datePublished === "string"
+  ) {
+    aDate = new Date(a.dateModified || a.datePublished);
+    bDate = new Date(b.dateModified || b.datePublished);
+  } else {
+    aDate = /** @type {Date} */ (a.dateModified || a.datePublished);
+    bDate = /** @type {Date} */ (b.dateModified || b.datePublished);
+  }
+  return bDate.getMilliseconds() - aDate.getMilliseconds();
+}
+
 /**
  * Sort posts by update or alternatively date property
- * @param {Post[]} posts
- * @returns {Post[]}
-*/
-export function orderPosts(posts) {
-    posts.sort((a, b) => {
-        let aDate = a.update || a.date;
-        let bDate = b.update || b.date;
-
-        return bDate - aDate;
-    });
-    return posts;
-}
-
-/**
- * Convert a date from post to ISO string.
- * 
- * This function handles normalization and conversion of dates.
- * 
- * @param {Date | string} date
- * @returns {string}
+ * @param {PostData[]} posts
+ * @returns {PostData[]}
  */
-export function postDateISO(date) {
-    if (date == null) {
-        return null;
-    }
-    if (typeof date === "string") {
-        let d = null;
-        try {
-            d = new Date(date);
-        } catch (e) {
-            throw new Error(`Invalid date: '${date}'`);
-        }
-        return d.toISOString();
-    }
-    if (typeof date.toISOString === "function") {
-        return date.toISOString();
-    }
+export function orderPosts(posts) {
+  return posts.sort(postCmp);
 }
 
 /**
  * Convert a date from post to Date object.
- * 
+ *
  * @param {Date | string} date
- * @returns {Date}
+ * @returns {Date | null}
  */
 export function parsePostDate(date) {
-    if (date == null) {
-        return null;
+  if (date == null) {
+    return null;
+  }
+  if (typeof date === "string") {
+    let d = null;
+    try {
+      d = new Date(date);
+    } catch (e) {
+      throw new Error(`Invalid date: '${date}'`);
     }
-    if (typeof date === "string") {
-        let d = null;
-        try {
-            d = new Date(date);
-        } catch (e) {
-            throw new Error(`Invalid date: '${date}'`);
-        }
-        return d;
-    }
-    if (typeof date.toISOString === "function") {
-        return date;
-    }
+    return d;
+  }
+  if (typeof date.toISOString === "function") {
+    return date;
+  }
+  return null;
 }
 
 /**
- * Convert a post map in any form to a list.
- * 
- * Handles the following edge cases:
- * - If the provided object is a promise, it will be mapped according to remaining rules.
- * - If the provided object is a response, it will be read as JSON object.
- * - If the provided object is an array, it will be returned back as is.
- * - If the provided object is null or undefined, an empty array will be returned.
- * 
- * @param {Promise<Reponse> | Response | Promise<Object.<string, any>>} posts
+ * @callback MapPostResponsePromise
+ * @param {Promise<Response>} posts
+ * @returns {Promise<PostData[]>}
+ * @private
  */
-export function postMapToList(posts) {
-    function mapMaybeReponse(posts) {
-        let p = posts;
-        if (typeof p.json === "function") {
-            p = p.json();
-        }
+/**
+ * @callback MapPostResponse
+ * @param {Response} posts
+ * @returns {PostData[]}
+ * @private
+ */
+/**
+ * @callback MapPostRecordPromise
+ * @param {Promise<Record<string, any>>} posts
+ * @returns {Promise<PostData[]>}
+ * @private
+ */
+/**
+ * @callback MapPostRecord
+ * @param {Record<string, any>} posts
+ * @returns {PostData[]}
+ * @private
+ */
+/**
+ * Convert a post map to a list.
+ *
+ * It works for both promises and discrete values. If given a promise, a promise
+ * will be returned.
+ *
+ * If given a {@link Response}, a promise will be returned.
+ *
+ * @type {MapPostResponsePromise | MapPostResponse | MapPostRecordPromise |
+ * MapPostRecord}
+ * @param {Promise<Response> | Response | Promise<Record<string, Post>> |
+ * Record<string, Post>} posts
+ * @returns {Promise<PostData[]> | PostData[]}
+ */
+export function toPostList(posts) {
+  /**
+   * @type {MapPostRecord}
+   */
+  const mapPosts = (posts) =>
+    Object.entries(posts)
+      .map(([slug, post]) => parsePostEntry(slug, post))
+      .sort(postCmp);
 
-        function mapPosts(posts) {
-            if (typeof posts !== "object") {
-                if (posts == null) {
-                    return [];
-                } else if (Array.isArray(posts)) {
-                    return posts;
-                }
-            }
-            return Object.entries(posts).map(([slug, post]) => ({
-                ...post,
-                slug
-            }));
-        }
-
-        if (typeof p.then === "function") {
-            return p.then(mapPosts);
-        } else {
-            return mapPosts(p);
-        }
-    }
-
-    if (typeof posts.then === "function") {
-        return posts.then(mapMaybeReponse);
+  /**
+   * @type {MapPostResponse | MapPostRecord}
+   * @param {Response | Record<string, any>} posts
+   * @returns {Promise<PostData[]> | PostData[]}
+   */
+  function unwrapResponse(posts) {
+    if (typeof posts.json === "function") {
+      return posts.json().then(mapPosts);
     } else {
-        return mapMaybeReponse(posts);
+      return mapPosts(posts);
     }
+  }
+
+  if ("then" in posts && typeof posts.then === "function") {
+    return posts.then(unwrapResponse);
+  } else {
+    return unwrapResponse(posts);
+  }
 }

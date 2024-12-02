@@ -1,0 +1,10 @@
+input: posts/
+output: out/
+indexPath: index.json
+
+development:
+  assetURL: /blog/
+  hostURL: /blog/raw/
+production:
+  assetURL: https://caellian.github.io/blog/
+  hostURL: https://tinsvagelj.net/blog/

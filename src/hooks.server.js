@@ -24,7 +24,12 @@ const minification_options = {
 export async function handle({ event, resolve }) {
   var response = await resolve(event);
 
-  if (!browser && response.headers.get("content-type") === "text/html") {
+  if (
+    !browser &&
+    ["text/html", "application/atom+xml"].includes(
+      response.headers.get("content-type")
+    )
+  ) {
     response = new Response(
       minify(await response.text(), minification_options),
       {

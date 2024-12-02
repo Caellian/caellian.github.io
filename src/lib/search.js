@@ -1,4 +1,4 @@
-import { filter_split } from "./util";
+import { filterSplit } from "./util";
 
 export class Params {
   /**
@@ -15,11 +15,25 @@ export class Params {
 }
 
 export class DualFilter {
+  /**
+   * @param {string[]} blacklist
+   * @param {string[]} whitelist
+   */
   constructor(blacklist, whitelist) {
+    /**
+     * @type {string[]}
+     */
     this.blacklist = blacklist;
+    /**
+     * @type {string[]}
+     */
     this.whitelist = whitelist;
   }
 
+  /**
+   * @param {string} value
+   * @returns {boolean}
+   */
   check(value) {
     if (this.blacklist.includes(value)) {
       return false;
@@ -43,14 +57,14 @@ export class Query {
   flags;
 
   /**
-   * @param {string} query 
+   * @param {string} query
    */
   constructor(query) {
     this.words = query
       .trim()
       .replace(/\s{2,}/, " ")
       .split(" ");
-    const [blacklist_flags, rest] = filter_split(this.words, (w) =>
+    const [blacklist_flags, rest] = filterSplit(this.words, (w) =>
       w.startsWith("!")
     );
     this.flags = new DualFilter(blacklist_flags, rest);

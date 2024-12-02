@@ -1,16 +1,24 @@
-import { orderPosts, postMapToList } from "$lib/posts";
+import { orderPosts, toPostList } from "$lib/posts";
 import { blogAtom } from "$lib/atom";
+import { localFile } from "$lib/local";
 
 export const prerender = true;
 
-export async function GET({ fetch }) {
-    let posts = await fetch(`/blog/posts.json`).then(postMapToList);
-    let content = blogAtom(`tinsvagelj::net`, `Tin's blog`, orderPosts(posts));
+/** @type {import("@sveltejs/kit").RequestHandler} */
+export async function GET({ params }) {
+  /**
+   * @type {import("$lib/posts").PostData[]}
+   */
+  let posts = await localFile("$gen/index.json", { format: "json" }).then(
+    toPostList
+  );
 
-    return new Response(content, {
-        headers: {
-            "cache-control": "max-age=0, s-maxage=3600",
-            "content-type": "application/atom+xml"
-        }
-    });
+  let content = blogAtom(`tinsvagelj::net`, `Tin's blog`, posts);
+
+  return new Response(content, {
+    headers: {
+      "cache-control": "max-age=0, s-maxage=3600",
+      "content-type": "application/atom+xml",
+    },
+  });
 }

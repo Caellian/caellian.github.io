@@ -1,17 +1,22 @@
-import { postMapToList } from "$lib/posts";
+import { localFile } from "$lib/local";
+import { toPostList } from "$lib/posts";
 
 export const prerender = true;
 
-export async function load({ params, fetch }) {
-    let posts = await fetch("/blog/posts.json").then(postMapToList);
+/** @type {import("@sveltejs/kit").ServerLoad} */
+export async function load({ params }) {
+  let posts = await localFile("$gen/index.json", { format: "json" }).then(
+    toPostList
+  );
 
-    const tag = params.tag;
-    posts = posts.filter(post => {
-        return post.tags.includes(tag);
-    });
+  const tag = params.tag;
+  posts = posts.filter((post) => {
+    // @ts-ignore
+    return post.keywords.includes(tag);
+  });
 
-    return {
-        tag,
-        posts
-    };
+  return {
+    tag,
+    posts,
+  };
 }

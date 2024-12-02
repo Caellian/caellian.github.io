@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tinsvagelj.net/blog/post",
+  "$vocabulary": {
+    "https://json-schema.org/draft/2020-12/vocab/format-assertion": true
+  },
+  "title": "Post",
+  "description": "A blog post",
+  "type": "object",
+  "$comment": "Based on: https://schema.org/BlogPosting",
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "article"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 70
+    },
+    "abstract": {
+      "type": "string"
+    },
+    "creativeWorkStatus": {
+      "type": "string",
+      "default": "incomplete",
+      "enum": ["incomplete", "draft", "published", "obsolete"]
+    },
+    "datePublished": {
+      "type": "string",
+      "description": "time of initial publishing",
+      "format": "date-time"
+    },
+    "dateModified": {
+      "type": "string",
+      "description": "time of latest update",
+      "format": "date-time"
+    },
+    "articleSection": {
+      "type": "string",
+      "description": "post topic",
+      "default": "development"
+    },
+    "inLanguage": {
+      "type": "string",
+      "description": "post language",
+      "format": "bcp47",
+      "default": "en",
+      "$comment": "shouldn't contain region unless it significantly affects the content"
+    },
+    "articleBody": {
+      "type": "string",
+      "description": "HTML article content",
+      "default": null
+    },
+    "keywords": {
+      "type": "array",
+      "description": "words or phrases summarizing article content",
+      "items": {
+        "type": "string",
+        "pattern": "^[\\w_-]+$"
+      },
+      "maxItems": 20,
+      "default": []
+    },
+    "nextArticle": {
+      "type": "string",
+      "description": "slug of the article that's a successor to this one",
+      "format": "post-slug",
+      "default": null
+    },
+    "previousArticle": {
+      "type": "string",
+      "description": "slug of the article that's a predeccessor to this one",
+      "format": "post-slug",
+      "default": null
+    }
+  },
+  "required": ["type", "name", "datePublished", "articleSection", "inLanguage"]
+}

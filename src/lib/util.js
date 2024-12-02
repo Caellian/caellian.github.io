@@ -1,3 +1,5 @@
+import ALIASES from "../paths.config.js";
+
 export const BUILD_DATE = new Date().toLocaleDateString();
 export const BUILD_TIME = new Date().toLocaleTimeString();
 
@@ -63,11 +65,11 @@ export function openUrl(url, new_tab = true) {
 
 /**
  * Clamp a number between a minimum and maximum value.
- * 
+ *
  * @param {number} value value to clamp
  * @param {number} min minimum value
  * @param {number} max maximum value
- * 
+ *
  * @returns {number} clamped value
  */
 export function clamp(value, min, max) {
@@ -76,10 +78,10 @@ export function clamp(value, min, max) {
 
 /**
  * Round a number to a given number of decimals.
- * 
+ *
  * @param {number} value
  * @param {number} [decimals=2]
- * 
+ *
  * @returns {number} rounded number
  */
 export function round_n(value, decimals = 2) {
@@ -94,16 +96,13 @@ export function round_n(value, decimals = 2) {
 
 /**
  * Converts object properties into a css variable list.
- * 
- * @param {Object.<string, any>} variables
+ *
+ * @param {Object<string, any>} variables
  * @param {string} [prefix=""] optional prefix for css variables
- * 
+ *
  * @returns {string} semicolon separated css variable list
  */
-export function css_style_constructor(
-  variables,
-  prefix = ""
-) {
+export function css_style_constructor(variables, prefix = "") {
   let builder = "";
 
   for (const key in variables) {
@@ -115,7 +114,7 @@ export function css_style_constructor(
 }
 
 /**
- * @param {Object.<string, string>} variables
+ * @param {Object<string, string>} variables
  * @returns {string}
  */
 export function cssVars(variables) {
@@ -124,18 +123,18 @@ export function cssVars(variables) {
 
 /**
  * Calls a function after a timeout, resetting the timeout if called again.
- * 
- * @param {(params: ...any) => any} f function to debounce
+ *
+ * @template A...
+ * @param {(params: A) => any} f function to debounce
  * @param {number} [timeout=300] timeout in milliseconds
  * @param {boolean} [tailDelay=false] call right away and prevent subsequent calls until timeout
- * 
- * @returns {(params: ...any) => any} debounced function
+ *
+ * @returns {(params: A) => any} debounced function
  */
-export function debounce(
-  f,
-  timeout = 300,
-  tailDelay = false
-) {
+export function debounce(f, timeout = 300, tailDelay = false) {
+  /**
+   * @type {any}
+   */
   let timer;
   if (tailDelay) {
     let canCall = true;
@@ -159,16 +158,13 @@ export function debounce(
 
 /**
  * Consecutively call functions with the result of the previous.
- * 
+ *
  * @param {(...params: any[]) => any} head first function
  * @param {...((...params: any[]) => any)} tail chained functions
- * 
+ *
  * @return {(...params: any[]) => any} composed function chain
  */
-export function chainFn(
-  head,
-  ...tail
-) {
+export function chainFn(head, ...tail) {
   return (...params) => {
     let result = head(...params);
     for (const fn of tail) {
@@ -180,11 +176,11 @@ export function chainFn(
 
 /**
  * Separate an iterable into two arrays based on a filter function.
- * 
+ *
  * @typedef {any} T
- * @param {Iterable<T> | ArrayLike<T>} iter iterable
+ * @param {Iterable<T>} iter iterable
  * @param {(el: any) => boolean} f filter function
- * 
+ *
  * @returns {[T[], T[]]} [matches, rest]
  */
 export function filterSplit(iter, f) {
@@ -203,7 +199,7 @@ export function filterSplit(iter, f) {
 }
 
 /**
- * @param {string} str
+ * @param {string} unsafe
  * @returns {string}
  */
 export function escapeHtml(unsafe) {

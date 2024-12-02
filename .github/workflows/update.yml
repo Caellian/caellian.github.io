@@ -64,12 +64,21 @@ jobs:
           path: blog-builder/out
           key: |
             posts-${{ hashFiles('highlight/src/**', 'highlight/extensions/**', 'blog-builder/*.js', 'blog-builder/package*.json') }}
-      - name: Install and build dependencies
+      - name: Enable PostgreSQL
+        run: sudo systemctl start postgresql.service
+      - name: Install dependencies
         run: |
           npm clean-install
+      - name: Generate blog content
+        run: |
           npm run build:pre
       - name: Build
         run: npm run build
+      - name: Note generated files size
+        run: |
+          size=$(du -hs .svelte-kit/cloudflare | cut -d$'\t' -f 1)
+          echo "Size: ${size}iB"
+          echo "**Total deployment size:** ${size}iB\n" >> $GITHUB_STEP_SUMMARY
       - name: Upload generated files artifact
         uses: actions/upload-artifact@v4
         with:

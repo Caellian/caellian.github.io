@@ -1,7 +1,20 @@
 import { CONTINUE, SKIP, visit } from "unist-util-visit";
 
+/**
+ * @typedef {import("./types.js").HASTImgElement} HASTImgElement
+ * @typedef {import("./types.js").HASTScriptElement} HASTScriptElement
+ */
+/**
+ * @typedef {object} RetargetOptions
+ * @property {string} [targetLocation]
+ */
+/**
+ * Replaces relative links with specified {@link RetargetOptions.targetLocation|targetLocation}.
+ * @param {RetargetOptions} options
+ * @returns {import("unified").Transformer}
+ */
 export function rehypeRetarget(options = {}) {
-  /** @type {String} */
+  /** @type {string} */
   let targetLocation = options.targetLocation || "";
 
   if (!targetLocation.startsWith("/") && !targetLocation.startsWith("http")) {
@@ -16,10 +29,10 @@ export function rehypeRetarget(options = {}) {
       ast,
       "element",
       /**
-       * @param {import("hast").Element} el
+       * @param {HASTImgElement | HASTScriptElement | *} el
        * @param {number} i
        * @param {import("hast").Element} parent
-       * @returns {import("unist").VisitResult}
+       * @returns {import("unist-util-visit").VisitorResult}
        */
       (el, i, parent) => {
         if (el.tagName == "img") {
@@ -39,6 +52,7 @@ export function rehypeRetarget(options = {}) {
         } else {
           return CONTINUE;
         }
+        return SKIP;
       }
     );
   };

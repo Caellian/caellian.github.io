@@ -1,26 +1,51 @@
-import { normalizePostEntry } from "$lib/posts";
+import { parsePostEntry } from "$lib/posts";
+import { localFile } from "$lib/local";
 
-export async function load({ params, fetch }) {
-    let postData = await fetch(`/blog/p/${params.file}/data.json`).then(res => res.json());
-    const post = normalizePostEntry(postData);
+/** @type {import("@sveltejs/kit").ServerLoad} */
+export async function load({ params }) {
+  /**
+   * @type {import("$lib/posts").Post}
+   */
+  let postData = await localFile(`$gen/${params.file}.json`, {
+    format: "json",
+  });
+  /**
+   * @type {Map<string, string>}
+   */
+  let names = new Map(
+    Object.entries(
+      await localFile(`$gen/index.json`, {
+        format: "json",
+      })
+    ).map(([slug, post]) => [slug, post.name])
+  );
 
-    let names = await fetch(`/blog/posts.json`).then(res => res.json());
+  if (params.file == null) {
+    throw new Error("missing file path parameter");
+  }
 
-    let prevTitle = null;
-    if (post.prev) {
-        prevTitle = names[post.prev]?.title;
-    }
+  /**
+   * @type {import("$lib/posts").PostData}
+   */
+  const post = parsePostEntry(params.file, postData);
 
-    let nextTitle = null;
-    if (post.next) {
-        nextTitle = names[post.next]?.title;
-    }
+  let prevTitle = null;
+  if (post.previousArticle) {
+    // @ts-ignore
+    prevTitle = names.get(post.previousArticle) || post.previousArticle;
+  }
 
-    return {
-        ...post,
-        slug: params.file,
-        prevTitle,
-        nextTitle,
-        content: post.content,
-    };
+  let nextTitle = null;
+  if (post.nextArticle) {
+    // @ts-ignore
+    nextTitle = names.get(post.nextArticle) || post.nextArticle;
+  }
+
+  return {
+    ...post,
+    slug: params.file,
+    prevTitle,
+    nextTitle,
+    content: post.articleBody,
+  };
 }

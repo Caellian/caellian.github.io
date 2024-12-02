@@ -4,9 +4,16 @@
   import TagList from "$components/TagList.svelte";
   import { orderPosts } from "$lib/posts";
 
+  /**
+   * @type {{
+   *   posts: import("$lib/posts").PostData[],
+   *   topics: string[],
+   *   keywords: string[],
+   * }}
+   */
   export let data;
 
-  $: posts = orderPosts(data.posts);
+  $: posts = data.posts;
 </script>
 
 <main class="post-list">
@@ -35,7 +42,11 @@
   </ul>
 
   <h4>Tags</h4>
-  <TagList tags={data.tags} />
+  <TagList keywords={data.keywords} />
+  <hr/>
+  <ul class="references">
+    <li><a href="/blog/index">index</a></li>
+  </ul>
 </aside>
 
 <style lang="stylus">
@@ -58,6 +69,22 @@ h2
       margin-left auto
 
 .blog-sidebar
+  hr
+    margin 1rem
+  .references
+    display flex
+    flex-wrap wrap
+    font-size 0.5rem
+    font-family var(--fnt-mono)
+
+    gap 0.2rem
+
+    li + li::before
+      display inline-block
+      content: "|"
+      color var(--accent-8)
+      float left
+      margin-right 0.2rem
   :global(.tags>*)
     flex-grow 1
 

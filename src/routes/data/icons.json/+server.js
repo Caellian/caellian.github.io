@@ -3,8 +3,7 @@ import { json } from "@sveltejs/kit";
 import fs from "fs/promises";
 import path from "path";
 import * as cheerio from "cheerio";
-
-const ICONS_DIR = "art/icons";
+import { resolveAliasPath } from "$lib/local";
 
 function cleanupColors($, svg) {
   svg.find("*").each((_, el) => {
@@ -71,8 +70,8 @@ function removeWhitespace(input) {
 
 /** Handler for processing icons */
 async function processIcon(iconFile) {
-  const iconPath = path.join(ICONS_DIR, iconFile);
-  const iconContent = await fs.readFile(iconPath, "utf-8");
+  const iconPath = path.join(resolveAliasPath("$icons"), iconFile);
+  const iconContent = await fs.readFile(iconPath, { encoding: "utf-8" });
 
   const dom = cheerio.load(iconContent, { xmlMode: true });
   const svg = dom("svg");
@@ -90,7 +89,7 @@ export const prerender = true;
 export async function GET() {
   let iconFiles = null;
   try {
-    iconFiles = await fs.readdir(ICONS_DIR);
+    iconFiles = await fs.readdir(resolveAliasPath("$icons"));
   } catch {
     return {};
   }

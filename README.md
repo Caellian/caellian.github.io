@@ -6,14 +6,13 @@ Personal web portfolio & blog ([posts](https://github.com/Caellian/blog/)).
 
 Requirements:
   - Node
-  - Python 3
-  - Rust
+  - Rust (for [builder](./blog-builder) module)
 
 Clone with `--recurse-submodules` to also get blog posts.
 
 ```sh
 npm install
-npm run build:pre # build submodules
+npm run build:pre # build submodules & generate post content
 npm run build
 ```
 

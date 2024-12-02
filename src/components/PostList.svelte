@@ -1,27 +1,29 @@
 <script>
   import TagList from "./TagList.svelte";
-  import { postDateISO } from "$lib/posts";
 
+  /**
+   * @type {import("$lib/posts").PostData[]}
+   */
   export let posts;
 
   function formatDate(date) {
-    let iso = postDateISO(date);
+    let iso = date.toISOString();
     return iso.slice(0, 10);
   }
 </script>
 
 <div class="post-list island">
   {#each posts as post}
-    <a href="/blog/p/{post.slug}" class="post">
+    <div class="post">
       <div class="date center">
-        <span>{formatDate(post.update || post.create || new Date())}</span>
+        <span>{formatDate(post.dateModified || post.datePublished || new Date())}</span>
       </div>
       <div class="details">
-        <h3 class="title">{post.title}</h3>
-        <div class="summary">{post.summary}</div>
-        <TagList tags={post.tags} />
+        <a href="/blog/p/{post.slug}"><h3 class="title">{post.name}</h3></a>
+        <div class="summary">{post.abstract}</div>
+        <TagList keywords={post.keywords} />
       </div>
-    </a>
+    </div>
   {/each}
 </div>
 

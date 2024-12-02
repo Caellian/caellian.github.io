@@ -2,7 +2,7 @@
   import { browser } from "$app/environment";
 
   /**
-   * @typedef {Object} Icon
+   * @typedef {object} Icon
    * @prop {number} dim
    * @prop {string} content
    */

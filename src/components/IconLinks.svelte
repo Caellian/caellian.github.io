@@ -5,7 +5,7 @@
    * @prop {string} icon
    * @prop {string} url
    *
-   * @typedef {Object.<string, Entry[]>} Data
+   * @typedef {Object<string, Entry[]>} Data
    */
 </script>
 

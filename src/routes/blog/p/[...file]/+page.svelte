@@ -1,17 +1,22 @@
 <script>
   import { mount, onMount } from "svelte";
   import { BASE_URL } from "$lib/store";
-  import { postDateISO } from "$lib/posts";
   import { debounce } from "$lib/util";
   import Icon from "$components/Icon.svelte";
   import Comments from "$components/Comments.svelte";
   import TagList from "$components/TagList.svelte";
+  import { evaluateDynamicScripts } from "$lib/dynamicScript";
 
+  /**
+   * @type {import("$lib/posts").PostData}
+  */
   export let data;
 
+  /**
+   * @param {Date} date
+   */
   function formatDate(date) {
-    let iso = postDateISO(date);
-    return iso.slice(0, 10);
+    return date.toISOString().slice(0, 10);
   }
 
   const BLOG_GITHUB_REPO = "https://github.com/Caellian/blog";
@@ -21,6 +26,9 @@
 
   let SHARE_CONTENT;
 
+  /**
+   * @type {HTMLElement}
+   */
   let article;
 
   function shareMastodon() {
@@ -86,138 +94,23 @@
     }
   }
 
-  async function runDynamicJS() {
-    const dScript = article.querySelectorAll("dynamic-script");
-    const deferred = [];
-    window.ArticleScope = {};
-
-    function importArticleScope(exports) {
-      let names = Object.keys(window.ArticleScope);
-      names = names.filter((it) => !exports.includes(it));
-      return `let {${names.join(", ")}} = window.ArticleScope;`
-    }
-
-    for (const /** @type {HTMLElement} */ el of dScript) {
-      const remote = el.querySelector(".path")?.textContent || null;
-
-      const isModule = el.getAttribute("data-module") != null;
-      const scriptExports = (el.getAttribute("data-exports") || "").split(/\s+/);
-      const isShown = el.getAttribute("data-shown") != null;
-
-      function produceError(message) {
-        el.classList.add("error");
-        console.error(`Execution of '${remote}' failed:`, message);
-        el.setAttribute("title", `ERROR: '${message}'`)
-      }
-
-      let runner = null;
-      if (remote) {
-        // Dynamically loaded script
-        const loader = isModule ? async (scope) => {
-          let exports = await import(remote);
-          for (const [key, value] of Object.entries(exports)) {
-            scope[key] = value
-          }
-        } : async (scope) => {
-          let code = await fetch(remote, {
-            method: "GET"
-          });
-          if (!code.ok) {
-            produceError(`${code.status}: ${code.statusText}`);
-            return;
-          }
-          code = await code.text();
-
-          let exports = eval(
-            `(() => {${importArticleScope(scriptExports)}\n${code}\n
-              return {${scriptExports.join(", ")}};
-            })()`
-          );
-          for (const [key, value] of Object.entries(exports)) {
-            scope[key] = value;
-          }
-        };
-        runner = async () => {
-          console.log("Running external script:", remote)
-          try {
-            await loader(window.ArticleScope)
-          } catch (e) {
-            produceError(e);
-            return;
-          }
-          el.classList.add("success");
-        };
-      } else {
-        let codeEl = null;
-        if (!isShown) {
-          codeEl = el.querySelector("code .source");
-        } else {
-          codeEl = el.nextElementSibling.querySelector("code .source");
-        }
-        if (!codeEl) {
-          produceError("invalid embedded code element");
-          continue;
-        }
-        const code = codeEl.textContent || "";
-        // Inline script
-        let loader = isModule ? async (scope) => {
-          let url = URL.createObjectURL(new Blob([code], {type: "application/javascript"}));
-          let exports = await import(url);
-          for (const [key, value] of Object.entries(exports)) {
-            scope[key] = value
-          }
-        } : async (scope) => {
-          let exports = eval(
-            `(() => {${importArticleScope(scriptExports)}\n${code}\n
-              return {${scriptExports.join(", ")}};
-            })()`
-          );
-          for (const [key, value] of Object.entries(exports)) {
-            scope[key] = value;
-          }
-        };
-        runner = async () => {
-          console.log("Running local script:", codeEl);
-          try {
-            await loader(window.ArticleScope);
-          } catch (e) {
-            produceError(e);
-            return;
-          }
-          el.classList.add("success");
-        };
-      }
-
-      let is_deferred = el.getAttribute("data-deferred") == true;
-      if (!is_deferred) {
-        await runner();
-      } else {
-        deferred.push(runner);
-      }
-    }
-
-    for (const run of deferred) {
-      await run();
-    }
-  }
-
   onMount(async () => {
-    SHARE_CONTENT = `Check out Tin's post "${data.title}": ${BASE_URL}/blog/${data.slug}`;
+    SHARE_CONTENT = `Check out Tin's post "${data.name}": ${BASE_URL}/blog/${data.slug}`;
     mastodon_instance =
       localStorage.getItem(MASTODON_INSTANCE_KEY) || undefined;
 
     reanimateButtons();
-    await runDynamicJS();
+    await evaluateDynamicScripts(article);
   });
 </script>
 
 <svelte:head>
-  {#if data.summary}
-    <meta name="description" content={data.summary} />
+  {#if data.abstract}
+    <meta name="description" content={data.abstract} />
   {:else}
     <meta
       name="description"
-      content="Tin Švagelj's '{data.title}' blog post."
+      content="Tin Švagelj's '{data.name}' blog post."
     />
   {/if}
   <link
@@ -226,26 +119,26 @@
     type="application/json"
     title="Post Data"
   />
-  <title>{data.title} - tinsvagelj::net</title>
+  <title>{data.name} - tinsvagelj::net</title>
 </svelte:head>
 
 <article bind:this={article} class="island">
-  <h1 class="title">{data.title}</h1>
+  <h1 class="title">{data.name}</h1>
   <div class="dates">
-  {#if data.update}
+  {#if data.dateModified}
     <p class="date">
       <Icon name="history" size="1.5em" />
       <span>Updated:</span>
-      <a href="{BLOG_GITHUB_REPO}/commits/main/{data.slug}.md">{formatDate(data.update)}</a>
+      <a href="{BLOG_GITHUB_REPO}/commits/main/{data.slug}.md">{formatDate(data.dateModified)}</a>
     </p>
   {/if}
   <p class="date">
     <Icon name="pen" size="1.5em" />
     <span>Published:</span>
-    <span>{formatDate(data.create)}</span>
+    <span>{formatDate(data.datePublished)}</span>
   </p>
   </div>
-  <TagList tags={data.tags} />
+  <TagList keywords={data.keywords} />
   <hr />
   {@html data.content}
 </article>
@@ -254,7 +147,7 @@
   <aside class="island related">
     {#if data.prevTitle}
       <div class="prev">
-        <a href="/blog/p/{data.prev}">
+        <a href="/blog/p/{data.previousArticle}">
           <Icon size="1.5rem" name="arrow-left" />
           <span>Previous</span>
           <span class="title">{data.prevTitle}</span>
@@ -263,7 +156,7 @@
     {/if}
     {#if data.nextTitle}
       <div class="next">
-        <a href="/blog/p/{data.next}">
+        <a href="/blog/p/{data.nextArticle}">
           <span>Next</span>
           <Icon size="2rem" name="arrow-right" />
           <span class="title">{data.nextTitle}</span>

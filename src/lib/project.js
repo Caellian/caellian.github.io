@@ -3,6 +3,9 @@ const GITHUB_TOKEN = "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";
 export const DEFAULT_LOCALE = "en";
 export const PROJECTS_REMOTE = "https://gist.githubusercontent.com/Caellian/46d7b19ea62202ef377324fd8390bd10/raw/projects.json";
 
+/**
+ * @type {Project[] | null}
+ */
 let cachedProjectData = null;
 /**
  * @typedef {Object} Highlights
@@ -27,16 +30,27 @@ let cachedProjectData = null;
  */
 export async function fetchProjectData() {
   if (cachedProjectData) return cachedProjectData;
-  cachedProjectData = (await fetch(PROJECTS_REMOTE).then((res) => res.json())).map((data) => {
+  cachedProjectData = (
+    await fetch(PROJECTS_REMOTE).then((res) => res.json())
+  ).map((/** @type {any} */ data) => {
     return {
       ...data,
       startDate: data.startDate ? new Date(data.startDate) : undefined,
       endDate: data.endDate ? new Date(data.endDate) : undefined,
-    }
+    };
   });
+  if (cachedProjectData == null) {
+    throw new Error("unable to fetch remote project data");
+  }
   return cachedProjectData;
 }
 
+/**
+ *
+ * @param {Project} project
+ * @param {string} locale
+ * @returns {string[]}
+ */
 export function getLocaleHighlights(project, locale = DEFAULT_LOCALE) {
   const DEFAULT_RESULT = {
     locale: DEFAULT_LOCALE,
@@ -45,12 +59,14 @@ export function getLocaleHighlights(project, locale = DEFAULT_LOCALE) {
 
   if (project.highlights) {
     return (
-      project.highlights.find((h) => h.locale === locale).value ||
-      (locale != DEFAULT_LOCALE && project.highlights.find((h) => h.locale === DEFAULT_LOCALE).value) ||
-      project.highlights[0] || DEFAULT_RESULT
+      project.highlights?.find((h) => h.locale === locale)?.value ||
+      (locale != DEFAULT_LOCALE &&
+        project.highlights?.find((h) => h.locale === DEFAULT_LOCALE)?.value) ||
+      project.highlights[0].value ||
+      DEFAULT_RESULT.value
     );
   } else {
-    return DEFAULT_RESULT;
+    return DEFAULT_RESULT.value;
   }
 }
 

@@ -1,9 +1,59 @@
 import { CONTINUE, SKIP, visit } from "unist-util-visit";
-import { h } from "hastscript";
-import esprima from "esprima";
-import https from "https";
-import { readFile } from "fs/promises";
+import * as esprima from "esprima";
+import https from "node:https";
+import { readFile } from "node:fs/promises";
+import { hElement as hEl } from "./hast-utils.js";
 
+/**
+ * @typedef {import("./types.js").HASTScriptElement} HASTScriptElement
+ * @typedef {import("hast").ElementContent} ElementContent
+ * @typedef {import("hast").ElementData} ElementData
+ * @typedef {import("hast").Properties} Properties
+ * @typedef {import("hast").Element} Element
+ * @typedef {import("hast").Text} Text
+ */
+/**
+ * @typedef {object} DynamicCodeData
+ * @property {boolean} [noCodeblock]
+ * @property {{[marker: string]: boolean}} [markers]
+ */
+/**
+ * @typedef {object} DynamicCodeElement
+ * @property {"element"} type
+ * @property {"code"} tagName
+ * @property {DynamicCodeData & ElementData} [data]
+ * @property {{className: ["language-js"]}} properties
+ * @property {[Text, ...ElementContent[]]} children
+ */
+/**
+ * @typedef {object} CollapsedCodeElement
+ * @property {"element"} type
+ * @property {"details"} tagName
+ * @property {[
+ * {tagName: "summary"},
+ * {tagName: "pre", children: [ DynamicCodeElement ]}
+ * ]} children
+ */
+/**
+ * @typedef {{
+ * "data-exports"?: string[] | undefined,
+ * "data-deferred"?: boolean | undefined,
+ * "data-module"?: boolean | undefined,
+ * }} DynamicScriptProperties
+ */
+/**
+ * @typedef {object} DynamicScriptElement
+ * @property {"element"} type
+ * @property {"dynamic-script"} tagName
+ * @property {DynamicScriptProperties & Properties} properties
+ * @property {[DynamicCodeElement | CollapsedCodeElement, ...ElementContent[]] & ElementContent[]} children
+ */
+
+/**
+ * @param {string} code
+ * @param {boolean} module
+ * @returns {string[]}
+ */
 function topLevelDeclarations(code, module = false) {
   let ast = null;
   try {
@@ -12,17 +62,22 @@ function topLevelDeclarations(code, module = false) {
     } else {
       ast = esprima.parseScript(code);
     }
-  } catch (e) {
-    console.error(e.toString());
+  } catch (_e) {
     return [];
   }
 
   let exports = [];
+  /**
+   * @param {import("estree").Identifier | import("estree").Node} id
+   */
   function exportID(id) {
     if (id.type === "Identifier") {
       exports.push(id.name);
     }
   }
+  /**
+   * @param {import("estree").Node} item
+   */
   function handleExport(item) {
     if (item.type === "FunctionDeclaration") {
       exportID(item.id);
@@ -48,6 +103,11 @@ function topLevelDeclarations(code, module = false) {
   return exports;
 }
 
+/**
+ * @param {string} path
+ * @param {string} base
+ * @returns {string}
+ */
 function rebasePath(path, base) {
   if (path.startsWith("/")) {
     return base + path;
@@ -58,10 +118,14 @@ function rebasePath(path, base) {
   }
 }
 
+/**
+ * @param {string} path
+ * @param {*} [options]
+ * @returns {Promise<string>}
+ */
 async function getSource(path, options = {}) {
   let url = rebasePath(path, options.locallyAccessible || ".");
-  let local = url != path;
-  if (!url.startsWith("http") && !url.startsWith("/")) {
+  if (!url.startsWith("http")) {
     return await readFile(url, { encoding: "utf-8" });
   } else {
     let content = new Promise((resolve, reject) => {
@@ -71,14 +135,14 @@ async function getSource(path, options = {}) {
           if (response.statusCode !== 200) {
             return reject(
               new Error(
-                `can't get '${url}'; ${err.statusCode}: ${err.statusMessage}`
+                `can't get '${url}'; ${response.statusCode}: ${response.statusMessage}`
               )
             );
           }
           response.on("data", (d) => {
             buffer += d;
           });
-          response.on("end", (_) => {
+          response.on("end", () => {
             return resolve(buffer);
           });
         })
@@ -90,7 +154,34 @@ async function getSource(path, options = {}) {
   }
 }
 
-function handleInclude(source, i, parent, target, options, tasks) {
+/**
+ * @typedef {Array<Promise<void>>} AsyncMutations
+ */
+
+/**
+ * @typedef {object} DynamicScriptsOptionsExt
+ * @property {boolean} isModule
+ * @property {boolean} deferred
+ */
+/**
+ * @typedef {DynamicScriptsOptions & DynamicScriptsOptionsExt} HandlerOptions
+ */
+
+/**
+ * @callback ScriptElementHandler
+ * @param {HASTScriptElement} source
+ * @param {number} i
+ * @param {Element} parent
+ * @param {DynamicScriptElement} target
+ * @param {HandlerOptions} options
+ * @param {AsyncMutations} tasks
+ * @returns {import("unist-util-visit").VisitorResult?}
+ */
+
+/**
+ * @type {ScriptElementHandler}
+ */
+function handleInclude(source, _i, _parent, target, options, tasks) {
   tasks.push(
     (async () => {
       try {
@@ -112,10 +203,19 @@ function handleInclude(source, i, parent, target, options, tasks) {
     note = "remote ESM";
   }
 
-  target.children.push(h("span.status", note), h("a.path", { href }, href));
+  target.children.push(
+    hEl("span", { className: "status" }, note),
+    hEl("a", { className: "path", href }, href)
+  );
+
+  return null;
 }
 
+/**
+ * @type {ScriptElementHandler}
+ */
 function handleEmbedded(source, i, parent, target, options) {
+  /** @type {string | string[]} */
   let code = source.children
     .filter((child) => child.type === "text")
     .map((child) => child.value)
@@ -149,28 +249,39 @@ function handleEmbedded(source, i, parent, target, options) {
     options.isModule
   );
 
-  const exec = h(
+  /**
+   * @type {DynamicCodeElement}
+   */
+  const exec = hEl(
     "code",
     {
       className: ["language-js"],
     },
-    code
+    code,
+    {
+      noCodeblock: true,
+    }
   );
-  exec.data = {
-    noCodeblock: true,
-  };
-  let detailsEl = h("details", [h("summary", "source"), h("pre", exec)]);
+  /**
+   * @type {CollapsedCodeElement}
+   */
+  let detailsEl = hEl("details", [
+    hEl("summary", "source"),
+    hEl("pre", [exec]),
+  ]);
 
   if (source.properties?.className?.includes("show")) {
-    let codeEl = h("code", { className: ["language-js"] }, code);
-    if (options.deferred) {
-      codeEl.data = {
-        markers: {
-          deferred: true,
-        },
-      };
-    }
-    const display = h("pre", [codeEl]);
+    /**
+     * @type {DynamicCodeElement}
+     */
+    let codeEl = hEl("code", { className: ["language-js"] }, code, {
+      markers: options.deferred
+        ? {
+            deferred: true,
+          }
+        : undefined,
+    });
+    const display = hEl("pre", [codeEl]);
     parent.children.splice(i + 1, 0, display);
     target.properties["data-shown"] = true;
     detailsEl = null;
@@ -180,12 +291,24 @@ function handleEmbedded(source, i, parent, target, options) {
   if (options.isModule) {
     note = "embedded ESM";
   }
-  target.children.push(h("span.status", note));
+  target.children.push(hEl("span", { className: "status" }, note));
   if (detailsEl != null) {
     target.children.push(detailsEl);
   }
+
+  return null;
 }
 
+/**
+ * @typedef {object} DynamicScriptsOptions
+ * @property {string} [targetLocation]
+ */
+/**
+ * Turns `<script>` hast nodes into `<dynamic-script>` nodes with information
+ * necessary for their dynamic execution.
+ * @param {DynamicScriptsOptions} [options]
+ * @returns {import("unified").Transformer}
+ */
 export function rehypeDynamicScripts(options = {}) {
   return async (ast, _file) => {
     const tasks = [];
@@ -194,10 +317,10 @@ export function rehypeDynamicScripts(options = {}) {
       ast,
       "element",
       /**
-       * @param {import("hast").Element} el
+       * @param {HASTScriptElement | *} el
        * @param {number} i
-       * @param {import("hast").Element} parent
-       * @returns {import("unist").VisitResult}
+       * @param {Element} parent
+       * @returns {import("unist-util-visit").VisitorResult}
        */
       (el, i, parent) => {
         if (el.tagName != "script") {
@@ -206,7 +329,11 @@ export function rehypeDynamicScripts(options = {}) {
 
         let deferred = el.properties.defer == true;
         let isModule = el.properties.type === "module";
-        const target = h("dynamic-script", {
+        /**
+         * @type {DynamicScriptElement}
+         */
+        // @ts-ignore the type will be valid once handler is called
+        const target = hEl("dynamic-script", {
           "data-deferred": deferred ? true : undefined,
           "data-module": isModule ? true : undefined,
         });
@@ -229,6 +356,11 @@ export function rehypeDynamicScripts(options = {}) {
         );
         if (earlyReturn != undefined) {
           return earlyReturn;
+        }
+
+        let child = target.children[0];
+        if (child.tagName == "code" && child.data.markers["data-deferred"]) {
+          // Special handling
         }
 
         parent.children.splice(i, 1, target);

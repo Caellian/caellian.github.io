@@ -1,10 +1,10 @@
 <script>
-  export let tags;
+  export let keywords;
 </script>
 
-{#if tags.length > 0}
+{#if keywords.length > 0}
   <div class="tags">
-    {#each tags as tag}
+    {#each keywords as tag}
       <a href="/blog/tag/{tag}" class="hash tag button">{tag}</a>
     {/each}
   </div>
