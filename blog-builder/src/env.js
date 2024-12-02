@@ -3,8 +3,6 @@ import { parse as parseYaml } from "yaml";
 import fs from "node:fs";
 import path from "node:path";
 import { promisify } from "node:util";
-// @ts-ignore
-import { deepCopy } from "./util.js";
 import { COMMANDS } from "./main.js";
 import { pathToSlug, POST_EXT } from "./data/post.js";
 
@@ -179,7 +177,7 @@ function validateEnvironment(environment) {
  * @type {Environment}
  * @readonly
  */
-export const E = deepCopy(DEFAULT_ENVIRONMENT);
+export const E = structuredClone(DEFAULT_ENVIRONMENT);
 
 let environmentInitialized = false;
 /**

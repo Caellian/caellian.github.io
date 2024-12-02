@@ -13,16 +13,12 @@
  */
 
 /**
- * @param {Scope} scopeValue
  * @param {string} [scopeGlobalName]
  * @param {string[]} [excluding]
  */
-function importScope(
-  scopeValue,
-  scopeGlobalName = "ArticleScope",
-  excluding = []
-) {
-  let names = Object.keys(scopeValue);
+function importScope(scopeGlobalName = "ArticleScope", excluding = []) {
+  // @ts-ignore
+  let names = Object.keys(window[scopeGlobalName]);
   names = names.filter((it) => !excluding.includes(it));
   return `let {${names.join(", ")}} = ${scopeGlobalName};`;
 }
@@ -61,6 +57,7 @@ function loader(source, importWith, conditions) {
         );
       }
       const code = await response.text();
+      console.log("imports", importWith(scriptExports));
 
       let exports = eval(
         `(() => {${importWith(scriptExports)}\n${code}\nreturn {${scriptExports.join(", ")}};})()`
@@ -82,6 +79,7 @@ function loader(source, importWith, conditions) {
      * @type {CodeLoader}
      */
     [2]: (scope, scriptExports) => {
+      console.log("imports", importWith(scriptExports));
       let exports = eval(
         `(() => {${importWith(scriptExports)}\n${source}\nreturn {${scriptExports.join(", ")}};})()`
       );
@@ -132,11 +130,9 @@ export async function evaluateDynamicScripts(
   const scope = {};
 
   // @ts-ignore
-  let previousScopeValue = globalThis[scopeName];
-  // @ts-ignore
-  globalThis[scopeName] = scope;
+  window[scopeName] = scope;
 
-  const localImportWith = importScope.bind(null, scope, scopeName);
+  const localImportWith = importScope.bind(null, scopeName);
 
   for (const /** @type {HTMLElement} */ el of dScript) {
     const isModule = el.getAttribute("data-module") != null;
@@ -207,11 +203,19 @@ export async function evaluateDynamicScripts(
       esm: isModule,
     });
     let e = async () => {
-      await runner(scope, scriptExports)
-        .then(() => {
-          el.classList.add("success");
-        })
-        .catch(errorHandler);
+      try {
+        // @ts-ignore
+        console.log(el, "BEFORE:", window[scopeName]);
+        await runner(scope, scriptExports)
+          .then(() => {
+            el.classList.add("success");
+          })
+          .catch(errorHandler);
+        // @ts-ignore
+        console.log(el, "AFTER:", window[scopeName]);
+      } catch (e) {
+        errorHandler(e);
+      }
     };
 
     if (!Boolean(el.getAttribute("data-deferred"))) {
@@ -224,9 +228,6 @@ export async function evaluateDynamicScripts(
   for (const e of deferred) {
     await e();
   }
-
-  // @ts-ignore
-  globalThis[scopeName] = previousScopeValue;
 
   return scope;
 }

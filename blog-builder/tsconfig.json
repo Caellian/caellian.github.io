@@ -3,7 +3,7 @@
       "strict": false,
       "module": "NodeNext",
       "moduleResolution": "nodenext",
-      "types": ["node"],
+      "types": ["node", "jest"],
       "lib": ["ESNext"],
 
       "checkJs": true,

@@ -3,7 +3,7 @@ import fsp from "node:fs/promises";
 import { POST_EXT, PostIndex } from "../data/post.js";
 import E from "../env.js";
 import { buildPost, requireValidIndex } from "./build.js";
-import logger from "../ext/logging.js";
+import logger from "../logging/index.js";
 
 /**
  * Runs `watch` command.

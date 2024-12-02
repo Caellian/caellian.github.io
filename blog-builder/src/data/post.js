@@ -13,10 +13,10 @@ import {
   GitStatus,
   getLastCommitForDate,
   getCommitDate,
-} from "../ext/git.js";
+} from "../program/git.js";
 import E from "../env.js";
 import { parse } from "../unist/parser.js";
-import { typeName } from "../util.js";
+import { typeName } from "../logging/index.js";
 import {
   SCHEMA,
   defaultJSValue,
@@ -25,13 +25,13 @@ import {
   fromJSONFormat,
   validatePost,
 } from "./schema.js";
-import logger from "../ext/logging.js";
+import logger from "../logging/index.js";
 
 /**
  * @typedef {import("../unist/parser.js").VFile} VFile
  */
 /**
- * @typedef {import("../ext/git.js").Commit} Commit
+ * @typedef {import("../program/git.js").Commit} Commit
  */
 
 /**
@@ -369,8 +369,8 @@ export class Post {
     const file = this.getFile();
     logger.trace("Parsing %s content", this.slug);
     this.articleBody = await parse(file, {
-      contentPath: path.join(E.assetURL, this.slug),
-      localContentPath: path.join(E.input, this.slug),
+      contentPath: E.assetURL + "/" + this.slug,
+      localContentPath: E.input + "/" + this.slug,
     });
 
     logger.trace("%s parsed", this.slug);

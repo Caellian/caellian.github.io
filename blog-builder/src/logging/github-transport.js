@@ -30,7 +30,16 @@ const FORMAT = {
       .join(",");
 
     let prefixed = FORMAT.levelPropsPrefix.call(this, chunk.level, props);
-    return prefixed(message);
+
+    let variables = "";
+    for (const variable in chunk) {
+      if (this.hideVariables.includes(variable)) {
+        continue;
+      }
+      variables += `\t${variable}: ${JSON.stringify(chunk[variable])}\n`;
+    }
+
+    return prefixed(message) + variables;
   },
   levelPropsPrefix(level, props) {
     return (message) => {
@@ -96,6 +105,9 @@ const FORMAT = {
  * @property {string[] | string} [tableHide] List of log object items to hide from tables.
  *
  * A string can be comma separated to produce many items (equivalent to `string[]`).
+ * @property {string[] | string} [ignore] List of log object items to hide from logged variables.
+ *
+ * A string can be comma separated to produce many items (equivalent to `string[]`).
  * @property {boolean} [traceAsDebug]
  */
 
@@ -133,10 +145,26 @@ export default async function transport(options = {}) {
       "hostname",
       "target",
       "msg",
+      "file",
+      "line",
+      "endLine",
+      "column",
     ],
   });
   let logFormat = FORMAT.log.bind({
     traceAsDebug: options.traceAsDebug || false,
+    hideVariables: options.ignore || [
+      "level",
+      "time",
+      "pid",
+      "hostname",
+      "target",
+      "msg",
+      "file",
+      "line",
+      "endLine",
+      "column",
+    ],
   });
 
   let orchestrator = new Stream.Writable({

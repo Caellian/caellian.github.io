@@ -3,6 +3,7 @@ import * as esprima from "esprima";
 import https from "node:https";
 import { readFile } from "node:fs/promises";
 import { hElement as hEl } from "./hast-utils.js";
+import logger from "../logging/index.js";
 
 /**
  * @typedef {import("./types.js").HASTScriptElement} HASTScriptElement
@@ -185,11 +186,10 @@ function handleInclude(source, _i, _parent, target, options, tasks) {
   tasks.push(
     (async () => {
       try {
-        let code = await getSource(source.properties?.src, options);
-        target.properties["data-exports"] = topLevelDeclarations(
-          code,
-          options.isModule
-        );
+        const sourceUrl = source.properties?.src;
+        const code = await getSource(sourceUrl, options);
+        const exports = topLevelDeclarations(code, options.isModule);
+        target.properties["data-exports"] = exports;
       } catch (e) {
         console.error(e);
       }

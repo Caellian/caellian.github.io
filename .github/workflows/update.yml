@@ -37,41 +37,39 @@ jobs:
         with:
           node-version: "22"
       - name: Cache node modules
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: "node_modules"
           key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
       - name: Cache blog node modules
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: "blog-builder/node_modules"
           key: ${{ runner.os }}-modules-${{ hashFiles('blog-builder/package-lock.json') }}
       - name: Cache highlight node modules
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: "highlight/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('highlight/package-lock.json') }}
+          key: ${{ runner.os }}-modules-${{ hashFiles('blog-builder/highlight/package-lock.json') }}
       - name: Cache highlight binary
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
-            highlight/highlight*
-            highlight/index.js
-          key: ${{ runner.os }}-highlight-${{ hashFiles('highlight/src/**', 'highlight/extensions/**') }}
+            blog-builder/highlight/highlight*
+            blog-builder/highlight/index.js
+          key: ${{ runner.os }}-highlight-${{ hashFiles('blog-builder/highlight/src/**', 'blog-builder/highlight/extensions/**') }}
       - name: Cache post content
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: blog-builder/out
           key: |
-            posts-${{ hashFiles('highlight/src/**', 'highlight/extensions/**', 'blog-builder/*.js', 'blog-builder/package*.json') }}
-      - name: Enable PostgreSQL
-        run: sudo systemctl start postgresql.service
+            posts-${{ hashFiles('blog-builder/highlight/src/**', 'blog-builder/highlight/extensions/**', 'blog-builder/*.js', 'blog-builder/package*.json') }}
       - name: Install dependencies
-        run: |
-          npm clean-install
+        run: npm clean-install
+      - name: Test blog builder
+        run: npm run test --prefix ./blog-builder
       - name: Generate blog content
-        run: |
-          npm run build:pre
+        run: npm run build:pre
       - name: Build
         run: npm run build
       - name: Note generated files size

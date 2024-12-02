@@ -4,8 +4,8 @@ import fsp from "node:fs/promises";
 
 import { ArticleStatus, Post, PostIndex, slugToPath } from "../data/post.js";
 import { E, postSlugs } from "../env.js";
-import { memoize } from "../util.js";
-import logger from "../ext/logging.js";
+import { memoize } from "../combinators.js";
+import logger from "../logging/index.js";
 
 /**
  * @typedef BuildOptions

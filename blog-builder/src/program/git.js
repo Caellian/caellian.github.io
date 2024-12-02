@@ -1,7 +1,6 @@
 import { exec } from "node:child_process";
 import path from "node:path";
-import logger from "./logging.js";
-import { typeName } from "../util.js";
+import logger, { typeName } from "../logging/index.js";
 
 /**
  * @typedef {string} FileName name of a file

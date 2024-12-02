@@ -122,4 +122,26 @@ export const logger = Object.assign(
   }
 );
 
+/**
+ * @param {any} value
+ * @returns {string} type name of `value`.
+ */
+export function typeName(value) {
+  if (value === null) {
+    return "null";
+  } else if (value === undefined) {
+    return "undefined";
+  } else if (typeof value === "object") {
+    if (Array.isArray(value)) {
+      let items = value.map(typeName).join(", ");
+      return `[${items}]`;
+    } else {
+      let items = Object.keys(value).join(", ");
+      return `${value.constructor?.name || "object"} {${items}}`;
+    }
+  } else {
+    return typeof value;
+  }
+}
+
 export default logger;

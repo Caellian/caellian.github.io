@@ -1,8 +1,9 @@
 // polyfills
 import "./ext/error.js";
+import "./types.ts";
 
 import E, { __initialize_env_from_main } from "./env.js";
-import logger from "./ext/logging.js";
+import logger from "./logging/index.js";
 
 /**
  * @type {{[command: string]: Promise<{ default: () => Promise<void> }>}}

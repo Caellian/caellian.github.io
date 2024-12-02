@@ -1,6 +1,7 @@
 import jsdoc from "eslint-plugin-jsdoc";
 import js from "@eslint/js";
 import globals from "globals";
+import jest from "eslint-plugin-jest";
 
 const config = [
   {
@@ -27,7 +28,7 @@ const config = [
   },
   jsdoc.configs["flat/recommended-typescript-flavor"],
   {
-    files: ["**/*.js"],
+    files: ["src/**/*.js", "index.js"],
     plugins: {
       jsdoc,
     },
@@ -41,6 +42,13 @@ const config = [
       jsdoc: {
         mode: "typescript",
       },
+    },
+  },
+  {
+    files: ["tests/**/*.js"],
+    plugins: [jest],
+    env: {
+      "jest/globals": true,
     },
   },
 ];

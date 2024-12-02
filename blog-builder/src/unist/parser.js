@@ -13,7 +13,7 @@ import rehypeStringify from "rehype-stringify";
 import rehypeRetarget from "./rehype-retarget.js";
 import rehypeDynamicScripts from "./rehype-dynamicScripts.js";
 import rehypeTreeSitter from "./rehype-codeblocks.js";
-import logger from "../ext/logging.js";
+import logger from "../logging/index.js";
 
 const ALLOW_HTML = true;
 
@@ -67,7 +67,9 @@ function parser(options) {
   if (targetLocation != null) {
     // @ts-ignore
     parser = parser.use(rehypeRetarget, {
-      targetLocation,
+      mappings: {
+        ".": targetLocation,
+      },
     });
   }
 

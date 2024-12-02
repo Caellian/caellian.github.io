@@ -1,6 +1,6 @@
 /**
- * Simplified version of `url.fileURLToPath`, that's allowed by vite to be used
- * from SvelteKit.
+ * Simplified version of `url.fileURLToPath`, that can be used in browsers (but
+ * never will due to SSG). This upeases vite.
  *
  * @param {URL | string} fileURL
  * @returns {import("fs").PathLike}

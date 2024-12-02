@@ -6,7 +6,7 @@
  * @property {(value: string) => boolean} validate
  */
 
-import { typeName } from "../util.js";
+import { typeName } from "../logging/index.js";
 import { Locale } from "./locale.js";
 
 /**

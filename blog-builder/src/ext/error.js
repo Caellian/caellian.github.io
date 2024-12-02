@@ -1,5 +1,3 @@
-const old_JSON_parse = JSON.parse;
-
 /**
  * @typedef {{line?: number, column?: number}} SyntaxErrorCause
  */
@@ -7,15 +5,15 @@ const old_JSON_parse = JSON.parse;
  * @typedef {SyntaxError & {cause?: SyntaxErrorCause}} ExtSyntaxError
  */
 
+const old_JSON_parse = JSON.parse;
 /**
- * @param {string} text
- * @param {(this: any, key: string, value: any) => any} reviver
+ * @param {any[]} args
  * @returns {any}
- * @throws {SyntaxError & {cause?: {line?: number, column?: number}}} when input JSON is malformed
+ * @throws {ExtSyntaxError} when input JSON is malformed
  */
-JSON.parse = (text, reviver = undefined) => {
+JSON.parse = (...args) => {
   try {
-    return old_JSON_parse(text, reviver);
+    return old_JSON_parse.apply(JSON, args);
   } catch (e) {
     if (e instanceof SyntaxError) {
       let [message, details] = e.message.split("(");
