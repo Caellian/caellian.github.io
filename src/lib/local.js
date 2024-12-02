@@ -1,7 +1,7 @@
-import ALIASES from "../paths.config.js";
-import fs from "fs";
+import { building } from "$app/environment";
+import path from "path";
+import { LOCAL } from "../paths.config.js";
 import fsp from "fs/promises";
-import { MIMEType } from "util";
 
 /**
  * @param {string} alias
@@ -9,19 +9,21 @@ import { MIMEType } from "util";
  * @returns {string}
  */
 export function resolveAliasPath(alias, ...components) {
-  if (alias in ALIASES) {
-    return ALIASES[alias] + components.map((it) => "/" + it);
+  if (alias in LOCAL) {
+    return path.resolve(
+      "./src/" + LOCAL[alias] + components.map((it) => "/" + it)
+    );
   }
-  let path = alias + components.map((it) => "/" + it);
+  let concat = alias + components.map((it) => "/" + it);
 
-  for (const a in ALIASES) {
-    if (path.startsWith(a)) {
-      path = ALIASES[a] + path.slice(a.length);
+  for (const a in LOCAL) {
+    if (concat.startsWith(a)) {
+      concat = path.resolve("./src/" + LOCAL[a] + concat.slice(a.length));
       break;
     }
   }
 
-  return path;
+  return concat;
 }
 
 /**

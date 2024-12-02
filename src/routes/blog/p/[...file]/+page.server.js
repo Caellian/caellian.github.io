@@ -32,13 +32,13 @@ export async function load({ params }) {
   let prevTitle = null;
   if (post.previousArticle) {
     // @ts-ignore
-    prevTitle = names.get(post.previousArticle) || post.previousArticle;
+    prevTitle = names.get(post.previousArticle);
   }
 
   let nextTitle = null;
   if (post.nextArticle) {
     // @ts-ignore
-    nextTitle = names.get(post.nextArticle) || post.nextArticle;
+    nextTitle = names.get(post.nextArticle);
   }
 
   return {

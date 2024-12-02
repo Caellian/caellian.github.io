@@ -44,16 +44,18 @@ function defineAliases(aliases) {
   );
 }
 
-/**
- * @type {any}
- */
-const ALIASES = defineAliases({
+export const LOCAL = {
   $content: "./content",
   $data: "./data",
   $components: "./components",
   $gen: "../blog-builder/out",
   $icons: "../art/icons",
-});
+};
+
+/**
+ * @type {any}
+ */
+const ALIAS = defineAliases(LOCAL);
 // also update jsconfig.json because it can't be a .js...
 
-export default ALIASES;
+export default ALIAS;

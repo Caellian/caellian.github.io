@@ -1,4 +1,4 @@
-import { json } from "@sveltejs/kit";
+import { error, json } from "@sveltejs/kit";
 
 import fs from "fs/promises";
 import path from "path";
@@ -88,10 +88,13 @@ export const prerender = true;
 
 export async function GET() {
   let iconFiles = null;
+  const iconsPath = resolveAliasPath("$icons");
   try {
-    iconFiles = await fs.readdir(resolveAliasPath("$icons"));
+    iconFiles = await fs.readdir(iconsPath);
   } catch {
-    return {};
+    return error(404, {
+      message: `icons directory not found: ${iconsPath}`,
+    });
   }
 
   const icons = {};

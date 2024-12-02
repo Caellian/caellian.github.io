@@ -113,12 +113,6 @@
       content="Tin Švagelj's '{data.name}' blog post."
     />
   {/if}
-  <link
-    href="/blog/p/{data.slug}/data.json"
-    rel="alternate"
-    type="application/json"
-    title="Post Data"
-  />
   <title>{data.name} - tinsvagelj::net</title>
 </svelte:head>
 
