@@ -149,6 +149,8 @@ export default async function transport(options = {}) {
       "line",
       "endLine",
       "column",
+      "method",
+      "title",
     ],
   });
   let logFormat = FORMAT.log.bind({
@@ -164,6 +166,8 @@ export default async function transport(options = {}) {
       "line",
       "endLine",
       "column",
+      "method",
+      "title",
     ],
   });
 

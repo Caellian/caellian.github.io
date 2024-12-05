@@ -24,3 +24,4 @@ export declare class Highlighter {
   isSupported(language: string): boolean
   highlight(code: string, language: string): HastNode
 }
+export default Highlighter;

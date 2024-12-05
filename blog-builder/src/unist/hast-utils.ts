@@ -4,7 +4,7 @@ import {
   ElementData as HASTElementData,
   Properties,
   Text,
-} from "rehype";
+} from "hast";
 
 // fix incorrect HASTElementData use
 type Data = HASTElementData | Record<string, unknown>;

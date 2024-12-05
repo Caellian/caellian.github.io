@@ -269,6 +269,15 @@ export class Post {
       "articleBody",
       this.getContent.bind(this)
     );
+    if (result.articleBody == null) {
+      logger.fatal(
+        {
+          slug: this.slug,
+        },
+        "Article body is not defined"
+      );
+      throw new Error("Article body is not defined");
+    }
 
     let validationErrors = validatePost(result);
     if (validationErrors) {
@@ -373,6 +382,19 @@ export class Post {
       contentPath: urlJoin(E.assetURL, this.slug),
       localContentPath: urlJoin(E.input, this.slug),
     });
+    if (this.articleBody == null) {
+      logger.fatal(
+        {
+          slug: this.slug,
+          file,
+          parsingResult,
+        },
+        "Processor returned no article body!"
+      );
+      throw new Error("Missing article body HTML", {
+        cause: this.slug,
+      });
+    }
 
     logger.trace("%s parsed", this.slug);
     return this.articleBody;
@@ -524,8 +546,10 @@ export class Post {
     let date = new Date();
     let first = Array.isArray(time) ? time[0] : time;
     if (typeof first === "string") {
-      logger.trace("Provided ");
-      date = this.cache["commit_date"][first] || getCommitDate(first);
+      logger.trace("Provided commit: %s", first);
+      date =
+        (this.cache["commit_date"] && this.cache["commit_date"][first]) ||
+        (await getCommitDate(first, { cwd: E.input }));
     } else if (first != null) {
       date = first;
     }
@@ -674,6 +698,7 @@ function stringFrontmatter(document) {
   try {
     const parsed = parseYaml(frontmatter);
     logger.trace({ parsed }, "Frontmatter parsed");
+    return parsed;
   } catch (ignore) {
     logger.trace({ err: ignore }, "Unable to parse frontmatter");
     return null;

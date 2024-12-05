@@ -2,11 +2,6 @@ import { CONTINUE, SKIP, visit } from "unist-util-visit";
 import { urlAppend, urlJoin } from "../data/path.js";
 
 /**
- * @typedef {import("./types.js").HASTImgElement} HASTImgElement
- * @typedef {import("./types.js").HASTScriptElement} HASTScriptElement
- */
-
-/**
  * @param {string | URL} basePath
  * @param {{[location: string]: (string | URL)}} mappings
  * @returns {{[location: string]: (string | URL)}}
@@ -43,7 +38,7 @@ export function rehypeRetarget(options) {
       ast,
       "element",
       /**
-       * @param {HASTImgElement | HASTScriptElement | *} el
+       * @param {import("./types.ts").Element} el
        * @param {number} i
        * @param {import("hast").Element} parent
        * @returns {import("unist-util-visit").VisitorResult}
@@ -53,7 +48,7 @@ export function rehypeRetarget(options) {
         if (propertyName == null) {
           return CONTINUE;
         }
-        let path = el.properties[propertyName];
+        let path = /** @type {string} */ (el.properties[propertyName]);
         if (path == null) {
           return SKIP;
         }

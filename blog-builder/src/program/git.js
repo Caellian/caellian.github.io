@@ -325,14 +325,19 @@ export async function getLastCommitForDate(date, execOptions = null) {
  * @returns {Promise<Date>}
  */
 export async function getCommitDate(commit, execOptions = null) {
-  logger.debug({ execOptions }, "Getting date for commit: %s", commit);
   let date = await git(
     "log",
-    ["--no-patch", "--date=iso-strict", "--format=%ad", commit],
+    ["-1", "--no-patch", "--date=iso-strict", "--format=%ad", commit],
     execOptions
   );
   if (date.code !== 0) {
     return null;
   }
-  return new Date(date.stdout);
+  logger.debug(
+    { execOptions },
+    "Got date '%s' for commit: %s",
+    date.stdout.trim(),
+    commit
+  );
+  return new Date(date.stdout.trim());
 }

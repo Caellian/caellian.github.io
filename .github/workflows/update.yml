@@ -77,6 +77,12 @@ jobs:
           size=$(du -hs .svelte-kit/cloudflare | cut -d$'\t' -f 1)
           echo "Size: ${size}iB"
           echo "**Total deployment size:** ${size}iB\n" >> $GITHUB_STEP_SUMMARY
+      - name: Upload generated post data artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: post-data
+          path: blog-builder/out
+          retention-days: 2
       - name: Upload generated files artifact
         uses: actions/upload-artifact@v4
         with:
