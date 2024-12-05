@@ -3,10 +3,9 @@ import * as esprima from "esprima";
 import https from "node:https";
 import { readFile } from "node:fs/promises";
 import { hElement as hEl } from "./hast-utils.js";
-import logger from "../logging/index.js";
 
 /**
- * @typedef {import("./types.js").HASTScriptElement} HASTScriptElement
+ * @typedef {import("./types.ts").HASTScriptElement} HASTScriptElement
  * @typedef {import("hast").ElementContent} ElementContent
  * @typedef {import("hast").ElementData} ElementData
  * @typedef {import("hast").Properties} Properties
