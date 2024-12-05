@@ -26,6 +26,7 @@ import {
   validatePost,
 } from "./schema.js";
 import logger from "../logging/index.js";
+import { urlJoin } from "./path.js";
 
 /**
  * @typedef {import("../unist/parser.js").VFile} VFile
@@ -369,8 +370,8 @@ export class Post {
     const file = this.getFile();
     logger.trace("Parsing %s content", this.slug);
     this.articleBody = await parse(file, {
-      contentPath: E.assetURL + "/" + this.slug,
-      localContentPath: E.input + "/" + this.slug,
+      contentPath: urlJoin(E.assetURL, this.slug),
+      localContentPath: urlJoin(E.input, this.slug),
     });
 
     logger.trace("%s parsed", this.slug);

@@ -57,7 +57,6 @@ function loader(source, importWith, conditions) {
         );
       }
       const code = await response.text();
-      console.log("imports", importWith(scriptExports));
 
       let exports = eval(
         `(() => {${importWith(scriptExports)}\n${code}\nreturn {${scriptExports.join(", ")}};})()`
@@ -79,7 +78,6 @@ function loader(source, importWith, conditions) {
      * @type {CodeLoader}
      */
     [2]: (scope, scriptExports) => {
-      console.log("imports", importWith(scriptExports));
       let exports = eval(
         `(() => {${importWith(scriptExports)}\n${source}\nreturn {${scriptExports.join(", ")}};})()`
       );
@@ -114,6 +112,143 @@ function loader(source, importWith, conditions) {
 }
 
 /**
+ * @param {Element | null} codeBlock
+ */
+function getBlockSource(codeBlock) {
+  if (codeBlock == null) {
+    return null;
+  }
+  const sourceBlock = codeBlock.querySelector("code .source");
+  if (sourceBlock == null) {
+    return null;
+  }
+  return sourceBlock.textContent?.trim() || null;
+}
+
+/**
+ * @param {Scope} scope
+ * @param {(excluding: string[]) => string} localImportWith
+ * @param {HTMLElement} element
+ * @param {(() => Promise<void>)[]} deferred
+ */
+async function handleScript(scope, localImportWith, element, deferred) {
+  const isModule = element.getAttribute("data-module") != null;
+  const isShown = element.getAttribute("data-shown") != null;
+
+  const remote = element.querySelector(".path")?.textContent?.trim() || null;
+  /**
+   * @type {string}
+   */
+  let source = /** @type {any} */ (remote);
+  if (!remote) {
+    /** @type {string | null} */
+    let foundSource = getBlockSource(
+      isShown ? element.nextElementSibling : element
+    );
+    if (foundSource == null) {
+      element.classList.add("error");
+      console.error("neither '.path' nor 'code .source' available", element);
+      element.setAttribute(
+        "title",
+        `ERROR: neither '.path' nor 'code .source' available`
+      );
+      return;
+    }
+    source = foundSource;
+  }
+
+  if (source.length === 0) {
+    element.classList.add("success");
+    console.debug(element, "skipped because it's empty");
+    return;
+  }
+
+  /**
+   * @param {Error | any} error
+   */
+  let errorHandler = (error) => {
+    element.classList.add("error");
+
+    if (error instanceof Error) {
+      console.error(element, "execution failed:", error.message);
+      element.setAttribute("title", `ERROR: '${error.message}'`);
+    } else {
+      console.error(element, "execution failed:", error.toString());
+      element.setAttribute("title", `ERROR: '${error.toString()}'`);
+    }
+  };
+  if (remote != null) {
+    errorHandler = (error) => {
+      element.classList.add("error");
+
+      if (error instanceof Error) {
+        console.error(element, `'${remote}' execution failed:`, error.message);
+        element.setAttribute("title", `ERROR: '${error.message}'`);
+      } else {
+        console.error(
+          element,
+          `'${remote}' execution failed:`,
+          error.toString()
+        );
+        element.setAttribute("title", `ERROR: '${error.toString()}'`);
+      }
+    };
+  }
+
+  const scriptExports = (element.getAttribute("data-exports") || "").split(
+    /\s+/
+  );
+  let runner = loader(source, localImportWith, {
+    inline: remote == null,
+    esm: isModule,
+  });
+  let e = async () => {
+    try {
+      await runner(scope, scriptExports)
+        .then(() => {
+          element.classList.add("success");
+        })
+        .catch(errorHandler);
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
+  if (element.getAttribute("data-deferred") != null) {
+    deferred.push(e);
+  } else {
+    await e();
+  }
+}
+/**
+ * @param {Scope} scope
+ * @param {HTMLElement} heading
+ * @param {HTMLElement} block
+ * @param {(() => Promise<void>)[]} deferred
+ */
+async function storeBlockInConst(scope, heading, block, deferred) {
+  const source = getBlockSource(block);
+  if (!source) {
+    return;
+  }
+  const variableName = heading.textContent;
+  if (!variableName) {
+    return;
+  }
+
+  const isDeferred =
+    heading.parentElement?.querySelector(".hint.deferred") != null;
+
+  if (isDeferred) {
+    deferred.push(async () => {
+      scope[variableName] = source;
+    });
+  } else {
+    scope[variableName] = source;
+  }
+}
+
+/**
  * @param {HTMLElement} container
  * @param {string} [scopeName="ArticleScope"]
  * @returns {Promise<Scope>} scope produced by evaluating scipts.
@@ -122,7 +257,13 @@ export async function evaluateDynamicScripts(
   container,
   scopeName = "ArticleScope"
 ) {
-  const dScript = container.querySelectorAll("dynamic-script");
+  const items = container.querySelectorAll(
+    "dynamic-script,*[data-store-dynamic-variable]"
+  );
+
+  /**
+   * @type {(() => Promise<void>)[]}
+   */
   const deferred = [];
   /**
    * @type {Scope}
@@ -134,94 +275,25 @@ export async function evaluateDynamicScripts(
 
   const localImportWith = importScope.bind(null, scopeName);
 
-  for (const /** @type {HTMLElement} */ el of dScript) {
-    const isModule = el.getAttribute("data-module") != null;
-    const isShown = el.getAttribute("data-shown") != null;
-
-    const remote = el.querySelector(".path")?.textContent?.trim() || null;
-    /**
-     * @type {string}
-     */
-    let source = /** @type {any} */ (remote);
-    if (!remote) {
-      /** @type {HTMLElement | null} */
-      let codeEl = null;
-      if (!isShown) {
-        codeEl = el.querySelector("code .source");
-      } else {
-        codeEl = el.nextElementSibling?.querySelector("code .source") || null;
-      }
-      if (codeEl == null) {
-        el.classList.add("error");
-        console.error("neither '.path' nor 'code .source' available", el);
-        el.setAttribute(
-          "title",
-          `ERROR: neither '.path' nor 'code .source' available`
-        );
+  for (const item of items) {
+    if (item.tagName === "DYNAMIC-SCRIPT") {
+      await handleScript(
+        scope,
+        localImportWith,
+        /** @type {HTMLElement} */ (item),
+        deferred
+      );
+    } else if (item.getAttribute("data-store-dynamic-variable") != null) {
+      const codeBlock = item.parentElement?.parentElement || null;
+      if (!codeBlock) {
         continue;
       }
-      source = codeEl.textContent?.trim() || "";
-    }
-
-    if (source.length === 0) {
-      el.classList.add("success");
-      console.debug(el, "skipped because it's empty");
-      continue;
-    }
-
-    /**
-     * @param {Error | any} error
-     */
-    let errorHandler = (error) => {
-      el.classList.add("error");
-
-      if (error instanceof Error) {
-        console.error(el, "execution failed:", error.message);
-        el.setAttribute("title", `ERROR: '${error.message}'`);
-      } else {
-        console.error(el, "execution failed:", error.toString());
-        el.setAttribute("title", `ERROR: '${error.toString()}'`);
-      }
-    };
-    if (remote != null) {
-      errorHandler = (error) => {
-        el.classList.add("error");
-
-        if (error instanceof Error) {
-          console.error(el, `'${remote}' execution failed:`, error.message);
-          el.setAttribute("title", `ERROR: '${error.message}'`);
-        } else {
-          console.error(el, `'${remote}' execution failed:`, error.toString());
-          el.setAttribute("title", `ERROR: '${error.toString()}'`);
-        }
-      };
-    }
-
-    const scriptExports = (el.getAttribute("data-exports") || "").split(/\s+/);
-    let runner = loader(source, localImportWith, {
-      inline: remote == null,
-      esm: isModule,
-    });
-    let e = async () => {
-      try {
-        // @ts-ignore
-        console.log(el, "BEFORE:", window[scopeName]);
-        await runner(scope, scriptExports)
-          .then(() => {
-            el.classList.add("success");
-          })
-          .catch(errorHandler);
-        // @ts-ignore
-        console.log(el, "AFTER:", window[scopeName]);
-      } catch (e) {
-        errorHandler(e);
-      }
-    };
-
-    if (!Boolean(el.getAttribute("data-deferred"))) {
-      await e();
-    } else {
-      deferred.push(e);
+      storeBlockInConst(
+        scope,
+        /** @type {HTMLElement} */ (item),
+        codeBlock,
+        deferred
+      );
     }
   }
 

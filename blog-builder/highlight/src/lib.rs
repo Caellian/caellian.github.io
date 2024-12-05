@@ -50,6 +50,7 @@ pub enum Language {
     Rust,
     Regex,
     HTML,
+    GLSL,
 }
 
 macro_rules! query_union {
@@ -66,6 +67,7 @@ impl Language {
         Language::Rust,
         Language::Regex,
         Language::HTML,
+        Language::GLSL,
     ];
 
     fn highlight_init(&self) -> fn() -> HighlightConfiguration {
@@ -145,6 +147,15 @@ impl Language {
                     ""
                 )
                 .unwrap()
+            },
+            Language::GLSL => || {
+                HighlightConfiguration::new(
+                    tree_sitter_glsl::LANGUAGE.into(),
+                    Language::GLSL.name(),
+                    tree_sitter_glsl::HIGHLIGHTS_QUERY,
+                    "",
+                    "",
+                ).unwrap()
             }
         }
     }
@@ -153,10 +164,8 @@ impl Language {
         match self {
             Language::JS => &[Language::Regex],
             Language::TS => &[Language::Regex],
-            Language::CSS => &[],
-            Language::Rust => &[],
-            Language::Regex => &[],
             Language::HTML => &[Language::JS, Language::CSS],
+            _ => &[],
         }
     }
 
@@ -168,6 +177,7 @@ impl Language {
             Language::Rust => "rust",
             Language::Regex => "regex",
             Language::HTML => "html",
+            Language::GLSL => "glsl",
         }
     }
 }
@@ -183,6 +193,7 @@ impl TryFrom<&str> for Language {
             "rust" => Ok(Language::Rust),
             "regex" => Ok(Language::Regex),
             "html" => Ok(Language::HTML),
+            "glsl" | "vert" | "frag" => Ok(Language::GLSL),
             _ => Err(HighlightError::UnknownLanguage(value.to_string())),
         }
     }

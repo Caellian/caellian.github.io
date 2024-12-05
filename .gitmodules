@@ -1,3 +1,6 @@
-[submodule "src/routes/blog/posts"]
+[submodule "blog posts"]
 	path = blog-builder/posts
 	url = git@github.com:Caellian/blog.git
+[submodule "tree-sitter-glsl"]
+	path = blog-builder/highlight/extensions/tree-sitter-glsl
+	url = git@github.com:Caellian/tree-sitter-glsl.git

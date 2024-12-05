@@ -291,6 +291,11 @@ function processHeadingAnnotations(block, options) {
       options.copy = true;
     }
 
+    let storeDynamic = takeTag(it, "store-dynamic");
+    if (storeDynamic === true) {
+      options.storeDynamic = true;
+    }
+
     let file = takeTag(it, "file");
     if (typeof file === "string") {
       options.file = file;
@@ -334,13 +339,17 @@ export const SHOW_IF_NO_FILE = "no-file";
 
 /**
  * @typedef {object} HeadingOptions
- * @property {string} [file] - codeblock file path indicator
- * @property {string} [name] - fixed codeblock title
- * @property {boolean} [copy] - force display of copy button
- * @property {string} [copyText="Copy"] - copy button text
- * @property {boolean | "no-file"} [showLang] - whether to show the language
- * @property {boolean} [collapse] - whether to collapse codeblock heading
- * The heading won't be shown if collapsed, but line numbers will.
+ * @property {string} [file] Codeblock file path indicator
+ * @property {string} [name] Fixed codeblock title
+ * @property {boolean} [copy] Force display of copy button
+ * @property {string} [copyText="Copy"] Copy button text
+ * @property {boolean | "no-file"} [showLang] Whether to show the language
+ * @property {boolean} [collapse] Whether to collapse codeblock heading.
+ * <br/>The heading won't be shown if collapsed, but line numbers will.
+ * @property {boolean} [storeDynamic=false] Whether to store contents in dynamic
+ * scripts variable.
+ *
+ * Has no effect if `name` is not present.
  */
 
 /**
@@ -366,7 +375,14 @@ function buildBlockHeading(block, options) {
 
   if (options.name) {
     headingComponents.push(
-      hEl("span", { className: ["heading", "name"] }, options.name)
+      hEl(
+        "span",
+        {
+          className: ["heading", "name"],
+          "data-store-dynamic-variable": options.storeDynamic ? "" : undefined,
+        },
+        options.name
+      )
     );
   }
 
@@ -385,7 +401,7 @@ function buildBlockHeading(block, options) {
     );
   }
 
-  headingComponents.push(hEl("span", { className: ["spacer"] }, block.lang));
+  headingComponents.push(hEl("span", { className: ["spacer"] }));
 
   // @ts-ignore
   if (block.markers.deferred) {
@@ -393,7 +409,7 @@ function buildBlockHeading(block, options) {
       hEl(
         "span",
         {
-          classNamme: ["hint"],
+          className: ["hint", "deferred"],
           title: "Runs at the end",
         },
         "(deferred)"

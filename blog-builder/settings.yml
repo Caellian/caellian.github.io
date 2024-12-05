@@ -3,8 +3,8 @@ output: out/
 indexPath: index.json
 
 development:
-  assetURL: /blog/
-  hostURL: /blog/raw/
+  assetURL: /blog/raw/
+  hostURL: /blog/
 production:
   assetURL: https://caellian.github.io/blog/
   hostURL: https://tinsvagelj.net/blog/
