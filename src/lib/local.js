@@ -47,7 +47,16 @@ export async function localFile(path, options = undefined) {
       encoding: options.encoding || "utf-8",
       flag: options.flag,
     });
-    return JSON.parse(result);
+    try {
+      return JSON.parse(result);
+    } catch (err) {
+      if (err instanceof SyntaxError) {
+        err.cause = err.cause || {};
+        const cause = /** @type {Record<string, any>} */ (err.cause);
+        cause.file = path;
+      }
+      throw err;
+    }
   } else {
     return await fsp.readFile(resolveAliasPath(path), options);
   }

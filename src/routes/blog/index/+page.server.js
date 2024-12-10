@@ -22,8 +22,8 @@ export async function load() {
    */
   let keywords = new Set();
   for (const post of Object.values(posts)) {
-    // @ts-ignore
-    for (const kw of post.keywords) {
+    let kws = /** @type {string[] | null} */ (post.keywords) || [];
+    for (const kw of kws) {
       keywords.add(kw);
     }
   }
