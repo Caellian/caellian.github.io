@@ -45,12 +45,20 @@ export const PostState = Object.freeze({
 export async function buildPost(slug, prev) {
   let post = prev ? new Post(slug, prev) : new Post(slug);
 
-  let oldDate = post.datePublished?.toISOString()?.replace(/.\d{1,3}Z/, "Z");
-  let oldUpdate = post.dateModified?.toISOString()?.replace(/.\d{1,3}Z/, "Z");
+  let oldDate =
+    post.datePublished &&
+    post.datePublished?.toISOString()?.replace(/.\d{1,3}Z/, "Z");
+  let oldUpdate =
+    post.dateModified &&
+    post.dateModified?.toISOString()?.replace(/.\d{1,3}Z/, "Z");
   await post.updateTimeInfo();
   let newDate = post.datePublished.toISOString().replace(/.\d{1,3}Z/, "Z");
   let newUpdate = post.dateModified.toISOString().replace(/.\d{1,3}Z/, "Z");
-  if (oldDate === newDate && oldUpdate === newUpdate) {
+  if (
+    oldDate != null &&
+    oldDate === newDate &&
+    (oldUpdate == null || oldUpdate === newUpdate)
+  ) {
     logger.trace(
       {
         oldDate,

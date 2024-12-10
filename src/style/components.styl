@@ -6,13 +6,15 @@ article
   ol
     padding-bottom 0.6rem
 
-  ul>li
+  ul>li,
+  ol>li
     margin-left 1rem
     margin-top 0.5rem
     
     +li
       margin-top 0.25rem
 
+  ul>li
     &:before
       content '>'
       margin-right 0.75rem
@@ -21,6 +23,17 @@ article
     &:hover:before
       margin-right 0.5rem
       margin-left 0.25rem
+  
+  ol>li
+    margin-left 0.5rem
+    list-style-type decimal
+    list-style-type decimal-leading-zero
+    list-style-position inside
+
+    &::marker
+      font-family var(--fnt-mono)
+    &:hover::marker
+      color: var(--accent)
 
 hr
   border solid 1px var(--bg-accent)
@@ -36,8 +49,12 @@ button,
   height min-content
 
   border solid 0.15rem var(--bg-accent)
-  border-radius 100vh
+  border-radius 100vw
   outline inherit
+
+  &.sharp
+    border-radius 0.5rem
+    padding 0.5rem 1rem
 
   transition background-color ease-in-out transition-short, border-color ease-in-out transition-short
 
@@ -53,6 +70,7 @@ button,
 
     color var(--accent-1)
 
+  &.active,
   &:active
     background-color var(--accent-8)
     color var(--accent-2)

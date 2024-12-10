@@ -18,17 +18,25 @@ async function run() {
     if (indexUpdate) {
       await indexUpdate;
     }
-    let newIndex = new PostIndex({
-      ...index.posts,
-      ...mutation,
-    });
+    let updatedPosts = Object.fromEntries(
+      Object.entries(mutation).filter(([_, post]) => {
+        if (post == null || post instanceof Error) {
+          return false;
+        }
+        return true;
+      })
+    );
+    let newIndexData = {
+      ...(await index.toJSON()),
+      ...updatedPosts,
+    };
     await fsp.mkdir(E.output, { recursive: true });
     indexUpdate = fsp
-      .writeFile(E.indexPath, JSON.stringify(newIndex.posts), {
+      .writeFile(E.indexPath, JSON.stringify(newIndexData), {
         encoding: "utf-8",
       })
       .then(() => {
-        index = PostIndex.fromJSON(newIndex.posts);
+        index = PostIndex.fromJSON(newIndexData);
       });
   }
 

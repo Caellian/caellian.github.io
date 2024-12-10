@@ -715,6 +715,10 @@ export class PostIndex {
     this.source = null;
   }
 
+  /**
+   * @param {string | object} json
+   * @returns {PostIndex}
+   */
   static fromJSON(json) {
     let result = new PostIndex();
     let posts = json || {};
@@ -726,6 +730,14 @@ export class PostIndex {
         return [slug, Post.fromJSON(slug, data)];
       })
     );
+    return result;
+  }
+
+  async toJSON() {
+    const result = {};
+    for (const [slug, post] of Object.entries(this.posts)) {
+      result[slug] = await post.toIndexJSON();
+    }
     return result;
   }
 
