@@ -1,4 +1,5 @@
 import { dev } from "$app/environment";
+import { error } from "@sveltejs/kit";
 import { pathToMimeType } from "$lib/local";
 import { readFile } from "fs/promises";
 
@@ -16,8 +17,14 @@ export async function GET({ params }) {
   if (!dev) {
     throw new Error("raw route is only intended for development");
   }
-
-  let content = await readFile(LOCAL_PATH + "/" + file);
+  let content;
+  try {
+    content = await readFile(LOCAL_PATH + "/" + file);
+  } catch (noFile) {
+    return error(404, {
+      message: "Not found",
+    });
+  }
   return new Response(content, {
     status: 200,
     headers: {

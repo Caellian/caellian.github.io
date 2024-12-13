@@ -1,8 +1,10 @@
 import { CONTINUE, SKIP, visit } from "unist-util-visit";
-import * as esprima from "esprima";
+import * as esprima from "esprima-next";
+import { Syntax } from "esprima-next";
 import https from "node:https";
 import { readFile } from "node:fs/promises";
 import { hElement as hEl } from "./hast-utils.js";
+import logger from "../logging/index.js";
 
 /**
  * @typedef {import("./types.ts").HASTScriptElement} HASTScriptElement
@@ -62,26 +64,45 @@ function topLevelDeclarations(code, module = false) {
     } else {
       ast = esprima.parseScript(code);
     }
-  } catch (_e) {
+  } catch (_parsing_error) {
     return [];
   }
 
   let exports = [];
   /**
-   * @param {import("estree").Identifier | import("estree").Node} id
+   * @param {import("esprima-next").Identifier | import("esprima-next").BindingPattern} id
    */
   function exportID(id) {
-    if (id.type === "Identifier") {
+    if (id.type === Syntax.Identifier) {
       exports.push(id.name);
+    } else if (id.type === esprima.Syntax.ArrayPattern) {
+      for (const element of id.elements) {
+        if (
+          element.type === Syntax.Identifier ||
+          element.type === Syntax.ArrayPattern ||
+          element.type === Syntax.ObjectPattern
+        ) {
+          exportID(element);
+        }
+      }
+    } else if (id.type === Syntax.ObjectPattern) {
+      for (const property of id.properties) {
+        if (
+          property.type === Syntax.Property &&
+          property.key.type === Syntax.Identifier
+        ) {
+          exportID(property.key);
+        }
+      }
     }
   }
   /**
-   * @param {import("estree").Node} item
+   * @param {import("esprima-next").Statement} item
    */
   function handleExport(item) {
-    if (item.type === "FunctionDeclaration") {
+    if (item.type === Syntax.FunctionDeclaration) {
       exportID(item.id);
-    } else if (item.type === "VariableDeclaration") {
+    } else if (item.type === Syntax.VariableDeclaration) {
       for (const variable of item.declarations) {
         exportID(variable.id);
       }
@@ -90,12 +111,14 @@ function topLevelDeclarations(code, module = false) {
   for (const item of ast.body) {
     if (!module) {
       handleExport(item);
-    } else if (item.type === "ExportNamedDeclaration") {
+    } else if (item.type === Syntax.ExportNamedDeclaration) {
       if (item.declaration != null) {
         handleExport(item.declaration);
       } else if ((item.specifiers?.length || 0) > 0) {
         for (const specifier of item.specifiers) {
-          exportID(specifier.exported);
+          if (specifier.exported.type === Syntax.Identifier) {
+            exportID(specifier.exported);
+          }
         }
       }
     }
@@ -190,7 +213,7 @@ function handleInclude(source, _i, _parent, target, options, tasks) {
         const exports = topLevelDeclarations(code, options.isModule);
         target.properties["data-exports"] = exports;
       } catch (e) {
-        console.error(e);
+        logger.error(e);
       }
     })()
   );

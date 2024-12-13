@@ -23,6 +23,8 @@ function importScope(scopeGlobalName = "ArticleScope", excluding = []) {
   return `let {${names.join(", ")}} = ${scopeGlobalName};`;
 }
 
+const IGNORE_EXPORTS = ["default"];
+
 /**
  * @callback CodeLoader
  * @param {Scope} scope
@@ -62,6 +64,7 @@ function loader(source, importWith, conditions) {
         `(() => {${importWith(scriptExports)}\n${code}\nreturn {${scriptExports.join(", ")}};})()`
       );
       for (const [key, value] of Object.entries(exports)) {
+        if (IGNORE_EXPORTS.includes(key)) continue;
         scope[key] = value;
       }
     },
@@ -71,6 +74,7 @@ function loader(source, importWith, conditions) {
     [1]: async (scope) => {
       let exports = await import(/* @vite-ignore */ source);
       for (const [key, value] of Object.entries(exports)) {
+        if (IGNORE_EXPORTS.includes(key)) continue;
         scope[key] = value;
       }
     },
@@ -82,6 +86,7 @@ function loader(source, importWith, conditions) {
         `(() => {${importWith(scriptExports)}\n${source}\nreturn {${scriptExports.join(", ")}};})()`
       );
       for (const [key, value] of Object.entries(exports)) {
+        if (IGNORE_EXPORTS.includes(key)) continue;
         scope[key] = value;
       }
       return Promise.resolve();
@@ -95,6 +100,7 @@ function loader(source, importWith, conditions) {
       );
       const exports = await import(/* @vite-ignore */ url);
       for (const [key, value] of Object.entries(exports)) {
+        if (IGNORE_EXPORTS.includes(key)) continue;
         scope[key] = value;
       }
     },
