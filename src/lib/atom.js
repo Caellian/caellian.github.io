@@ -22,10 +22,10 @@ export function blogAtom(name, subtitle, content = [], id = BASE_URL) {
 
   return `<?xml version="1.0" encoding="utf-8"?>
     <feed xmlns="http://www.w3.org/2005/Atom">
-        <title>${name}</title >
+        <title>${name}</title>
         <subtitle>${subtitle}</subtitle>
-        <link href="${id}/atom.xml" rel="self" />
-        <link href="${id}" />
+        <link href="${id}/atom.xml" rel="self"></link>
+        <link href="${id}"></link>
         <updated>${modified}</updated>
         ${AUTHORS}
         <id>${id}</id>
@@ -42,7 +42,7 @@ export function postAtom(post) {
   let published = post.datePublished.toISOString();
   return `<entry>
         <title>${post.name}</title>
-        <link href="${BASE_URL}/blog/p/${post.slug}" />
+        <link href="${BASE_URL}/blog/p/${post.slug}"></link>
         <id>${BASE_URL}/blog/p/${post.slug}</id>
         <updated>${modified}</updated>
         ${modified != published ? `<published>${published}</published>` : ""}
