@@ -5,7 +5,8 @@ on:
     paths:
       - src/**
       - blog-builder/posts
-      - blog-builder/*.js
+      - blog-builder/src/**
+      - blog-builder/**/*.js
       - blog-builder/*.json
       - highlight/index.js
       - highlight/*.json
