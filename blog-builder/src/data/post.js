@@ -378,10 +378,11 @@ export class Post {
 
     const file = this.getFile();
     logger.trace("Parsing %s content", this.slug);
-    this.articleBody = await parse(file, {
+    const parsingResult = await parse(file, {
       contentPath: urlJoin(E.assetURL, this.slug),
       localContentPath: urlJoin(E.input, this.slug),
     });
+    this.articleBody = parsingResult.htmlContent;
     if (this.articleBody == null) {
       logger.fatal(
         {

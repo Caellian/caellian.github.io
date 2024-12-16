@@ -1,5 +1,10 @@
 import { CONTINUE, SKIP, visit } from "unist-util-visit";
 import { urlAppend, urlJoin } from "../data/path.js";
+/**
+ * @import {Element} from "hast"
+ * @import {VisitorResult} from "unist-util-visit"
+ * @import {Transformer} from "unified"
+ */
 
 /**
  * @param {string | URL} basePath
@@ -28,7 +33,7 @@ const ELEMENT_PROPERTY = {
 /**
  * Replaces relative links with specified {@link RetargetOptions.targetLocation|targetLocation}.
  * @param {RetargetOptions} options
- * @returns {import("unified").Transformer}
+ * @returns {Transformer}
  */
 export function rehypeRetarget(options) {
   let resolvedMappings = resolveMappings(options.basePath, options.mappings);
@@ -38,10 +43,10 @@ export function rehypeRetarget(options) {
       ast,
       "element",
       /**
-       * @param {import("./types.ts").Element} el
+       * @param {Element} el
        * @param {number} i
-       * @param {import("hast").Element} parent
-       * @returns {import("unist-util-visit").VisitorResult}
+       * @param {Element} parent
+       * @returns {VisitorResult}
        */
       (el, i, parent) => {
         let propertyName = ELEMENT_PROPERTY[el.tagName];

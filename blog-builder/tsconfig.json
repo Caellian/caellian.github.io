@@ -16,6 +16,6 @@
       "typeRoots": ["./node_modules/@types", "./types"],
       "rootDir": "./"
     },
-    "include": ["index.js", "src/**/*.js", "types/**/*.d.ts", "src/unist/hast-utils.ts"]
+    "include": ["main.js", "src/**/*.js", "types/**/*.d.ts", "src/unist/hast-utils.ts"]
   }
   

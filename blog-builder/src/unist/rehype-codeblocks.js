@@ -4,7 +4,9 @@ import { hElement as hEl, hText } from "./hast-utils.js";
 import Highlighter from "highlight";
 
 /**
- * @typedef {import("hast").Element} Element
+ * @import {Position} from "unist"
+ * @import {VisitorResult} from "unist-util-visit"
+ * @import {Element, ElementContent, Node, Nodes, Text} from "hast"
  */
 
 const STANDARD_CAPTURE_NAMES = [
@@ -49,80 +51,44 @@ const STANDARD_CAPTURE_NAMES = [
 
 const SKIP_LANGS = ["math", "console"];
 
-/**
- * @param {Element} ast
- * @param {Element} node
- * @returns {[Element, number]} [parent, index_in_parent]
- */
-// @ts-ignore
-function findParent(ast, node) {
-  let queue = [ast];
-  while (queue.length > 0) {
-    let curr = queue.shift();
-    if (curr.children != null && typeof curr.children.indexOf == "function") {
-      let indexOf = curr.children.indexOf(node);
-      if (indexOf > -1) {
-        return [curr, indexOf];
-      }
-      // @ts-ignore
-      queue.push(...curr.children);
-    }
-  }
-  return null;
-}
-
-/**
- * Normalizes node class names into an array of names.
- *
- * Returns an empty array if the node is not an element.
- * @param {import("hast").Node} node
- * @returns {string[]} class names
- */
-function nodeClasses(node) {
-  if (node.type != "element") {
-    return [];
-  }
-  // @ts-ignore node is Element; has properties
-  let classes = node.properties?.className || "";
-  if (typeof classes == "string") {
-    classes = classes.split(" ");
-  }
-  return classes.filter((it) => it.length > 0);
-}
-
 const RE_ANNOTATION = /^.*?#!\s*/;
 
 /**
  * @typedef {object} AnnotationLocation
  * @property {Element} parent
  * @property {number} index index in parent before removal
- * @property {import("hast").Node} prevSibling
- * @property {import("hast").Node} nextSibling
+ * @property {ElementContent} prevSibling
+ * @property {ElementContent} nextSibling
  */
 /**
  * @typedef {object} Annotation
+ * @property {"annotation"} type
  * @property {AnnotationLocation} location
  * @property {string} value
  */
+
 /**
  * @param {Element} ast - ast of code syntax
- * @returns {[string]} annotations extracted from syntax ast
+ * @returns {Annotation[]} annotations extracted from syntax ast
  */
 function extractAnnotations(ast) {
+  /**
+   * @type {Annotation[]}
+   */
   let annotations = [];
 
   /**
-   * @param {string | import("hast").Nodes} elem - node(s) or string containing
+   * @param {string | Nodes} elem - node(s) or string containing
    * annotations
    * @returns {string}
    */
   function annotationValue(elem) {
     let text = elem;
-    if (typeof text !== "string" && text.type != null) {
-      text = toText(text, { whitespace: "pre" });
+    if (typeof text === "string") {
+      return text.replace(RE_ANNOTATION, "");
+    } else {
+      return toText(text, { whitespace: "pre" }).replace(RE_ANNOTATION, "");
     }
-    // @ts-ignore
-    return text.replace(RE_ANNOTATION, "");
   }
 
   visit(
@@ -132,15 +98,15 @@ function extractAnnotations(ast) {
      * @param {Element} node
      * @param {number} i
      * @param {Element} parent
-     * @returns {import("unist-util-visit").VisitorResult}
+     * @returns {VisitorResult}
      */
     (node, i, parent) => {
       if (parent == null || node.tagName != "span") {
         return CONTINUE;
       }
 
-      let classes = nodeClasses(node);
-      if (!classes.find((it) => it === "comment")) {
+      let classes = node.properties.className;
+      if (!Array.isArray(classes) || !classes.find((it) => it === "comment")) {
         return CONTINUE;
       }
 
@@ -151,6 +117,7 @@ function extractAnnotations(ast) {
       let value = annotationValue(text);
 
       annotations.push({
+        type: "annotation",
         location: {
           parent,
           index: i,
@@ -177,14 +144,13 @@ function extractAnnotations(ast) {
     parent.children.splice(index, remove_count);
   }
 
-  // @ts-ignore
   return annotations;
 }
 
 /**
  * A code block that's being processed
  * @typedef {object} CodeBlock
- * @property {import("unist").Position} location
+ * @property {Position} location
  * @property {Element} pre
  * @property {Element} code
  * @property {number} line_count
@@ -354,11 +320,10 @@ export const SHOW_IF_NO_FILE = "no-file";
 
 /**
  * @param {CodeBlock} block
- * @param {HeadingOptions} options
+ * @param {HeadingOptions | boolean} options
  * @returns {Element} block heading element
  */
 function buildBlockHeading(block, options) {
-  // @ts-ignore
   if (options === false) {
     return null;
   }
@@ -403,8 +368,7 @@ function buildBlockHeading(block, options) {
 
   headingComponents.push(hEl("span", { className: ["spacer"] }));
 
-  // @ts-ignore
-  if (block.markers.deferred) {
+  if (block.markers["deferred"]) {
     headingComponents.push(
       hEl(
         "span",
@@ -440,11 +404,10 @@ function buildBlockHeading(block, options) {
  */
 /**
  * @param {CodeBlock} block
- * @param {NumberLineOptions} options
+ * @param {NumberLineOptions | boolean} options
  * @returns {Element} - number line element
  */
 function buildBlockNumberLine(block, options) {
-  // @ts-ignore
   if (options === false) {
     return null;
   }
@@ -510,9 +473,7 @@ export function rehypeTreeSitter(options = {}) {
           return CONTINUE;
         }
 
-        /**@type {Element} */
-        // @ts-ignore
-        let code = pre.children[0];
+        let code = pre.children.find((it) => it.type === "element");
         if (code == null || code.tagName != "code") {
           return SKIP;
         }
@@ -528,28 +489,28 @@ export function rehypeTreeSitter(options = {}) {
 
         let line_count = content.split("\n").length;
 
-        let classes = nodeClasses(code);
-        if (classes == null || classes.length == 0) {
+        let classes = code.properties.className;
+        if (!Array.isArray(classes) || classes.length == 0) {
           return SKIP;
         }
 
-        let lang =
-          classes.find((it) => it.startsWith("language-"))?.substring(9) ||
-          "text";
+        let lang = /** @type {string | undefined} */ (
+          classes.find(
+            (it) => typeof it === "string" && it.startsWith("language-")
+          )
+        );
+        lang = lang?.substring(9) || "text";
 
         let annotations = [];
         if (highlighter.isSupported(lang)) {
           try {
             const new_content = highlighter.highlight(content, lang);
-            // @ts-ignore
             annotations = extractAnnotations(new_content);
             if (annotations.length > 0) {
-              // @ts-ignore
               line_count = toText(new_content, { whitespace: "pre" }).split(
                 "\n"
               ).length;
             }
-            // @ts-ignore
             code.children = [new_content];
           } catch (e) {
             console.warn(e);
@@ -557,7 +518,6 @@ export function rehypeTreeSitter(options = {}) {
         }
 
         if (
-          // @ts-ignore
           code.data?.noCodeblock ||
           SKIP_LANGS.includes(lang) ||
           annotations.includes("no-codeblock")
@@ -572,7 +532,6 @@ export function rehypeTreeSitter(options = {}) {
           line_count,
           lang,
           annotations,
-          // @ts-ignore
           markers: code.data?.markers || {},
         });
         return SKIP;
@@ -588,12 +547,10 @@ export function rehypeTreeSitter(options = {}) {
       code.properties.className.push(`language-${block.lang}`);
 
       let components = [block.pre];
-      // @ts-ignore
       let heading = buildBlockHeading(block, headingOptions);
       if (heading != null) {
         components.splice(0, 0, heading);
       }
-      // @ts-ignore
       let lineNumbers = buildBlockNumberLine(block, numberLineOptions);
       if (lineNumbers != null) {
         components.push(lineNumbers);

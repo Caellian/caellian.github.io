@@ -7,12 +7,11 @@ import { hElement as hEl } from "./hast-utils.js";
 import logger from "../logging/index.js";
 
 /**
- * @typedef {import("./types.ts").HASTScriptElement} HASTScriptElement
- * @typedef {import("hast").ElementContent} ElementContent
- * @typedef {import("hast").ElementData} ElementData
- * @typedef {import("hast").Properties} Properties
- * @typedef {import("hast").Element} Element
- * @typedef {import("hast").Text} Text
+ * @import {Transformer} from "unified"
+ * @import {ElementContent, ElementData, Properties, Element, Text} from "hast"
+ * @import {VisitorResult} from "unist-util-visit"
+ * @import {Identifier, BindingPattern, Statement} from "esprima-next"
+ * @import {HASTScriptElement} from "./types.ts"
  */
 /**
  * @typedef {object} DynamicCodeData
@@ -70,7 +69,7 @@ function topLevelDeclarations(code, module = false) {
 
   let exports = [];
   /**
-   * @param {import("esprima-next").Identifier | import("esprima-next").BindingPattern} id
+   * @param {Identifier | BindingPattern} id
    */
   function exportID(id) {
     if (id.type === Syntax.Identifier) {
@@ -97,7 +96,7 @@ function topLevelDeclarations(code, module = false) {
     }
   }
   /**
-   * @param {import("esprima-next").Statement} item
+   * @param {Statement} item
    */
   function handleExport(item) {
     if (item.type === Syntax.FunctionDeclaration) {
@@ -198,7 +197,7 @@ async function getSource(path, options = {}) {
  * @param {DynamicScriptElement} target
  * @param {HandlerOptions} options
  * @param {AsyncMutations} tasks
- * @returns {import("unist-util-visit").VisitorResult?}
+ * @returns {VisitorResult?}
  */
 
 /**
@@ -329,7 +328,7 @@ function handleEmbedded(source, i, parent, target, options) {
  * Turns `<script>` hast nodes into `<dynamic-script>` nodes with information
  * necessary for their dynamic execution.
  * @param {DynamicScriptsOptions} [options]
- * @returns {import("unified").Transformer}
+ * @returns {Transformer}
  */
 export function rehypeDynamicScripts(options = {}) {
   return async (ast, _file) => {
@@ -342,7 +341,7 @@ export function rehypeDynamicScripts(options = {}) {
        * @param {HASTScriptElement | *} el
        * @param {number} i
        * @param {Element} parent
-       * @returns {import("unist-util-visit").VisitorResult}
+       * @returns {VisitorResult}
        */
       (el, i, parent) => {
         if (el.tagName != "script") {

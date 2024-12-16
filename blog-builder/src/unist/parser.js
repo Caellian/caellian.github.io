@@ -8,20 +8,25 @@ import remarkMath from "remark-math";
 
 import rehypeRaw from "rehype-raw";
 import rehypeMathjax from "rehype-mathjax/svg";
-import rehypeStringify from "rehype-stringify";
 
 import rehypeRetarget from "./rehype-retarget.js";
 import rehypeDynamicScripts from "./rehype-dynamicScripts.js";
 import rehypeTreeSitter from "./rehype-codeblocks.js";
 import logger from "../logging/index.js";
-
-const ALLOW_HTML = true;
+import { toHtml } from "hast-util-to-html";
 
 /**
- * @typedef {import("vfile").VFile} VFile
- * @typedef {import("unist").Node} Node
- * @typedef {import("hast").Root} HTMLRoot
+ * @import {VFile} from 'vfile'
+ * @import {Node} from 'unist'
+ * @import {Root as HTMLRoot} from 'hast'
+ * @import {Plugin, Compiler, CompileResults, Processor} from 'unified'
  */
+
+/**
+ * @typedef {object} Output
+ * @property {string} htmlContent
+ */
+
 /**
  * @template {Node | undefined} [ParseTree=undefined]
  *   Output of `parse` (optional).
@@ -31,9 +36,9 @@ const ALLOW_HTML = true;
  *   Output for `run` (optional).
  * @template {Node | undefined} [CompileTree=undefined]
  *   Input of `stringify` (optional).
- * @template {import("unified").CompileResults | undefined} [CompileResult=undefined]
+ * @template {CompileResults | undefined} [CompileResult=Output]
  *   Output of `stringify` (optional).
- * @typedef {import("unified").Processor<ParseTree, HeadTree, TailTree, CompileTree, CompileResult>} Processor
+ * @typedef {Processor<ParseTree, HeadTree, TailTree, CompileTree, CompileResult>} Processor
  */
 
 /**
@@ -44,7 +49,7 @@ const ALLOW_HTML = true;
 
 /**
  * @param {ParserOptions} options
- * @returns {Processor<HTMLRoot, HTMLRoot, Node, HTMLRoot, string>}
+ * @returns {Processor<HTMLRoot, HTMLRoot, Node, HTMLRoot, Output>}
  */
 function parser(options) {
   let targetLocation = options.contentPath;
@@ -55,7 +60,7 @@ function parser(options) {
     .use(remarkGfm)
     .use(remarkMath)
     .use(remarkRehype, {
-      allowDangerousHtml: ALLOW_HTML,
+      allowDangerousHtml: true,
     })
     .use(rehypeRaw) // Process raw HTML into Rehype nodes
     // @ts-ignore
@@ -91,19 +96,41 @@ function parser(options) {
     });
 
   // @ts-ignore
-  return parser.use(rehypeStringify, {
-    allowDangerousHtml: true,
-  });
+  return parser.use(compiler);
+}
+
+/**
+ * @type {Plugin<[(null | undefined)?], HTMLRoot, Output>}
+ * @param {null | undefined} [options] Configuration (optional).
+ * @returns {undefined} Nothing.
+ */
+export default function compiler(options = undefined) {
+  /** @type {Processor<undefined, undefined, undefined, HTMLRoot, Output>} */
+  const self = this;
+
+  self.compiler = handler;
+
+  /**
+   * @type {Compiler<HTMLRoot, Output>}
+   */
+  function handler(tree) {
+    const html = toHtml(tree, {
+      allowDangerousHtml: true,
+    });
+    return {
+      htmlContent: String(html),
+    };
+  }
 }
 
 /**
  * @param {VFile} input
  * @param {ParserOptions} options
- * @returns {Promise<string?>}
+ * @returns {Promise<Output?>}
  */
 export async function parse(input, options) {
   try {
-    return String(await parser(options).process(input));
+    return (await parser(options).process(input)).result;
   } catch (error) {
     error.cause = error.cause || {};
     error.cause.file = input.path;

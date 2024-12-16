@@ -1,10 +1,37 @@
-export type ElementContent = import("hast").ElementContent;
-export type ElementData = import("hast").ElementData;
-export type Properties = import("hast").Properties;
-export type Element = import("hast").Element;
-export type Node = import("hast").Node;
+import type {
+  ElementContent,
+  ElementData,
+  Properties,
+  Element,
+  Node,
+  Text,
+  Nodes,
+} from "hast";
+import { Output } from "./parser.js";
 
-export type Text = import("hast").Text;
+export interface AnnotationData {
+  parent: Element;
+  /**
+   * Location in parent when first discovered.
+   */
+  index: number;
+  prevSibling: Nodes | null;
+  nextSibling: Nodes | null;
+}
+
+declare module "unist" {
+  interface Data {
+    annotation?: AnnotationData | undefined;
+    markers?: { [marker: string]: boolean } | undefined;
+    noCodeblock?: boolean | undefined;
+  }
+}
+declare module "unified" {
+  interface CompileResultMap {
+    Output: Output;
+  }
+}
+
 export interface ImgElementProperties {
   src: string;
 }
