@@ -112,5 +112,5 @@ switch (platform) {
 }
 
 const { Highlighter } = await nativeBinding;
-
+export { Highlighter };
 export default Highlighter;

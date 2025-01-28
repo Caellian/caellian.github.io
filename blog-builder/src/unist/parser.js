@@ -14,17 +14,20 @@ import rehypeDynamicScripts from "./rehype-dynamicScripts.js";
 import rehypeTreeSitter from "./rehype-codeblocks.js";
 import logger from "../logging/index.js";
 import { toHtml } from "hast-util-to-html";
+import { visit } from "yaml";
 
 /**
  * @import {VFile} from 'vfile'
  * @import {Node} from 'unist'
  * @import {Root as HTMLRoot} from 'hast'
  * @import {Plugin, Compiler, CompileResults, Processor} from 'unified'
+ * @import {Insert} from "./types.ts"
  */
 
 /**
  * @typedef {object} Output
  * @property {string} htmlContent
+ * @property {Record<string, Insert>} inserts
  */
 
 /**
@@ -117,8 +120,21 @@ export default function compiler(options = undefined) {
     const html = toHtml(tree, {
       allowDangerousHtml: true,
     });
+    const inserts = tree.data?.inserts || {};
+
+    for (const insert of Object.values(inserts)) {
+      if (insert.type == "fragment" && typeof insert.value !== "string") {
+        insert.value = String(
+          toHtml(insert.value, {
+            allowDangerousHtml: true,
+          })
+        );
+      }
+    }
+
     return {
       htmlContent: String(html),
+      inserts,
     };
   }
 }

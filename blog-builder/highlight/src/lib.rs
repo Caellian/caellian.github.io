@@ -1,366 +1,239 @@
-use napi::Either;
+use hast::{visit::*, Element, ElementChild, Node, Text};
+
 use napi_derive::napi;
-use std::collections::HashMap;
-use tree_sitter_highlight::{HighlightConfiguration, HighlightEvent, Highlighter};
 
-const STANDARD_HIGHLIGHTS: &'static [&'static str] = &[
-    "attribute",
-    "boolean",
-    "carriage-return",
-    "comment",
-    "comment.documentation",
-    "constant",
-    "constant.builtin",
-    "constructor",
-    "constructor.builtin",
-    "embedded",
-    "error",
-    "escape",
-    "function",
-    "function.builtin",
-    "keyword",
-    "module",
-    "number",
-    "operator",
-    "property",
-    "property.builtin",
-    "punctuation",
-    "punctuation.bracket",
-    "punctuation.delimiter",
-    "punctuation.special",
-    "string",
-    "string.escape",
-    "string.regexp",
-    "string.special",
-    "string.special.symbol",
-    "tag",
-    "type",
-    "type.builtin",
-    "variable",
-    "variable.builtin",
-    "variable.member",
-    "variable.parameter",
-];
+mod language;
+use language::*;
+use std::hash::Hasher;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum Language {
-    JS,
-    TS,
-    CSS,
-    Rust,
-    Regex,
-    HTML,
-    GLSL,
-}
-
-macro_rules! query_union {
-    ($first: path $(,$other: path)*) => {
-        $first.to_owned() $(+ $other)*
-    };
-}
-
-impl Language {
-    const ALL: &'static [Language] = &[
-        Language::JS,
-        Language::TS,
-        Language::CSS,
-        Language::Rust,
-        Language::Regex,
-        Language::HTML,
-        Language::GLSL,
-    ];
-
-    fn highlight_init(&self) -> fn() -> HighlightConfiguration {
-        match self {
-            Language::JS => || {
-                HighlightConfiguration::new(
-                    tree_sitter_javascript::LANGUAGE.into(),
-                    Language::JS.name(),
-                    tree_sitter_javascript::HIGHLIGHT_QUERY,
-                    tree_sitter_javascript::INJECTIONS_QUERY,
-                    tree_sitter_javascript::LOCALS_QUERY,
-                )
-                .unwrap()
-            },
-            Language::TS => || {
-                let highlights = query_union![
-                    tree_sitter_typescript::HIGHLIGHTS_QUERY,
-                    tree_sitter_javascript::HIGHLIGHT_QUERY
-                ];
-
-                let locals = query_union![
-                    tree_sitter_typescript::LOCALS_QUERY,
-                    tree_sitter_javascript::LOCALS_QUERY
-                ];
-
-                HighlightConfiguration::new(
-                    tree_sitter_typescript::LANGUAGE_TYPESCRIPT.into(),
-                    Language::TS.name(),
-                    &highlights,
-                    tree_sitter_javascript::INJECTIONS_QUERY,
-                    &locals,
-                )
-                .unwrap()
-            },
-            Language::CSS => || {
-                HighlightConfiguration::new(
-                    tree_sitter_css::LANGUAGE.into(),
-                    Language::CSS.name(),
-                    tree_sitter_css::HIGHLIGHTS_QUERY,
-                    "",
-                    "",
-                )
-                .unwrap()
-            },
-            Language::Rust => || {
-                const RUST_HIGHLIGHT: &str =
-                    include_str!("../extensions/rust_highlight.scm");
-                HighlightConfiguration::new(
-                    tree_sitter_rust::LANGUAGE.into(),
-                    Language::Rust.name(),
-                    RUST_HIGHLIGHT,
-                    tree_sitter_rust::INJECTIONS_QUERY,
-                    "",
-                )
-                .unwrap()
-            },
-            Language::Regex => || {
-                HighlightConfiguration::new(
-                    tree_sitter_regex::LANGUAGE.into(),
-                    Language::Regex.name(),
-                    tree_sitter_regex::HIGHLIGHTS_QUERY,
-                    "",
-                    "",
-                )
-                .unwrap()
-            },
-            Language::HTML => || {
-                const HTML_HIGHLIGHT: &str =
-                    include_str!("../extensions/html_highlight.scm");
-                const HTML_INJECTION: &str =
-                    include_str!("../extensions/html_injections.scm");
-                HighlightConfiguration::new(
-                    tree_sitter_html::LANGUAGE.into(),
-                    Language::HTML.name(),
-                    HTML_HIGHLIGHT,
-                    HTML_INJECTION,
-                    ""
-                )
-                .unwrap()
-            },
-            Language::GLSL => || {
-                HighlightConfiguration::new(
-                    tree_sitter_glsl::LANGUAGE.into(),
-                    Language::GLSL.name(),
-                    tree_sitter_glsl::HIGHLIGHTS_QUERY,
-                    "",
-                    "",
-                ).unwrap()
-            }
-        }
-    }
-
-    fn injections(&self) -> &'static [Self] {
-        match self {
-            Language::JS => &[Language::Regex],
-            Language::TS => &[Language::Regex],
-            Language::HTML => &[Language::JS, Language::CSS],
-            _ => &[],
-        }
-    }
-
-    fn name(&self) -> &'static str {
-        match self {
-            Language::JS => "javascript",
-            Language::TS => "typescript",
-            Language::CSS => "css",
-            Language::Rust => "rust",
-            Language::Regex => "regex",
-            Language::HTML => "html",
-            Language::GLSL => "glsl",
-        }
-    }
-}
-
-impl TryFrom<&str> for Language {
-    type Error = HighlightError;
-
-    fn try_from(value: &str) -> Result<Self, Self::Error> {
-        match value.as_ref() {
-            "js" | "javascript" => Ok(Language::JS),
-            "ts" | "typescript" => Ok(Language::TS),
-            "css" => Ok(Language::CSS),
-            "rust" => Ok(Language::Rust),
-            "regex" => Ok(Language::Regex),
-            "html" => Ok(Language::HTML),
-            "glsl" | "vert" | "frag" => Ok(Language::GLSL),
-            _ => Err(HighlightError::UnknownLanguage(value.to_string())),
-        }
-    }
-}
-
-#[derive(Debug, thiserror::Error)]
-pub enum HighlightError {
-    #[error("unknown language: {0}")]
-    UnknownLanguage(String),
-}
-
-impl Into<napi::Error> for HighlightError {
-    fn into(self) -> napi::Error {
-        match self {
-            HighlightError::UnknownLanguage(_) => {
-                napi::Error::new(napi::Status::InvalidArg, self.to_string())
-            }
-        }
-    }
-}
+mod annotation;
+mod frame;
+mod hast;
 
 #[napi(object)]
-pub struct HastProperties {
-    pub class_name: String,
-}
-
-#[napi(object)]
-pub struct HastNode {
-    #[napi(js_name = "type")]
-    pub kind: String,
-    pub tag_name: String,
-    pub properties: HastProperties,
-    pub children: Vec<Either<HastNode, HastTextNode>>,
-}
-
-#[napi(object)]
-pub struct HastTextNode {
-    #[napi(js_name = "type")]
-    pub kind: String,
-    pub value: String,
-}
-
-#[napi(js_name = "Highlighter")]
-pub struct JsHighlighter {
-    #[napi(readonly)]
-    pub highlight_names: Vec<String>,
-    configurations: HashMap<Language, HighlightConfiguration>,
-    class_names: Vec<String>,
+#[derive(Default)]
+pub struct Options {
+    pub language: Option<LanguageOptions>,
 }
 
 #[napi]
-impl JsHighlighter {
+pub struct Highlighter {
+    languages: Languages,
+}
+
+#[napi]
+impl Highlighter {
     #[napi(constructor)]
-    pub fn new(highlight_names: Option<Vec<String>>) -> Self {
-        let highlight_names = highlight_names.unwrap_or_else(|| {
-            STANDARD_HIGHLIGHTS
-                .iter()
-                .map(|it| it.to_string())
-                .collect()
-        });
+    pub fn new(options: Option<Options>) -> Self {
+        let options = options.unwrap_or_default();
 
-        let mut configurations = HashMap::new();
-        for lang in Language::ALL {
-            let init = lang.highlight_init();
-            let mut it = init();
-            it.configure(&highlight_names);
-            configurations.insert(*lang, it);
-        }
+        let languages = Languages::load(options.language.unwrap_or_default());
 
-        let class_names = highlight_names
-            .iter()
-            .map(|s| s.replace('.', " "))
-            .collect();
-
-        Self {
-            highlight_names,
-            configurations,
-            class_names,
-        }
+        Self { languages }
     }
 
-    #[inline]
-    fn highlight_config(&self, language: Language) -> &HighlightConfiguration {
-        self.configurations
-            .get(&language)
-            .expect("language not configured")
+    #[napi(ts_return_type = "Language[]")]
+    pub fn enabled_languages(&self) -> &[Language] {
+        self.languages.enabled()
     }
 
-    #[inline]
-    fn injection_highlights(
+    #[napi]
+    pub fn is_language_enabled(
         &self,
-        language: Language,
-        for_language: &str,
-    ) -> Option<&HighlightConfiguration> {
-        language
-            .injections()
-            .iter()
-            .find(|it| it.name() == for_language)
-            .map(|it| self.highlight_config(*it))
+        #[napi(ts_arg_type = "Language | string")] language: String,
+    ) -> bool {
+        let language = match Language::for_block(language) {
+            Some(it) => it,
+            None => return false,
+        };
+        self.languages.enabled().contains(&language)
     }
 
-    #[napi]
-    pub fn supported_languages(&self) -> Vec<String> {
-        Language::ALL.iter().map(|it| it.name().into()).collect()
-    }
+    /// Returns a `hast` `<span>` element.
+    ///
+    /// `code` is expected to be a raw souce code string. Special characters
+    /// ('<', ...) and control characters (`\n`, `\t`, ...) must not be
+    /// escaped ('&#x3C;', '\\n', '\\t', ...).
+    #[napi(ts_return_type = "import(\"hast\").Element | null")]
+    pub fn highlight(
+        &self,
+        code: String,
+        block_language: String,
+    ) -> napi::Result<Option<Element<CodeBlockData>>> {
+        let language = match Language::for_block(&block_language) {
+            Some(it) => it,
+            None => return Ok(None),
+        };
 
-    #[napi]
-    pub fn is_supported(&self, language: String) -> bool {
-        Language::try_from(language.as_str()).is_ok()
-    }
-
-    #[napi]
-    pub fn highlight(&self, code: String, language: String) -> napi::Result<HastNode> {
-        let language = Language::try_from(language.as_str()).map_err(Into::<napi::Error>::into)?;
-
-        let mut highlighter = Highlighter::new();
-        let config = self.highlight_config(language);
-        let highlights = highlighter
-            .highlight(config, code.as_bytes(), None, |other| {
-                self.injection_highlights(language, other)
-            })
-            .unwrap();
-
-        let mut stack = Vec::new();
-        stack.push(HastNode {
-            kind: "element".into(),
-            tag_name: "span".into(),
-            properties: HastProperties {
-                class_name: "source".into(),
-            },
-            children: Vec::new(),
-        });
+        let highlights = self.languages.highlight(language, &code).unwrap();
+        let mut queue = vec![Node::from(Element::new("pre").with_classes([
+            "source".to_string(),
+            format!("language-{}", block_language),
+        ]))];
 
         for event in highlights {
             match event.unwrap() {
-                HighlightEvent::HighlightStart(highlight) => {
-                    let node = HastNode {
-                        kind: "element".into(),
-                        tag_name: "span".into(),
-                        properties: HastProperties {
-                            class_name: self.class_names[highlight.0].clone(),
-                        },
-                        children: Vec::new(),
-                    };
-                    stack.push(node);
+                HighlightEvent::HighlightStart { captures: tags } => {
+                    let node = Node::from(Element::new("span").with_classes(tags));
+                    queue.push(node);
                 }
-                HighlightEvent::Source { start, end } => {
-                    let slice = &code[start..end];
-                    let parent = stack.last_mut().unwrap();
-                    if let Some(Either::B(text_node)) = parent.children.last_mut() {
-                        text_node.value.push_str(slice);
-                    } else {
-                        let text_node = HastTextNode {
-                            kind: "text".into(),
-                            value: slice.into(),
-                        };
-                        parent.children.push(Either::B(text_node));
+                HighlightEvent::Source { content, .. } => {
+                    let last = queue.last_mut().unwrap();
+                    match last {
+                        Node::Element(parent) => {
+                            parent.push_child(Text::new(content));
+                        }
+                        Node::Text(text) => {
+                            text.push_str(content);
+                        }
+                        Node::None => unreachable!(
+                            "can't append source to last queue element; queue is empty"
+                        ),
                     }
                 }
                 HighlightEvent::HighlightEnd => {
-                    let node = stack.pop().unwrap();
-                    let parent = stack.last_mut().unwrap();
-                    parent.children.push(Either::A(node));
+                    let content = queue.pop().unwrap();
+                    let content = match content {
+                        Node::Element(mut last_element) => {
+                            annotation::handle_annotation_comments(&mut last_element, language);
+                            ElementChild::Element(last_element)
+                        }
+                        Node::Text(it) => ElementChild::Text(it),
+                        _ => unreachable!("content neither text nor element"),
+                    };
+
+                    let last_element = match queue.last_mut() {
+                        Some(Node::Element(element)) => element,
+                        other => unreachable!(
+                            "highlight produced non-element node with children: {:?}",
+                            other.map(|it| it.kind())
+                        ),
+                    };
+                    last_element.push_child(content);
                 }
             }
         }
 
-        Ok(stack.pop().unwrap())
+        let mut result = queue.pop().unwrap();
+        visit_mut(&mut result, |access: MutVisitAccess<'_, CodeBlockData>| {
+            match access.prev_sibling() {
+                Some(Node::Element(element)) if element.tag() == "annotation" => {}
+                _ => return (Continue, NoMutation),
+            };
+
+            match access.item() {
+                Node::Text(text) if text.as_str() == "\n" => return (Continue, Drop),
+                _ => {}
+            }
+
+            (Skip, NoMutation)
+        });
+
+        let mut result = result.into_element().ok().unwrap();
+        let has_heading_annotation = match result.children().first() {
+            Some(ElementChild::Element(element)) => element.tag() == "annotation",
+            _ => false,
+        };
+        if has_heading_annotation {
+            let annotation = result.children_mut().remove(0).into_element().unwrap();
+            let annotation = annotation.properties();
+            let data = annotation::properties_to_data(annotation);
+            result.extend_data(data)
+        }
+        result.set_data(CodeBlockData::LineCount(
+            result.text_content().unwrap().lines().count(),
+        ));
+
+        visit_mut(
+            &mut result,
+            |mut access: MutVisitAccess<'_, CodeBlockData>| {
+                let annotation = match access.prev_sibling_mut() {
+                    Some(node) => {
+                        if let Node::Element(element) = node {
+                            if element.tag() == "annotation" {
+                                unsafe { std::mem::take(node).into_element().unwrap_unchecked() }
+                            } else {
+                                return (Continue, NoMutation);
+                            }
+                        } else {
+                            return (Continue, NoMutation);
+                        }
+                    }
+                    _ => return (Continue, NoMutation),
+                };
+
+                (Skip, NoMutation)
+            },
+        );
+        Ok(Some(result))
     }
 }
+
+hast::data::hast_data!(pub CodeBlockData {
+    LineCount(count: usize) => |env| {
+        env.create_uint32(count as u32)
+    },
+    HideHeading(value: bool) => |env| {
+        env.get_boolean(value)
+    },
+    ShowCopy(value: bool) => |env| {
+        env.get_boolean(value)
+    },
+    FileName(value: bool) => |env| {
+        env.get_boolean(value)
+    },
+    VariableName(value: bool) => |env| {
+        env.get_boolean(value)
+    },
+});
+
+pub(crate) fn hash<T: std::hash::Hash>(value: &T) -> u64 {
+    let mut hasher = ahash::AHasher::default();
+    value.hash(&mut hasher);
+    hasher.finish()
+}
+
+/*
+
+function processHeadingAnnotations(block, options) {
+  filterOutHandled(block.annotations, (it) => {
+    let storeDynamic = takeTag(it, "store-dynamic");
+    if (storeDynamic === true) {
+      options.storeDynamic = true;
+    }
+
+    let file = takeTag(it, "file");
+    if (typeof file === "string") {
+      options.file = file;
+    }
+
+    let name = takeTag(it, "name");
+    if (typeof name === "string") {
+      options.name = name;
+    }
+
+    return it.value.trim().length == 0;
+  });
+}
+
+function processNumberAnnotations(block, options) {
+  filterOutHandled(block.annotations, (it) => {
+    let collapse = takeTag(it, "collapse-lines");
+    if (collapse === true) {
+      options.collapse = true;
+    }
+
+    let hide = takeTag(it, "hide-lines");
+    if (hide === true) {
+      options.hide = true;
+    }
+
+    let start = takeTag(it, "line-start");
+    if (typeof start === "number") {
+      options.start = start;
+    }
+
+    return it.value.trim().length == 0;
+  });
+}
+  */

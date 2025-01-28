@@ -6,48 +6,8 @@ import Highlighter from "highlight";
 /**
  * @import {Position} from "unist"
  * @import {VisitorResult} from "unist-util-visit"
- * @import {Element, ElementContent, Node, Nodes, Text} from "hast"
+ * @import {Element, ElementContent, Node, Nodes, RootContent, Text} from "hast"
  */
-
-const STANDARD_CAPTURE_NAMES = [
-  "attribute",
-  "boolean",
-  "carriage-return",
-  "comment",
-  "comment.documentation",
-  "number",
-  "constant",
-  "constant.builtin",
-  "constructor",
-  "constructor.builtin",
-  "embedded",
-  "error",
-  "escape",
-  "function",
-  "function.builtin",
-  "keyword",
-  "keyword.include",
-  "module",
-  "operator",
-  "property",
-  "property.builtin",
-  "punctuation",
-  "punctuation.bracket",
-  "punctuation.delimiter",
-  "punctuation.special",
-  "string",
-  "string.escape",
-  "string.regexp",
-  "string.special",
-  "string.special.symbol",
-  "tag",
-  "type",
-  "type.builtin",
-  "variable",
-  "variable.builtin",
-  "variable.member",
-  "variable.parameter",
-];
 
 const SKIP_LANGS = ["math", "console"];
 
@@ -68,95 +28,21 @@ const RE_ANNOTATION = /^.*?#!\s*/;
  */
 
 /**
- * @param {Element} ast - ast of code syntax
- * @returns {Annotation[]} annotations extracted from syntax ast
+ * @typedef {object} CodeBlockLocation
+ * @property {Element} parent
+ * @property {number} localIndex
+ * @property {number} absoluteIndex
  */
-function extractAnnotations(ast) {
-  /**
-   * @type {Annotation[]}
-   */
-  let annotations = [];
-
-  /**
-   * @param {string | Nodes} elem - node(s) or string containing
-   * annotations
-   * @returns {string}
-   */
-  function annotationValue(elem) {
-    let text = elem;
-    if (typeof text === "string") {
-      return text.replace(RE_ANNOTATION, "");
-    } else {
-      return toText(text, { whitespace: "pre" }).replace(RE_ANNOTATION, "");
-    }
-  }
-
-  visit(
-    ast,
-    "element",
-    /**
-     * @param {Element} node
-     * @param {number} i
-     * @param {Element} parent
-     * @returns {VisitorResult}
-     */
-    (node, i, parent) => {
-      if (parent == null || node.tagName != "span") {
-        return CONTINUE;
-      }
-
-      let classes = node.properties.className;
-      if (!Array.isArray(classes) || !classes.find((it) => it === "comment")) {
-        return CONTINUE;
-      }
-
-      let text = toText(node, { whitespace: "pre" });
-      if (!text.substring(0, 8).includes("#!")) {
-        return CONTINUE;
-      }
-      let value = annotationValue(text);
-
-      annotations.push({
-        type: "annotation",
-        location: {
-          parent,
-          index: i,
-          prevSibling: parent.children[i - 1] || null,
-          nextSibling: parent.children[i + 1] || null,
-        },
-        value,
-      });
-      return SKIP;
-    }
-  );
-
-  for (const node of annotations.reverse()) {
-    let { parent, index, prevSibling, nextSibling } = node.location;
-    let remove_count = 1;
-    // remove leading newline
-    if (
-      prevSibling == null &&
-      nextSibling?.type === "text" &&
-      nextSibling?.value === "\n"
-    ) {
-      remove_count = 2;
-    }
-    parent.children.splice(index, remove_count);
-  }
-
-  return annotations;
-}
-
 /**
  * A code block that's being processed
  * @typedef {object} CodeBlock
- * @property {Position} location
+ * @property {CodeBlockLocation} location
  * @property {Element} pre
  * @property {Element} code
  * @property {number} line_count
  * @property {string} lang
  * @property {Annotation[]} annotations
- * @property {{string: boolean}} markers
+ * @property {{[marker: string]: boolean}} markers
  */
 
 /**
@@ -173,73 +59,6 @@ function filterOutHandled(list, handler) {
   list.splice(0, list.length, ...retained);
 }
 
-const RE_TAILING_SPACE = /\s*$/;
-const RE_LEADING_SPACE = /^\s*/;
-const RE_TAG_VALUE = /\s*(false|true|(\d+(\.\d+)?)|"([^"]*)"|'([^']*)')\s*/;
-
-/**
- * Removes a tag from the annotation and returns it if found.
- * @param {Annotation} annotation
- * @param {string} tag - tag name
- * @param {number} [offset] - offset to start searching for the tag
- * @returns {string | boolean | number | null} tag value
- */
-function takeTag(annotation, tag, offset = 0) {
-  let l = annotation.value;
-  let index = l.indexOf(tag, offset);
-  if (index === -1) {
-    return null;
-  }
-
-  let leadingWhitespace = l
-    .substring(0, index)
-    .match(RE_TAILING_SPACE)[0].length;
-  if (leadingWhitespace == 0 && index > 0) {
-    return takeTag(annotation, tag, index + tag.length);
-  }
-
-  let afterTag = l.substring(index + tag.length);
-  if (afterTag.length == 0 || afterTag.startsWith(" ")) {
-    let tailingWhitespace = l
-      .substring(index + tag.length)
-      .match(RE_LEADING_SPACE)[0].length;
-    annotation.value =
-      l.substring(0, index - leadingWhitespace) +
-      afterTag.substring(tailingWhitespace);
-    return true;
-  } else if (!afterTag.startsWith(":")) {
-    return takeTag(annotation, tag, index + tag.length);
-  }
-
-  let match = afterTag.substring(1).match(RE_TAG_VALUE);
-  if (match == null) {
-    return null;
-  }
-
-  /**
-   * @type {*}
-   */
-  let value = match[1];
-
-  if (value.startsWith('"') || value.startsWith("'")) {
-    value = value.substring(1, value.length - 1);
-  } else if (value === "true") {
-    value = true;
-  } else if (value === "false") {
-    value = false;
-  } else {
-    try {
-      value = parseFloat(value);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  annotation.value =
-    l.substring(0, index - leadingWhitespace) +
-    afterTag.substring(match[0].length + 1);
-  return value;
-}
 
 /**
  * @param {CodeBlock} block
@@ -450,15 +269,20 @@ export function rehypeTreeSitter(options = {}) {
   let numberLineOptions = options.lineNumbers ?? true;
   let headingOptions = options.heading ?? true;
 
-  let captures = [
-    ...(options.overrideCaptures || STANDARD_CAPTURE_NAMES),
-    ...(options.extraCaptures || []),
-  ];
-  let highlighter = new Highlighter(captures);
+  let highlighter = new Highlighter({
+    language: {
+      captures: options.overrideCaptures || undefined,
+      extraCaptures: options.extraCaptures,
+    },
+  });
 
-  return (ast) => {
-    let code_blocks = [];
+  return async (ast) => {
+    /**
+     * @type {Promise<CodeBlock | null>[]}
+     */
+    let codeBlocks = [];
 
+    let currentIndex = 0;
     visit(
       ast,
       "element",
@@ -466,7 +290,7 @@ export function rehypeTreeSitter(options = {}) {
        * @param {Element} pre
        * @param {number} index
        * @param {Element} parent
-       * @returns {import("unist-util-visit").VisitorResult}
+       * @returns {VisitorResult}
        */
       (pre, index, parent) => {
         if (pre.tagName != "pre") {
@@ -487,8 +311,6 @@ export function rehypeTreeSitter(options = {}) {
           },
         ];
 
-        let line_count = content.split("\n").length;
-
         let classes = code.properties.className;
         if (!Array.isArray(classes) || classes.length == 0) {
           return SKIP;
@@ -501,64 +323,89 @@ export function rehypeTreeSitter(options = {}) {
         );
         lang = lang?.substring(9) || "text";
 
-        let annotations = [];
-        if (highlighter.isSupported(lang)) {
-          try {
-            const new_content = highlighter.highlight(content, lang);
-            annotations = extractAnnotations(new_content);
-            if (annotations.length > 0) {
-              line_count = toText(new_content, { whitespace: "pre" }).split(
-                "\n"
-              ).length;
+        const absoluteIndex = currentIndex;
+        codeBlocks.push(
+          new Promise((resolve, reject) => {
+            let annotations = [];
+            let highlighted;
+            let line_count;
+
+            if (highlighter.isLanguageEnabled(lang)) {
+              try {
+                highlighted = highlighter.highlight(content, lang);
+                code.children = [highlighted];
+                //annotations = extractAnnotations(highlighted);
+                line_count = highlighted.data.lineCount || 0;
+              } catch (e) {
+                reject(e);
+              }
             }
-            code.children = [new_content];
-          } catch (e) {
-            console.warn(e);
-          }
-        }
 
-        if (
-          code.data?.noCodeblock ||
-          SKIP_LANGS.includes(lang) ||
-          annotations.includes("no-codeblock")
-        ) {
-          return SKIP;
-        }
+            if (
+              code.data?.noCodeblock ||
+              SKIP_LANGS.includes(lang) ||
+              annotations.includes("no-codeblock")
+            ) {
+              resolve(null);
+            }
 
-        code_blocks.push({
-          location: { parent, i: index },
-          pre,
-          code,
-          line_count,
-          lang,
-          annotations,
-          markers: code.data?.markers || {},
-        });
+            resolve({
+              location: { absoluteIndex, parent, localIndex: index },
+              pre,
+              code,
+              line_count,
+              lang,
+              annotations,
+              markers: code.data?.markers || {},
+            });
+          })
+        );
+        currentIndex += 1;
+
         return SKIP;
       }
     );
 
-    for (const block of code_blocks) {
-      let { parent, i } = block.location;
-
-      let code = block.pre;
-      code.properties = code.properties || {};
-      code.properties.className = code.properties?.className || [];
-      code.properties.className.push(`language-${block.lang}`);
-
-      let components = [block.pre];
-      let heading = buildBlockHeading(block, headingOptions);
-      if (heading != null) {
-        components.splice(0, 0, heading);
-      }
-      let lineNumbers = buildBlockNumberLine(block, numberLineOptions);
-      if (lineNumbers != null) {
-        components.push(lineNumbers);
-      }
-      let wrapper = hEl("div", { className: ["code-block"] }, components);
-
-      parent.children.splice(i, 1, wrapper);
+    if (ast.data.inserts == null) {
+      ast.data.inserts = {};
     }
+
+    await Promise.allSettled(
+      codeBlocks.map((parsedBlock) => {
+        parsedBlock.then((block) => {
+          if (block == null) {
+            // skipped
+            return;
+          }
+
+          let { parent, localIndex, absoluteIndex } = block.location;
+
+          let code = block.pre;
+          if (!Array.isArray(code.properties.className)) {
+            code.properties.className = [];
+          }
+          code.properties.className.push(`language-${block.lang}`);
+          code.properties.className.push(`cb-${absoluteIndex}`);
+
+          let heading = buildBlockHeading(block, headingOptions);
+          if (heading != null) {
+            ast.data.inserts[`cb-${absoluteIndex}-heading`] = {
+              type: "fragment",
+              value: heading,
+            };
+          }
+          let lineNumbers = buildBlockNumberLine(block, numberLineOptions);
+          if (lineNumbers != null) {
+            ast.data.inserts[`cb-${absoluteIndex}-lineno`] = {
+              type: "fragment",
+              value: lineNumbers,
+            };
+          }
+
+          parent.children.splice(localIndex, 1, code);
+        });
+      })
+    );
   };
 }
 

@@ -13,7 +13,7 @@
       "allowImportingTsExtensions": true,
       "sourceMap": true,
 
-      "typeRoots": ["./node_modules/@types", "./types"],
+      "typeRoots": ["./node_modules/@types", "./types", "../types"],
       "rootDir": "./"
     },
     "include": ["main.js", "src/**/*.js", "types/**/*.d.ts", "src/unist/hast-utils.ts"]

@@ -4,26 +4,24 @@ import fsp from "node:fs/promises";
 
 import { ArticleStatus, Post, PostIndex, slugToPath } from "../data/post.js";
 import { E, postSlugs } from "../env.js";
-import { memoize } from "../combinators.js";
 import logger from "../logging/index.js";
 
 /**
  * @typedef BuildOptions
  * @type {object}
  * @property {boolean} force whether to force re-build of already built content
- * @property {boolean} deploy whether to produce content with deployment paths
  */
 /**
  * @returns {BuildOptions}
  */
-const options = memoize(() => {
+const options = () => {
   let args = E.arguments;
   let options = {};
   if (args.force) {
     options.force = true;
   }
   return Object.freeze(options);
-});
+};
 
 /**
  * @enum {string}
@@ -45,6 +43,8 @@ export const PostState = Object.freeze({
 export async function buildPost(slug, prev) {
   let post = prev ? new Post(slug, prev) : new Post(slug);
 
+  let o = options();
+
   let oldDate =
     post.datePublished &&
     post.datePublished?.toISOString()?.replace(/.\d{1,3}Z/, "Z");
@@ -52,35 +52,37 @@ export async function buildPost(slug, prev) {
     post.dateModified &&
     post.dateModified?.toISOString()?.replace(/.\d{1,3}Z/, "Z");
   await post.updateTimeInfo();
-  let newDate = post.datePublished.toISOString().replace(/.\d{1,3}Z/, "Z");
-  let newUpdate = post.dateModified.toISOString().replace(/.\d{1,3}Z/, "Z");
-  if (
-    oldDate != null &&
-    oldDate === newDate &&
-    (oldUpdate == null || oldUpdate === newUpdate)
-  ) {
-    logger.trace(
-      {
-        oldDate,
-        newDate,
-        oldUpdate,
-        newUpdate,
-      },
-      "%s hasn't been updated",
-      slug
-    );
-    return [PostState.UNCHANGED, await post.toIndexJSON()];
-  } else {
-    logger.trace(
-      {
-        oldDate,
-        newDate,
-        oldUpdate,
-        newUpdate,
-      },
-      "%s was updated",
-      slug
-    );
+  if (!o.force) {
+    let newDate = post.datePublished.toISOString().replace(/.\d{1,3}Z/, "Z");
+    let newUpdate = post.dateModified.toISOString().replace(/.\d{1,3}Z/, "Z");
+    if (
+      oldDate != null &&
+      oldDate === newDate &&
+      (oldUpdate == null || oldUpdate === newUpdate)
+    ) {
+      logger.trace(
+        {
+          oldDate,
+          newDate,
+          oldUpdate,
+          newUpdate,
+        },
+        "%s hasn't been updated",
+        slug
+      );
+      return [PostState.UNCHANGED, await post.toIndexJSON()];
+    } else {
+      logger.trace(
+        {
+          oldDate,
+          newDate,
+          oldUpdate,
+          newUpdate,
+        },
+        "%s was updated",
+        slug
+      );
+    }
   }
 
   let status = await post.getArticleStatus();
@@ -102,6 +104,17 @@ export async function buildPost(slug, prev) {
   await fsp.writeFile(outPath, JSON.stringify(document), {
     encoding: "utf-8",
   });
+
+  const inserts = await post.getInserts();
+  if (Object.keys(inserts).length > 0) {
+    let insertPath = path.join(
+      E.output,
+      slugToPath(post.slug) + ".inserts.json"
+    );
+    await fsp.writeFile(insertPath, JSON.stringify(await post.getInserts()), {
+      encoding: "utf-8",
+    });
+  }
 
   return [
     prev == null ? PostState.CREATED : PostState.MODIFIED,

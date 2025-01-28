@@ -7,7 +7,14 @@ import type {
   Text,
   Nodes,
 } from "hast";
+
 import { Output } from "./parser.js";
+import type {
+  Insert,
+  FragmentInsert,
+  DataInsert,
+} from "../../../types/inserts.d.ts";
+export type { Insert, FragmentInsert, DataInsert };
 
 export interface AnnotationData {
   parent: Element;
@@ -24,6 +31,8 @@ declare module "unist" {
     annotation?: AnnotationData | undefined;
     markers?: { [marker: string]: boolean } | undefined;
     noCodeblock?: boolean | undefined;
+    inserts?: Record<string, Insert> | undefined;
+    lineCount?: number | undefined;
   }
 }
 declare module "unified" {

@@ -29,10 +29,9 @@ import logger from "../logging/index.js";
 import { urlJoin } from "./path.js";
 
 /**
- * @typedef {import("../unist/parser.js").VFile} VFile
- */
-/**
- * @typedef {import("../program/git.js").Commit} Commit
+ * @import {Insert} from "../unist/types.ts"
+ * @import {VFile} from "vfile"
+ * @import {Commit} from "../program/git.js"
  */
 
 /**
@@ -383,6 +382,8 @@ export class Post {
       localContentPath: urlJoin(E.input, this.slug),
     });
     this.articleBody = parsingResult.htmlContent;
+    this.inserts = parsingResult.inserts || {};
+
     if (this.articleBody == null) {
       logger.fatal(
         {
@@ -399,6 +400,15 @@ export class Post {
 
     logger.trace("%s parsed", this.slug);
     return this.articleBody;
+  }
+
+  /**
+   * @returns {Promise<Record<string, Insert>>}
+   * @throws {Error} if post uses an entry with schema format that's not supported
+   */
+  async getInserts() {
+    await this.getContent();
+    return this.inserts;
   }
 
   /**

@@ -1,5 +1,9 @@
 target/
 node_modules/
 
+# Generated files
+index_patch.sh
+index.d.ts
+
 # Built files
 *.node
