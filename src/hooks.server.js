@@ -1,5 +1,4 @@
-import { minify } from "html-minifier";
-import { browser } from "$app/environment";
+import { building } from "$app/environment";
 
 const minification_options = {
   collapseBooleanAttributes: true,
@@ -22,22 +21,18 @@ const minification_options = {
 
 /** @type {import('@sveltejs/kit').Handle} */
 export async function handle({ event, resolve }) {
-  var response = await resolve(event);
+  const response = await resolve(event);
 
-  if (
-    !browser &&
-    ["text/html", "application/atom+xml"].includes(
-      response.headers.get("content-type")
-    )
-  ) {
-    response = new Response(
-      minify(await response.text(), minification_options),
-      {
-        status: response.status,
-        headers: response.headers,
-      }
-    );
-  }
+  if (!building) return response;
+  if (response.headers.get("content-type") !== "text/html") return response;
+  
+  const { minify } = await import("html-minifier");
+  const body = await response.text();
+  return new Response(minify(body, minification_options), {
+    status: response.status,
+    headers: response.headers,
+  });
 
   return response;
 }
+

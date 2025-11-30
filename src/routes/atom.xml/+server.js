@@ -1,11 +1,11 @@
-import { orderPosts, toPostList } from "$lib/posts";
+import { toPostList } from "$lib/posts";
 import { blogAtom } from "$lib/atom";
 import { localFile } from "$lib/local";
 
 export const prerender = true;
 
 /** @type {import("@sveltejs/kit").RequestHandler} */
-export async function GET({ params }) {
+export async function GET() {
   /**
    * @type {import("$lib/posts").PostData[]}
    */

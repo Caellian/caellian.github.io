@@ -1,42 +1,42 @@
 <script>
   import { browser } from "$app/environment";
   import IconLinks from "$components/IconLinks.svelte";
-  import emailjs from "@emailjs/browser";
 
-  var name = "";
-  var email = "";
-  var message = "";
+  let name = "";
+  let email = "";
+  let message = "";
 
-  var emailStatus = null;
+  let messageStatus = null;
 
   function valid() {
-    return (
-      name.length > 0 &&
-      email.length > 0 &&
-      message != null &&
-      message.length > 0
-    );
+    return name.length > 0 && email.length > 0 && message.length > 0;
   }
 
-  function sendEmail() {
+  async function sendMessage() {
     if (!valid()) {
       return;
     }
 
     try {
-      emailjs.send(
-        "tinsvagelj-net",
-        "job-contact-email",
-        {
+      const response = await fetch('/api/send-message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           name,
           email,
           message,
-        },
-        "user_TD8lB5tDhA6fPs2uQHWqn"
-      );
-      emailStatus = "ok";
+        }),
+      });
+
+      if (response.ok) {
+        messageStatus = "ok";
+      } else {
+        messageStatus = "error";
+      }
     } catch (error) {
-      emailStatus = "error";
+      messageStatus = "error";
       console.log({ error });
     }
   }
@@ -52,10 +52,10 @@
 
 <main class="v-fit">
   <section class="center">
-    {#if browser && emailStatus == null}
-      <h2>Contact Me via E-mail</h2>
+    {#if browser && messageStatus == null}
+      <h2>Contact Me</h2>
       <div>
-        <form on:submit|preventDefault={sendEmail} class="pagewide">
+        <form on:submit|preventDefault={sendMessage} class="pagewide">
           <label for="name">Name</label>
           <input
             type="text"
@@ -88,20 +88,20 @@
         </form>
       </div>
     {:else if browser}
-      {#if emailStatus == "error"}
+      {#if messageStatus == "error"}
         <div class="status error">
           <svg viewBox="0 0 24 24">
             <path d="M 2,2 22,22" />
             <path d="M 22,2 2,22" />
           </svg>
-          <p>Error sending email!</p>
+          <p>Error sending message!</p>
         </div>
-      {:else if emailStatus == "ok"}
+      {:else if messageStatus == "ok"}
         <div class="status ok">
           <svg viewBox="0 0 24 24">
             <path d="m 2,11.3 7.01,7 L 22,5.33" />
           </svg>
-          <p>Email sent.</p>
+          <p>Message sent.</p>
         </div>
       {/if}
     {:else}
@@ -117,7 +117,7 @@
 
   {#if browser}
     <p class="mail-desc">
-      (the form will send an e-mail to: <a href="mailto:tin.svagelj@live.com"
+      (or send me an e-mail to: <a href="mailto:tin.svagelj@live.com"
         >tin.svagelj@live.com</a
       >)
     </p>

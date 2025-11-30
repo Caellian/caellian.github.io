@@ -30,7 +30,7 @@ export function blogAtom(name, subtitle, content = [], id = BASE_URL) {
         ${AUTHORS}
         <id>${id}</id>
         ${data}
-    </feed>`;
+    </feed>`.replace(/\n\s*/g, "");
 }
 
 /**
@@ -47,5 +47,5 @@ export function postAtom(post) {
         <updated>${modified}</updated>
         ${modified != published ? `<published>${published}</published>` : ""}
         ${(post.abstract && `\n<summary>${post.abstract}</summary>`) || ""}
-    </entry>`;
+    </entry>`.replace(/\n\s*/g, "");
 }

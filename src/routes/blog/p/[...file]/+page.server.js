@@ -1,6 +1,8 @@
 import { parsePostEntry } from "$lib/posts";
 import { localFile } from "$lib/local";
 
+export const prerender = true;
+
 /** @type {import("@sveltejs/kit").ServerLoad} */
 export async function load({ params }) {
   /**

@@ -50,7 +50,7 @@ function postCmp(a, b) {
     aDate = /** @type {Date} */ (a.dateModified || a.datePublished);
     bDate = /** @type {Date} */ (b.dateModified || b.datePublished);
   }
-  return bDate.getMilliseconds() - aDate.getMilliseconds();
+  return bDate.getTime() - aDate.getTime();
 }
 
 /**

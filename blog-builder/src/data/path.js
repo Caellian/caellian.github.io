@@ -93,7 +93,7 @@ export function urlAppend(base, appended) {
   try {
     return new URL(appended);
   } catch (_ignore) {}
-  
+
   if (appended.startsWith("/")) {
     return new URL(appended, baseHost);
   } else if (appended.startsWith(".")) {

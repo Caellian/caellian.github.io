@@ -5,8 +5,9 @@ Personal web portfolio & blog ([posts](https://github.com/Caellian/blog/)).
 ## Build
 
 Requirements:
-  - Node
-  - Rust (for [builder](./blog-builder) module)
+
+- Node
+- Rust (for [builder](./blog-builder) module)
 
 Clone with `--recurse-submodules` to also get blog posts.
 

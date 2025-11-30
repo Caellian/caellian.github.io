@@ -1,7 +1,8 @@
 const GITHUB_TOKEN = "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";
 
 export const DEFAULT_LOCALE = "en";
-export const PROJECTS_REMOTE = "https://gist.githubusercontent.com/Caellian/46d7b19ea62202ef377324fd8390bd10/raw/projects.json";
+export const PROJECTS_REMOTE =
+  "https://gist.githubusercontent.com/Caellian/46d7b19ea62202ef377324fd8390bd10/raw/projects.json";
 
 /**
  * @type {Project[] | null}
@@ -11,11 +12,11 @@ let cachedProjectData = null;
  * @typedef {Object} Highlights
  * @property {string} locale
  * @property {string[]} value
- * 
+ *
  * @typedef {Object} Project
  * @property {string} id
  * @property {string} name
- * 
+ *
  * @property {string[]} tags
  * @property {boolean} [active]
  * @property {boolean} [contribution]
@@ -25,7 +26,7 @@ let cachedProjectData = null;
  * @property {Date} [startDate]
  * @property {Date} [endDate]
  * @property {Highlights[]} [highlights]
- * 
+ *
  * @returns {Promise<Project[]>}
  */
 export async function fetchProjectData() {
@@ -127,7 +128,7 @@ export async function getRepoContributions() {
  * @property {boolean} merged
  * @property {boolean} closed
  *
- * @returns {Promise<PullRequest[]>} 
+ * @returns {Promise<PullRequest[]>}
  */
 export async function getPullRequests() {
   const data =

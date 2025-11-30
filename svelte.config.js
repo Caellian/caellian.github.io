@@ -1,4 +1,4 @@
-import adapter from "@sveltejs/adapter-static";
+import adapter from "@sveltejs/adapter-cloudflare";
 import preprocess from "svelte-preprocess";
 import alias from "./src/paths.config.js";
 
@@ -15,18 +15,7 @@ const config = {
   extensions: [".svelte", ".svx", ".md"],
 
   kit: {
-    adapter: adapter({
-      pages: ".svelte-kit/cloudflare",
-      assets: ".svelte-kit/cloudflare",
-      fallback: "200.html",
-      precompress: true,
-      hydrate: true,
-      router: true,
-      prerender: {
-        crawl: true,
-        enabled: true,
-      },
-    }),
+    adapter: adapter(),
     prerender: {
       origin: "https://tinsvagelj.net",
     },
